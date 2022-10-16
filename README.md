@@ -2,10 +2,8 @@
 <div align=center>
 <img src="https://user-images.githubusercontent.com/104713339/196040479-a60a82d6-0ee1-45f3-9f8d-3153465f997c.jpg">
 
-
-
-
 # 프로젝트 FitToo
+</div>
 ## 주제
 > 웹사이트를 통해 고객은 헬스 트레이너에게 개인 PT를 예약하고, 트레이너는 헬스장에 국한되지 않고 고객을 영업해 이익을 창출하도록 하는 게 프로젝트의 취지입니다.
 
@@ -20,4 +18,4 @@
 3. 기술 스택
 4. Documents
 
-</div>
+
