@@ -2,7 +2,7 @@
 <div align=center>
 <img src="https://user-images.githubusercontent.com/104713339/196040479-a60a82d6-0ee1-45f3-9f8d-3153465f997c.jpg">
 
-# 웹으로 편하게 PT 신청하고 함께 운동하는 서비스 FitToo
+# 웹으로 편하게 PT 신청하고 함께 운동하는 서비스
 </div>
 
 ## 주제
