@@ -41,8 +41,8 @@
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
 <img src="https://img.shields.io/badge/SpringDataJPA-6DB33F?style=for-the-badge&logo=SpringDataJPA&logoColor=white">
 <img src="https://img.shields.io/badge/thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white">
-
-Java, Spring, SpringBoot, SpringDataJPA, HTML/CSS, MySQL, Querydsl, Thymeleaf
+<img src="https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css5&logoColor=white">
+<img src="https://img.shields.io/badge/mariadb-003545?style=for-the-badge&logo=mariadb&logoColor=white">
 <br>
 <br>
 
