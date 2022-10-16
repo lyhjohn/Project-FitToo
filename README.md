@@ -36,20 +36,15 @@
 <br>
 <br>
 ## 기술 스택
+<div align=center>
   <img src="https://img.shields.io/badge/java-16.13.0-339933?logo=java"> 
   <img src="https://img.shields.io/badge/spring-16.13.0-339933?logo=spring"> 
-  <img src="https://img.shields.io/badge/springboot-16.13.0-339933?logo=springboot"> 
-  <img src="https://img.shields.io/badge/SpringDataJPA-16.13.0-339933?logo=SpringDataJPA"> 
+  <img src="https://img.shields.io/badge/springboot-16.13.0-339933?logo=springboot">
   <img src="https://img.shields.io/badge/thymeleaf-16.13.0-339933?logo=thymeleaf"> 
   <img src="https://img.shields.io/badge/css3-16.13.0-339933?logo=css3"> 
   <img src="https://img.shields.io/badge/mariadb-16.13.0-339933?logo=mariadb"> 
+</div>  
 
-<img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
-<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
-<img src="https://img.shields.io/badge/SpringDataJPA-6DB33F?style=for-the-badge&logo=SpringDataJPA&logoColor=white">
-<img src="https://img.shields.io/badge/thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white">
-<img src="https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css5&logoColor=white">
-<img src="https://img.shields.io/badge/mariadb-003545?style=for-the-badge&logo=mariadb&logoColor=white">
 <br>
 <br>
 
