@@ -33,12 +33,15 @@
 > 일정 관리 시스템으로 예약 일정을 손쉽게 관리할 수 있습니다.
 
 (사진 추가 예정)
+<br>
+
+## 기술 스택
+Java, Spring, SpringBoot, SpringDataJPAm, HTML/CSS, MySQL, Querydsl, Thymeleaf
 
 
 
 
 
-4. 기술 스택
-5. Documents
+6. Documents
 
 
