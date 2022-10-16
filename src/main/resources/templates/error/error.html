@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fit-Too</title>
+</head>
+<body>
+<div th:replace="/fragment/common/home_header.html::home_header"></div>
+<h1>오류 페이지</h1>
+<h3 th:text="${errorMessage}"></h3>
+
+
+</body>
+</html>

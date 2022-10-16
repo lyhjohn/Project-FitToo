@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+<div th:replace="/fragment/common/home_header.html::home_header"></div>
+
+<div>
+    <button type="button" th:onclick="|location.href='@{/member/register}'|">일반 회원</button>
+    <button type="button" th:onclick="|location.href='@{/trainer/register}'|">트레이너</button>
+</div>
+</body>
+</html>

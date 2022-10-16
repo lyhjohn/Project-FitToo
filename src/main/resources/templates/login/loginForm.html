@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link th:href="@{/css/bootstrap.min.css}"
+        href="../css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .login-form {
+      max-width: 560px;
+    }
+    .field-error {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+  </style>
+
+  <title>로그인</title>
+</head>
+<body>
+<div th:replace="/fragment/common/home_header.html :: home_header"></div>
+<h1>로그인 페이지</h1>
+<div th:text="${errorMessage}" class="field-error"></div>
+<form method="post" class="login-form" th:object="${loginForm}">
+  <div>
+  <label for="loginId">아이디: </label>
+  <input type="text" th:field="*{loginId}" name="loginId" id="loginId" required>
+  </div>
+
+  <div>
+  <label for="password">비밀번호: </label>
+  <input type="password" th:field="*{password}" name="password" id="password" required>
+  </div>
+  <button type="submit">로그인</button>
+  <button type="button" th:onclick="|location.href='@{/}'|">취소</button>
+
+  <label for="member">일반 회원</label>
+  <input type="radio" id="member" value="member" name="loginType" required>
+  <label for="trainer">트레이너</label>
+  <input type="radio" id="trainer" value="trainer" name="loginType" required>
+
+
+</form>
+
+
+
+</body>
+</html>

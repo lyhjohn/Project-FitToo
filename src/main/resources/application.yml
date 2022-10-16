@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://127.0.0.1:3306/fitwithme
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: main
+    password: yohan
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+    #        format_sql: true
+    generate-ddl: true
+#    ??? ???? ??
+
