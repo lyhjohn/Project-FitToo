@@ -41,7 +41,7 @@
   <img src="https://img.shields.io/badge/springboot-2.7.4-6DB33F?logo=springboot">
   <img src="https://img.shields.io/badge/thymeleaf-2.7.4-005F0F?logo=thymeleaf"> 
   <img src="https://img.shields.io/badge/css-3.0-1572B6?logo=css3"> 
-  <img src="https://img.shields.io/badge/mariadb-16.13.0-003545?logo=mariadb"> 
+  <img src="https://img.shields.io/badge/mariadb-10.6.8-003545?logo=mariadb"> 
 </div>  
 
 <br>
