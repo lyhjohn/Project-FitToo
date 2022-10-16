@@ -1,4 +1,3 @@
-![제목 없음](https://user-images.githubusercontent.com/104713339/196040384-c9751b30-e8c2-429c-9dae-2b0a5eded626.png)
 
 
 # 프로젝트 FitToo
