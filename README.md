@@ -1,5 +1,5 @@
 
-<img src="KakaoTalk_20221014_213156602_01](https://user-images.githubusercontent.com/104713339/196040479-a60a82d6-0ee1-45f3-9f8d-3153465f997c.jpg">
+<img src="https://user-images.githubusercontent.com/104713339/196040479-a60a82d6-0ee1-45f3-9f8d-3153465f997c.jpg">
 
 
 
