@@ -3,12 +3,12 @@ package com.fittoo.member.entity;
 import com.fittoo.common.entity.BaseEntity;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.LoginType;
+import com.fittoo.reservation.Reservation;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,6 +24,11 @@ public class Member extends BaseEntity {
 
     private int power; // 3대측정
     private String regPurpose;
+
+    private long point;
+
+    @OneToMany(mappedBy = "member")
+    private List<Reservation> reservationList = new ArrayList<>();
 
     public static String setRegPurpose(List<String> regPurposeList) {
 

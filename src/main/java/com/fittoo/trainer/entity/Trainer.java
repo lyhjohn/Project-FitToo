@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,7 @@ public class Trainer extends BaseEntity {
     private String introduce;
     private String profilePictureNewName;
     private String profilePictureOriName;
+    private String region;
 
 
     public static String setMainPtList(List<String> ptList) {

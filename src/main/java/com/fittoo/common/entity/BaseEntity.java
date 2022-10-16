@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,6 +26,8 @@ public abstract class BaseEntity {
     private LoginType loginType;
 
     private String exercisePeriod;
+    private LocalDateTime regDt;
+    private LocalDateTime udtDt;
 
 
 
