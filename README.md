@@ -40,6 +40,7 @@
 <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
 <img src="https://img.shields.io/badge/SpringDataJPA-6DB33F?style=for-the-badge&logo=SpringDataJPA&logoColor=white">
+<img src="https://img.shields.io/badge/thyemleaf-#005F0F?style=for-the-badge&logo=thyemleaf&logoColor=white">
 
 Java, Spring, SpringBoot, SpringDataJPA, HTML/CSS, MySQL, Querydsl, Thymeleaf
 <br>
