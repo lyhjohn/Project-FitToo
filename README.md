@@ -37,12 +37,12 @@
 <br>
 ## 기술 스택
 <div align=center>
-  <img src="https://img.shields.io/badge/java-16.13.0-339933?logo=java"> 
-  <img src="https://img.shields.io/badge/spring-16.13.0-339933?logo=spring"> 
-  <img src="https://img.shields.io/badge/springboot-16.13.0-339933?logo=springboot">
-  <img src="https://img.shields.io/badge/thymeleaf-16.13.0-339933?logo=thymeleaf"> 
-  <img src="https://img.shields.io/badge/css3-16.13.0-339933?logo=css3"> 
-  <img src="https://img.shields.io/badge/mariadb-16.13.0-339933?logo=mariadb"> 
+  <img src="https://img.shields.io/badge/java-16.13.0-007396?logo=java"> 
+  <img src="https://img.shields.io/badge/spring-16.13.0-6DB33F?logo=spring"> 
+  <img src="https://img.shields.io/badge/springboot-16.13.0-6DB33F?logo=springboot">
+  <img src="https://img.shields.io/badge/thymeleaf-16.13.0-005F0F?logo=thymeleaf"> 
+  <img src="https://img.shields.io/badge/css3-16.13.0-1572B6?logo=css3"> 
+  <img src="https://img.shields.io/badge/mariadb-16.13.0-003545?logo=mariadb"> 
 </div>  
 
 <br>
