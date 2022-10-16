@@ -37,7 +37,7 @@
 <br>
 ## 기술 스택
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
-<img src="https://img.shields.io/badge/spring-007396?style=for-the-badge&logo=spring&logoColor=white">
+<img src="https://img.shields.io/badge/spring-007396?style=for-the-badge&logo=spring&logoColor=#6DB33F">
 
 Java, Spring, SpringBoot, SpringDataJPAm, HTML/CSS, MySQL, Querydsl, Thymeleaf
 <br>
