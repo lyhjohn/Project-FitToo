@@ -1,10 +1,14 @@
 package com.fittoo.member.model;
 
+import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.member.entity.Member;
 import com.fittoo.reservation.Reservation;
 import lombok.*;
+import org.springframework.ui.Model;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -60,4 +64,18 @@ public class MemberDto {
 
         return regDt != null ? this.regDt.format(formatter) : "";
     }
+
+    public static boolean checkLoginType(MemberDto member, HttpServletRequest request, Model model) {
+        if (member == null) {
+            model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
+            HttpSession session = request.getSession();
+            session.invalidate();
+            return false;
+        }
+
+        model.addAttribute("member", member);
+        return true;
+    }
+
+
 }

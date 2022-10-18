@@ -40,7 +40,6 @@ public class HomeController {
                 return map;
             }
         }
-
         map.put("trainer", trainer);
         return map;
     }
@@ -49,7 +48,6 @@ public class HomeController {
     public String home(LoginInput input, Model model, HttpServletRequest request, Principal principal) {
 
         Optional<Principal> optionalPrincipal = Optional.ofNullable(principal);
-
         if (optionalPrincipal.isPresent() && input.getUserId() == null) {
 
             if (optionalPrincipal.get().getName() != null) {
@@ -78,30 +76,19 @@ public class HomeController {
 
         if (input.getLoginType().equals("member")) {
             MemberDto member = memberService.findMember(input.getUserId());
-            if (member == null) {
-                model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
-                HttpSession session = request.getSession();
-                session.invalidate();
+            if (!MemberDto.checkLoginType(member, request, model)) {
                 return "/login/loginForm";
             }
-
-            model.addAttribute("member", member);
             return "/loginHome";
         }
 
         if (input.getLoginType().equals("trainer")) {
             TrainerDto trainer = trainerService.findTrainer(input.getUserId());
-
-            if (trainer == null) {
-                model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
-                HttpSession session = request.getSession();
-                session.invalidate();
+            if (!TrainerDto.checkLoginType(trainer, request, model)) {
                 return "/login/loginForm";
             }
-            model.addAttribute("member", trainer);
             return "/loginHome";
         }
-
         return "/home";
     }
 
