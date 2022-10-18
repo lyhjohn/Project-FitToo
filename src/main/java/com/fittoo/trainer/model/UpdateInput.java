@@ -1,7 +1,9 @@
 package com.fittoo.trainer.model;
 
 import com.fittoo.member.model.LoginType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,25 +13,21 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TrainerInput {
+@NoArgsConstructor
+@AllArgsConstructor
+public class UpdateInput {
 
 
-    @NotNull
-    @NotEmpty
     private String userId;
 
-    @NotNull
-    @NotEmpty
     private String password;
 
-    @NotNull
-    @NotEmpty
+
     private String phoneNumber;
 
-    @NotNull
+
     private int gender; // 1=남자 2=여자
 
-    @NotNull
     private String exercisePeriod;
 
     private int power; // 3대측정
@@ -37,8 +35,7 @@ public class TrainerInput {
     private String awards;
     private String userName;
 
-    @NotNull
-    private MultipartFile profilePicture;
+    private String profilePictureNewName;
 
     private List<String> mainPtList;
 

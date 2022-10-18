@@ -22,7 +22,6 @@ public class Member extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    private int power; // 3대측정
     private String regPurpose;
 
     private long point;

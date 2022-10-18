@@ -6,6 +6,7 @@ import com.fittoo.trainer.entity.Trainer;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.ui.Model;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -32,7 +33,6 @@ public class TrainerDto extends BaseDto {
     private LocalDateTime regDt;
 
 
-
     public static TrainerDto of(Trainer trainer) {
         return TrainerDto.builder()
                 .userId(trainer.getUserId())
@@ -49,6 +49,7 @@ public class TrainerDto extends BaseDto {
                 .userName(trainer.getUserName())
                 .region(trainer.getRegion())
                 .regDt(trainer.getRegDt())
+                .power(trainer.getPower())
                 .build();
     }
 
@@ -56,5 +57,26 @@ public class TrainerDto extends BaseDto {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
 
         return regDt != null ? this.regDt.format(formatter) : "";
+    }
+
+
+    public static void whatIsGender(Object gender, Model model) {
+        if (gender != null) {
+            if (gender instanceof String) {
+                if (gender.equals("남자")) {
+                    model.addAttribute("isMan", true);
+                } else {
+                    model.addAttribute("isGirl", true);
+                }
+            }
+
+            if (gender instanceof Integer) {
+                if ((int) gender == 1) {
+                    model.addAttribute("isMan", true);
+                } else {
+                    model.addAttribute("isGirl", true);
+                }
+            }
+        }
     }
 }

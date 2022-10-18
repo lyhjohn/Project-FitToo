@@ -11,11 +11,18 @@
     <style>
         .leftTop {
             float: left;
+            position: fixed;
+            top: 5%;
+            left: 0;
         }
 
         .rightTop {
             float: right;
+            position: fixed;
+            top: 10%;
+            right: 2%;
         }
+
         .table-size {
             width: 50%;
             height: 20%;
@@ -23,73 +30,124 @@
             margin-left: auto;
             margin-right: auto;
         }
+
+        #picture-button {
+            float: left;
+            position: fixed;
+            top: 30%;
+            left: 5%;
+        }
+
+        .line {
+            top: 80%;
+            height: 50px;
+            width: 40%;
+            color: #0d6efd;
+        }
+
+
     </style>
     <title>내 정보</title>
 </head>
 <body>
 <div th:replace="/fragment/common/home_header.html::home_header"></div>
 <div th:replace="/fragment/common/right_header.html::right_header"></div>
+
+<form method="post">
+    <div th:text="#{profilePicture}" class="leftTop"></div>
+    <div class="leftTop">
+        <img th:src="|/trainer/images/${member.getProfilePictureNewName()}|" width="300" height="300"/>
+        <input type="file" id="profilePicture" th:value="${member?.profilePictureNewName}" name="profilePicture"
+               required>
+    </div>
+    <div id="picture-button">
+        <button type="submit">프로필 사진 변경</button>
+    </div>
+    <hr class="line">
+</form>
+
 <div th:object="${member}" class="table-size">
-    <table class="table table-info">
-        <tbody>
-        <tr>
-            <th th:text="#{userId}">/th>
-            <td th:text="*{userId}"></td>
-        </tr>
-        <tr>
-            <th th:text="#{gender}">/th>
-            <td th:text="*{gender}"></td>
-        </tr>
-        <tr>
-            <th th:text="#{login_type}">/th>
-            <td th:text="*{loginType}"></td>
-        </tr>
-        <tr>
-            <th th:text="#{phone}">/th>
-            <td th:text="*{phoneNumber}"></td>
-        </tr>
-        <tr>
-            <th th:text="#{regDt}">/th>
-            <td th:text="*{getRegDt()}"></td>
-        </tr>
-        <tr>
-            <th th:text="#{awards}">/th>
-            <td th:text="*{awards}"></td>
-        </tr>
-        <tr>
-            <th th:text="#{introduce}">/th>
-            <td th:text="*{introduce}"></td>
-        </tr>
-        <tr>
-            <th th:text="#{mainPt}">/th>
-            <td th:text="*{mainPtList}"></td>
-        </tr>
-        <tr>
-            <th th:text="|#{price}원|">/th>
-            <td th:text="*{price}"></td>
-        </tr>
-        <tr>
-            <th th:text="#{region}">/th>
-            <td th:text="*{region}"></td>
-        </tr>
-        <tr>
-            <th th:text="#{profilePicture}"></th>
-            <td>
-<!--                <img src="/trainer/images/1" width="300" height="300" />-->
-                <img th:src="|/trainer/images/${member.getProfilePictureNewName()}|" width="300" height="300" />
-<!--                <img th:src="|*{getProfilePictureNewName()}|" width="300" height="300" />-->
 
+    <form action="/trainer/profileUpdate" method="post" enctype="multipart/form-data">
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류</p>
+        </div>
 
-
-            </td>
-        </tr>
-        </tbody>
-
-    </table>
+        <table class="table table-info">
+            <tbody>
+            <tr>
+                <th th:text="#{userId}"></th>
+                    <input type="hidden" th:value="*{userId}" name="userId">
+                <td th:text="*{userId}"></td>
+            </tr>
+            <tr>
+                <th th:text="#{login_type}"></th>
+                <input type="hidden" th:value="*{loginType}" name="loginType">
+                <td th:text="*{loginType}" th:field="*{loginType}"></td>
+            </tr>
+            <tr>
+                <th th:text="#{gender}">/th>
+                <td>
+                    <label for="man" th:text="#{man}">남</label>
+                    <input type="radio" id="man" name="gender" value="1"  th:checked="|${isMan}|">
+                    <label for="girl" th:text="#{girl}">여</label>
+                    <input type="radio" id="girl" name="gender" value="2" th:checked="|${isGirl}|">
+                </td>
+            </tr>
+            <tr>
+                <th th:text="#{name}">/th>
+                <td>
+                    <input type="text" th:field="*{userName}">
+                </td>
+            </tr>
+            <tr>
+                <th th:text="#{phone}">/th>
+                <td>
+                    <input type="text" th:field="*{phoneNumber}">
+                </td>
+            </tr>
+            <tr>
+                <th th:text="#{awards}">/th>
+                <td height="200">
+                    <textarea th:field="*{awards}" name="awards" cols="50" rows="10"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <th th:text="#{introduce}">/th>
+                <td>
+                    <textarea th:field="*{introduce}" name="introduce" cols="50" rows="10"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <th th:text="#{mainPt}">/th>
+                <td>
+                    <input type="text" th:field="*{mainPtList}">
+                </td>
+            </tr>
+            <tr>
+                <th th:text="|#{price}원|">/th>
+                <td>
+                    <input type="text" th:field="*{price}">
+                </td>
+            </tr>
+            <tr>
+                <th th:text="#{region}">/th>
+                <td>
+                    <input type="text" th:field="*{region}">
+                </td>
+            </tr>
+            <tr>
+                <th th:text="#{power}">/th>
+                <td>
+                    <input type="text" th:field="*{power}">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="hidden" th:value="*{profilePictureNewName}" name="profilePictureNewName">
+        <button type="submit">수정하기</button>
+    </form>
 </div>
-<img th:src="|/images/${member.getProfilePictureNewName()}|">
-<div th:text="|${member.getProfilePictureNewName()}|"></div>
-<img th:src="|/images/${member.price}|" alt="이미지">
 
 
 </body>

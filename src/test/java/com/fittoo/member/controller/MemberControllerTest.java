@@ -39,23 +39,4 @@ class MemberControllerTest {
 
 
 
-//    @Test
-//    @Transactional
-//    @Commit
-//    void setMainPtListTest() {
-//        //given
-//        Trainer trainer = new Trainer();
-//        String[] strs = new String[]{"diet", "weight", "재활", "health", "partner"};
-//
-//        //when
-//        trainer.setMainPtList(strs);
-//        trainerRepository.save(trainer);
-//        Optional<Trainer> findTrainer = trainerRepository.findById(trainer.getId());
-//        //then
-////        assertThat(findMember.get().getRegPurpose())
-//        System.out.println(findTrainer.get().getMainPtList());
-//
-//    }
-
-
 }

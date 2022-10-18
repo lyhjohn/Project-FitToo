@@ -4,6 +4,7 @@ import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.TrainerDto;
+import com.fittoo.trainer.model.UpdateInput;
 import com.fittoo.utills.FileStore;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.repository.TrainerRepository;
@@ -39,7 +40,8 @@ public class TrainerServiceImpl implements TrainerService {
         }
 
         String encPassword = BCrypt.hashpw(trainerInput.getPassword(), BCrypt.gensalt());
-        Trainer trainer = Trainer.of(trainerInput, fileNames, encPassword);
+        trainerInput.setPassword(encPassword);
+        Trainer trainer = Trainer.of(trainerInput, fileNames);
         trainerRepository.save(trainer);
 
         return new ServiceResult();
@@ -59,4 +61,17 @@ public class TrainerServiceImpl implements TrainerService {
         return optionalTrainer.map(TrainerDto::of).orElse(null);
     }
 
+    @Override
+    @Transactional
+    public TrainerDto update(UpdateInput input) {
+        Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(input.getUserId());
+        if (optionalTrainer.isEmpty()) {
+            return null;
+        }
+
+        Trainer trainer = optionalTrainer.get();
+        Trainer updateTrainer = trainer.update(input);
+
+        return TrainerDto.of(updateTrainer);
+    }
 }

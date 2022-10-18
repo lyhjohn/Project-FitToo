@@ -96,7 +96,7 @@
     </div>
     <div>
         <label for="awards" th:text="#{awards}">수상 기록</label>
-        <input type="text" id="awards" th:field="*{awards}" name="awards">
+        <textarea th:field="*{awards}" id="awards" name="awards" cols="50" rows="10"></textarea>
     </div>
 
     <div>
@@ -109,7 +109,7 @@
     </div>
     <div>
         <label for="introduce" th:text="#{introduce}">트레이너 소개</label>
-        <input type="text" id="introduce" th:field="*{introduce}" name="introduce">
+        <textarea th:field="*{introduce}" id="introduce" name="introduce" cols="50" rows="10"></textarea>
     </div>
 
     <button type="submit" th:text="#{register}">회원 가입</button>

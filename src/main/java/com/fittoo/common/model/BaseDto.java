@@ -28,6 +28,7 @@ public abstract class BaseDto {
     private LoginType loginType;
 
     private String exercisePeriod;
+    private int power;
 
 
 

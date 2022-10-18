@@ -3,6 +3,7 @@ package com.fittoo.trainer.entity;
 import com.fittoo.common.entity.BaseEntity;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.trainer.model.TrainerInput;
+import com.fittoo.trainer.model.UpdateInput;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @SuperBuilder
+@Setter
 public class Trainer extends BaseEntity {
 
     @Id
@@ -43,10 +45,10 @@ public class Trainer extends BaseEntity {
         return sb.toString();
     }
 
-    public static Trainer of(TrainerInput trainerInput, String[] fileNames, String encPassword) {
+    public static Trainer of(TrainerInput trainerInput, String[] fileNames) {
         return Trainer.builder()
                 .userId(trainerInput.getUserId())
-                .password(encPassword)
+                .password(trainerInput.getPassword())
                 .phoneNumber(trainerInput.getPhoneNumber())
                 .loginType(LoginType.TRAINER)
                 .awards(trainerInput.getAwards())
@@ -61,6 +63,27 @@ public class Trainer extends BaseEntity {
                 .region(trainerInput.getRegion())
                 .regDt(LocalDateTime.now())
                 .awards(trainerInput.getAwards())
+                .power(trainerInput.getPower())
+                .build();
+    }
+
+    public static Trainer of(TrainerInput trainerInput) {
+        return Trainer.builder()
+                .userId(trainerInput.getUserId())
+                .password(trainerInput.getPassword())
+                .phoneNumber(trainerInput.getPhoneNumber())
+                .loginType(LoginType.TRAINER)
+                .awards(trainerInput.getAwards())
+                .mainPtList(setMainPtList(trainerInput.getMainPtList()))
+                .price(trainerInput.getPrice())
+                .exercisePeriod(trainerInput.getExercisePeriod())
+                .gender(setGender(trainerInput.getGender()))
+                .introduce(trainerInput.getIntroduce())
+                .userName(trainerInput.getUserName())
+                .region(trainerInput.getRegion())
+                .regDt(LocalDateTime.now())
+                .awards(trainerInput.getAwards())
+                .power(trainerInput.getPower())
                 .build();
     }
 
@@ -72,5 +95,20 @@ public class Trainer extends BaseEntity {
                 return "여자";
         }
         return null;
+    }
+
+    public Trainer update(UpdateInput input) {
+        this.setPhoneNumber(input.getPhoneNumber());
+        this.setAwards(input.getAwards());
+        this.setPrice(input.getPrice());
+        this.setGender(setGender(input.getGender()));
+        this.setIntroduce(input.getIntroduce());
+        this.setUserName(input.getUserName());
+        this.setRegion(input.getRegion());
+        this.setUdtDt(LocalDateTime.now());
+        this.setAwards(input.getAwards());
+        this.setPower(input.getPower());
+        this.setLoginType(LoginType.TRAINER);
+        return this;
     }
 }

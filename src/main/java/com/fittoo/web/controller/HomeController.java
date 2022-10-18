@@ -10,13 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -49,20 +48,22 @@ public class HomeController {
     @RequestMapping("/")
     public String home(LoginInput input, Model model, HttpServletRequest request, Principal principal) {
 
-        Optional<Principal> principal1 = Optional.ofNullable(principal);
+        Optional<Principal> optionalPrincipal = Optional.ofNullable(principal);
 
-        if (principal1.isPresent() && input.getUserId() == null) {
-            if (principal1.get().getName() != null) {
+        if (optionalPrincipal.isPresent() && input.getUserId() == null) {
+
+            if (optionalPrincipal.get().getName() != null) {
                 Map<String, Object> typeMap = typeCheckMap(principal.getName());
+
                 if (typeMap.containsKey("member")) {
+
                     MemberDto member = (MemberDto) typeMap.get("member");
-                    System.out.println("2 = " + principal1.get().getName());
                     model.addAttribute("member", member);
                     return "/loginHome";
                 }
                 if (typeMap.containsKey("trainer")) {
+
                     TrainerDto trainer = (TrainerDto) typeMap.get("trainer");
-                    System.out.println("2 = " + principal1.get().getName());
                     model.addAttribute("member", trainer);
                     return "/loginHome";
                 }
@@ -76,17 +77,11 @@ public class HomeController {
         }
 
         if (input.getLoginType().equals("member")) {
-            System.out.println("1차검문소");
             MemberDto member = memberService.findMember(input.getUserId());
-            System.out.println("2차검문소");
             if (member == null) {
-                System.out.println("3차검문소");
                 model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
-                System.out.println("4차검문소");
                 HttpSession session = request.getSession();
-                System.out.println("5차검문소");
                 session.invalidate();
-                System.out.println("6차검문소");
                 return "/login/loginForm";
             }
 
