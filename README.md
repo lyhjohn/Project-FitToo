@@ -43,6 +43,8 @@
   <img src="https://img.shields.io/badge/thymeleaf-2.7.4-005F0F?logo=thymeleaf"> 
   <img src="https://img.shields.io/badge/css-3.0-1572B6?logo=css3"> 
   <img src="https://img.shields.io/badge/mariadb-10.6.8-003545?logo=mariadb"> 
+  <img src="https://img.shields.io/badge/SpringSecurity-2.7.4-6DB33F?logo=mariadb"> 
+
 </div>  
 
 <br>
