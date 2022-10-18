@@ -28,7 +28,6 @@ public class Trainer extends BaseEntity {
     private String introduce;
     private String profilePictureNewName;
     private String profilePictureOriName;
-    private String region;
 
 
     public static String setMainPtList(List<String> ptList) {
@@ -44,10 +43,10 @@ public class Trainer extends BaseEntity {
         return sb.toString();
     }
 
-    public static Trainer of(TrainerInput trainerInput, String[] fileNames) {
+    public static Trainer of(TrainerInput trainerInput, String[] fileNames, String encPassword) {
         return Trainer.builder()
                 .userId(trainerInput.getUserId())
-                .password(trainerInput.getPassword())
+                .password(encPassword)
                 .phoneNumber(trainerInput.getPhoneNumber())
                 .loginType(LoginType.TRAINER)
                 .awards(trainerInput.getAwards())
@@ -58,6 +57,10 @@ public class Trainer extends BaseEntity {
                 .introduce(trainerInput.getIntroduce())
                 .profilePictureOriName(fileNames[0])
                 .profilePictureNewName(fileNames[1])
+                .userName(trainerInput.getUserName())
+                .region(trainerInput.getRegion())
+                .regDt(LocalDateTime.now())
+                .awards(trainerInput.getAwards())
                 .build();
     }
 

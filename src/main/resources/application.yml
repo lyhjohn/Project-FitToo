@@ -13,4 +13,9 @@ spring:
     #        format_sql: true
     generate-ddl: true
 #    ??? ???? ??
+  messages:
+    basename: messages
+logging:
+  level:
+    root: info
 

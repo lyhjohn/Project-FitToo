@@ -1,5 +1,6 @@
 package com.fittoo.web.service.impl;
 
+import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.member.entity.Member;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.member.repository.MemberRepository;
@@ -10,9 +11,16 @@ import com.fittoo.web.model.LoginInfo;
 import com.fittoo.web.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,44 +32,49 @@ public class LoginServiceImpl implements LoginService {
     private final TrainerRepository trainerRepository;
 
     @Override
-    public LoginInfo loginSubmit(LoginInput input) {
-        return loginValid(input);
+    @Transactional
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        Optional<Member> optionalMember = memberRepository.findByUserId(userId);
+        Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
+
+
+        if (optionalTrainer.isPresent()) {
+            return loginValidTrainer(optionalTrainer.get());
+        }
+
+        if (optionalMember.isPresent()) {
+            return loginValidMember(optionalMember.get());
+        }
+
+
+        throw new UsernameNotFoundException(ErrorMessage.INVALID_ID_OR_PWD.description());
     }
 
 
     @Transactional
-    public LoginInfo loginValid(LoginInput input) {
-        if (input.getLoginType().equals("member")) {
-            Optional<Member> optionalMember = memberRepository.findByUserId(input.getLoginId());
-            if (optionalMember.isEmpty()) {
-                return null;
-            }
-            Member member = optionalMember.get();
-            if (!member.getPassword().equals(input.getPassword())) {
-                return null;
-            }
-            if (!member.getLoginType().equals(LoginType.NORMAL)) {
-                return null;
-            }
+    public UserDetails loginValidMember(Member member) {
 
-            return optionalMember.map(LoginInfo::of).orElse(null);
+        if (!member.getLoginType().equals(LoginType.NORMAL)) {
+            throw new UsernameNotFoundException(ErrorMessage.INVALID_ID_OR_PWD.description());
         }
+        // 회원 ROLE 추가
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        if (input.getLoginType().equals("trainer")) {
-            Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(input.getLoginId());
-            if (optionalTrainer.isEmpty()) {
-                return null;
-            }
-            Trainer trainer = optionalTrainer.get();
-            if (!trainer.getPassword().equals(input.getPassword())) {
-                return null;
-            }
-            if (!trainer.getLoginType().equals(LoginType.TRAINER)) {
-                return null;
-            }
-            return optionalTrainer.map(LoginInfo::of).orElse(null);
+        return new User(member.getUserId(), member.getPassword(), grantedAuthorities);
+    }
+
+    @Transactional
+    public UserDetails loginValidTrainer(Trainer trainer) {
+
+        if (!trainer.getLoginType().equals(LoginType.TRAINER)) {
+            throw new UsernameNotFoundException(ErrorMessage.INVALID_ID_OR_PWD.description());
         }
-        return null;
+        // 회원 ROLE 추가
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_TRAINER"));
+
+        return new User(trainer.getUserId(), trainer.getPassword(), grantedAuthorities);
     }
 }
 

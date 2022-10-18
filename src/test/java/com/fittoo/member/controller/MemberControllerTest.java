@@ -36,6 +36,9 @@ class MemberControllerTest {
         assertThat(regPurposes).isEqualTo("diet,weight,재활,health,partner_training");
     }
 
+
+
+
 //    @Test
 //    @Transactional
 //    @Commit

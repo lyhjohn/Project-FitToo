@@ -6,23 +6,24 @@ import com.fittoo.common.model.ServiceResult;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.service.TrainerService;
-import com.fittoo.web.model.LoginInfo;
-import com.fittoo.web.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static java.time.LocalDate.now;
 
 @Controller
 @RequiredArgsConstructor
@@ -65,7 +66,7 @@ public class TrainerController {
 
     @GetMapping("/profile")
     public String profile(String userId, Model model, HttpServletRequest request) {
-        TrainerDto trainerDto = trainerService.lookUpProfile(userId);
+        TrainerDto trainerDto = trainerService.findTrainer(userId);
 
         if (trainerDto == null) {
             model.addAttribute("errorMessage", ErrorMessage.ACCESS_REJECT.description());
@@ -77,7 +78,22 @@ public class TrainerController {
             return "/error/error";
         }
 
-        model.addAttribute("trainer", trainerDto);
+        model.addAttribute("member", trainerDto);
         return "/trainer/profile";
+    }
+
+    public String getFullPath(String fileName, String loginType) {
+        String fileDir = "C:/inflearn/image";
+        String dirs = String.format("%s\\%s\\%d\\%02d\\%02d\\",
+                fileDir,  loginType, now().getYear(), now().getMonthValue(), now().getDayOfMonth());
+
+        return dirs + fileName;
+    }
+    @ResponseBody // 파일 이미지 띄우기
+    @GetMapping("/images/{filename}")
+    public Resource getImage(@PathVariable String filename) throws MalformedURLException {
+        System.out.println("이미지");
+        System.out.println("file name = " + "file:" + filename);
+        return new UrlResource("file:" + getFullPath(filename, "trainer"));
     }
 }

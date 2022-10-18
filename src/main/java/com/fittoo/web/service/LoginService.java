@@ -1,8 +1,7 @@
 package com.fittoo.web.service;
 
-import com.fittoo.web.model.LoginInput;
-import com.fittoo.web.model.LoginInfo;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface LoginService {
-    LoginInfo loginSubmit(LoginInput input);
+public interface LoginService extends UserDetailsService {
+//    UserDetails loginValid loginSubmit(LoginInput input);
 }

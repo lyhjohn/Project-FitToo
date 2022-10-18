@@ -34,6 +34,7 @@ public class TrainerInput {
     private int power; // 3대측정
 
     private String awards;
+    private String userName;
 
     @NotNull
     private MultipartFile profilePicture;
@@ -43,5 +44,7 @@ public class TrainerInput {
     private long price;
 
     private String introduce;
+    private String region;
+
 
 }

@@ -11,12 +11,12 @@
 </head>
 <body>
 <div th:fragment="right_header">
-    <div class="rightTop" th:if="|${member.loginType eq '일반 회원'}|">
+    <div class="rightTop" th:if="|${member.loginType.description().toString() eq '일반 회원'}|">
         <a href="/member/profile">내 정보</a>
         <a href="/logout">로그아웃</a>
     </div>
-
-    <div class="rightTop" th:if="|${member.loginType eq '트레이너'}|">
+    <div class="rightTop" th:if="|${member.loginType.description().toString() eq '트레이너'}|">
+    <div>
         <form action="/trainer/profile">
             <input type="hidden" th:value="${member.userId}" name="userId">
             <button type="submit" class="btn btn-primary">내 정보</button>

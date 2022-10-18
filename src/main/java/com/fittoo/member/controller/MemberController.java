@@ -1,6 +1,7 @@
 package com.fittoo.member.controller;
 
 import com.fittoo.common.model.ServiceResult;
+import com.fittoo.member.model.MemberDto;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -42,14 +43,12 @@ public class MemberController {
 
     @PostMapping("/register")
     public String registerComplete(@ModelAttribute(name = "member") @Validated MemberInput memberInput, BindingResult bindingResult, Model model) {
-        System.out.println("memberInput = " + memberInput.getRegPurposeList());
         ServiceResult result = memberService.memberRegister(memberInput);
 
         if (bindingResult.hasErrors()) {
             log.info("error={}", bindingResult);
             return "/member/register";
         }
-
 
         if (!result.isResult()) {
             model.addAttribute("errorMessage", result.getErrorMessage().description());

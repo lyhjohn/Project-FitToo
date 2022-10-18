@@ -17,10 +17,9 @@ import static java.time.LocalDate.now;
 @Component
 public class FileStore {
     public String getFullPath(String fileName, String loginType) {
-        String fileDir = "C:\\web-project\\FitToo";
-        String dirs = String.format("%s\\%s\\%s\\%d\\%02d\\%02d\\",
-                fileDir, "images", loginType, now().getYear(), now().getMonthValue(), now().getDayOfMonth());
-        System.out.println("dirs = " + dirs);
+        String fileDir = "C:/inflearn/image";
+        String dirs = String.format("%s\\%s\\%d\\%02d\\%02d\\",
+                fileDir,  loginType, now().getYear(), now().getMonthValue(), now().getDayOfMonth());
         File file = new File(dirs); // 저장 경로 생성
         if (!file.isDirectory()) {
             file.mkdirs();
@@ -42,9 +41,9 @@ public class FileStore {
 
         // 경로 + 파일명으로 파일을 실제 경로에 전송
 
-        storeFileName = getFullPath(storeFileName, loginType);
-        System.out.println("storeFileName = " + storeFileName);
-        multipartFile.transferTo(new File(storeFileName));
+//        storeFileName = getFullPath(storeFileName, loginType);
+
+        multipartFile.transferTo(new File(getFullPath(storeFileName, loginType)));
 
         return new String[]{originalFilename, storeFileName};
     }

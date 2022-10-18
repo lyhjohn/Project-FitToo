@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class LoginInput {
     @NotEmpty
     @NotNull
-    private String loginId;
+    private String userId;
 
     @NotEmpty
     @NotNull

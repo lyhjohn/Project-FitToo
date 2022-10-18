@@ -22,6 +22,7 @@ public class MemberInput {//
     @NotNull
     @NotEmpty
     private String phoneNumber;
+    private String userName;
 
     @NotNull
     private int gender; // 1=남자 2=여자
@@ -33,4 +34,6 @@ public class MemberInput {//
 
     @NotNull
     private List<String> regPurposeList;
+    private String region;
+
 }

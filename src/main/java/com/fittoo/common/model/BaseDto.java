@@ -22,6 +22,8 @@ public abstract class BaseDto {
     private String password;
     private String phoneNumber;
     private String gender; // 1=남자 2=여자
+    private String region;
+    private String userName;
 
     private LoginType loginType;
 

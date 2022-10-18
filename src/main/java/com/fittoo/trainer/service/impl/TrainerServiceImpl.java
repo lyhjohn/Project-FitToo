@@ -2,15 +2,14 @@ package com.fittoo.trainer.service.impl;
 
 import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
-import com.fittoo.member.model.LoginType;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.utills.FileStore;
-import com.fittoo.utills.SaveFile;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.trainer.service.TrainerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +38,8 @@ public class TrainerServiceImpl implements TrainerService {
             return new ServiceResult(false, ErrorMessage.INVALID_FILE);
         }
 
-        Trainer trainer = Trainer.of(trainerInput, fileNames);
+        String encPassword = BCrypt.hashpw(trainerInput.getPassword(), BCrypt.gensalt());
+        Trainer trainer = Trainer.of(trainerInput, fileNames, encPassword);
         trainerRepository.save(trainer);
 
         return new ServiceResult();
@@ -47,7 +47,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional(readOnly = true)
-    public TrainerDto lookUpProfile(String userId) {
+    public TrainerDto findTrainer(String userId) {
         Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
         if (optionalTrainer.isEmpty()) {
             return null;
@@ -58,4 +58,5 @@ public class TrainerServiceImpl implements TrainerService {
 
         return optionalTrainer.map(TrainerDto::of).orElse(null);
     }
+
 }

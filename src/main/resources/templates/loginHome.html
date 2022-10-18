@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <meta charset="UTF-8">
-    <link th:href="@{/css/bootstrap.min.css}"
+    <link th:href="@{/templates/css/bootstrap.min.css}"
           href="/templates/css/bootstrap.min.css" rel="stylesheet">
+
 
     <style>
         .leftTop {
@@ -21,9 +21,9 @@
 </head>
 <body>
 <h1>Fitness Together! Fit-too</h1>
+<div th:text="${member.userId}"></div>
 <div th:text="|${member.userId}님, 환영합니다.|"></div>
 <div th:replace="/fragment/common/left_header.html::left_header"></div>
-
 <div th:replace="/fragment/common/right_header.html::right_header"></div>
 
 

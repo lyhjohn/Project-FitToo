@@ -44,16 +44,18 @@ public class Member extends BaseEntity {
         return purposeList.toString();
     }
 
-    public static Member of(MemberInput memberInput) {
+    public static Member of(MemberInput memberInput, String encPassword) {
         return Member.builder()
                 .power(memberInput.getPower())
                 .userId(memberInput.getUserId())
-                .password(memberInput.getPassword())
+                .password(encPassword)
                 .gender(setGender(memberInput.getGender()))
                 .loginType(LoginType.NORMAL)
                 .phoneNumber(memberInput.getPhoneNumber())
                 .exercisePeriod(memberInput.getExercisePeriod())
                 .regPurpose(setRegPurpose(memberInput.getRegPurposeList()))
+                .userName(memberInput.getUserName())
+                .region(memberInput.getRegion())
                 .build();
     }
 

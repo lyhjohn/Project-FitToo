@@ -21,6 +21,7 @@ public abstract class BaseEntity {
     private String password;
     private String phoneNumber;
     private String gender; // 1=남자 2=여자
+    private String userName;
 
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
@@ -28,6 +29,8 @@ public abstract class BaseEntity {
     private String exercisePeriod;
     private LocalDateTime regDt;
     private LocalDateTime udtDt;
+    private String region;
+
 
 
 
