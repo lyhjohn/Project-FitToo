@@ -53,6 +53,7 @@
 ## Documents
 ### ERD
 <div align=center>
+<img src="https://user-images.githubusercontent.com/104713339/196984215-3f4ac60e-de56-4971-93ff-780a21a0b683.png">
 <img src="https://user-images.githubusercontent.com/104713339/196043216-5d65c037-c7a9-4184-be6b-b0385be7f8fa.png">
 </div>
   
