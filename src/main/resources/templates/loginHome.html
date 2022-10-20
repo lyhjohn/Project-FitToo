@@ -26,6 +26,13 @@
 <div th:replace="/fragment/common/left_header.html::left_header"></div>
 <div th:replace="/fragment/common/right_header.html::right_header"></div>
 
+<div>
+    <form action="/trainer/trainerList">
+        <input type="hidden" th:value="${member.loginType}" name="loginType">
+        <button type="submit" th:text="#{trainerList}"></button>
+    </form>
+</div>
+
 
 </body>
 </html>

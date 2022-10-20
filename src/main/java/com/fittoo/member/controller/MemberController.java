@@ -4,6 +4,9 @@ import com.fittoo.common.model.ServiceResult;
 import com.fittoo.member.model.MemberDto;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.service.MemberService;
+import com.fittoo.trainer.entity.Trainer;
+import com.fittoo.trainer.model.TrainerDto;
+import com.fittoo.trainer.service.TrainerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -12,7 +15,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -22,6 +27,7 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
+    private final TrainerService trainerService;
 
     @ModelAttribute(name = "regPurposes")
     private static Map<String, String> getRegPurposeMap() {
@@ -54,7 +60,6 @@ public class MemberController {
             model.addAttribute("errorMessage", result.getErrorMessage().description());
             return "/member/register";
         }
-
         return "redirect:/";
     }
 }

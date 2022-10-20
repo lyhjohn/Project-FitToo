@@ -30,7 +30,6 @@ public class MemberInput {//
     @NotNull
     private String exercisePeriod;
 
-    private int power; // 3대측정
 
     @NotNull
     private List<String> regPurposeList;

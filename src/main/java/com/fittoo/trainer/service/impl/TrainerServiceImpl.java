@@ -13,8 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -73,5 +75,33 @@ public class TrainerServiceImpl implements TrainerService {
         Trainer updateTrainer = trainer.update(input);
 
         return TrainerDto.of(updateTrainer);
+    }
+
+    @Override
+    @Transactional
+    public TrainerDto updateProfilePicture(MultipartFile file, String userId) {
+        Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
+        if (optionalTrainer.isEmpty()) {
+            return null;
+        }
+        Trainer trainer = optionalTrainer.get();
+
+        String[] fileNames;
+        try {
+            fileNames = new FileStore().storeFile(file, "trainer");
+        } catch (IOException e) {
+            return null;
+        }
+        trainer.updateProfilePicture(fileNames);
+
+        return TrainerDto.of(trainer);
+    }
+
+    @Override
+    @Transactional
+    public List<TrainerDto> findAll() {
+        List<Trainer> trainerList = trainerRepository.findAll();
+
+        return TrainerDto.of(trainerList);
     }
 }

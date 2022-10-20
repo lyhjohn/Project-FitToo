@@ -14,7 +14,7 @@ spring:
     generate-ddl: true
 #    ??? ???? ??
   messages:
-    basename: messages
+    basename: messages, errors
 logging:
   level:
     root: info

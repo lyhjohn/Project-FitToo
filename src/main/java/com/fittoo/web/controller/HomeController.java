@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -29,64 +26,49 @@ public class HomeController {
     private final TrainerService trainerService;
 
 
-    public Map<String, Object> typeCheckMap(String userId) {
-        Map<String, Object> map = new HashMap<>();
-
+    public Object typeCheckMap(String userId) {
         TrainerDto trainer = trainerService.findTrainer(userId);
         if (trainer == null) {
             MemberDto member = memberService.findMember(userId);
             if (member.getUserId() != null) {
-                map.put("member", member);
-                return map;
+
+                return member;
             }
         }
-        map.put("trainer", trainer);
-        return map;
+        return trainer;
     }
 
     @RequestMapping("/")
-    public String home(LoginInput input, Model model, HttpServletRequest request, Principal principal) {
-
+    public String home(LoginInput input, Model model, Principal principal) {
         Optional<Principal> optionalPrincipal = Optional.ofNullable(principal);
-        if (optionalPrincipal.isPresent() && input.getUserId() == null) {
-
-            if (optionalPrincipal.get().getName() != null) {
-                Map<String, Object> typeMap = typeCheckMap(principal.getName());
-
-                if (typeMap.containsKey("member")) {
-
-                    MemberDto member = (MemberDto) typeMap.get("member");
-                    model.addAttribute("member", member);
-                    return "/loginHome";
-                }
-                if (typeMap.containsKey("trainer")) {
-
-                    TrainerDto trainer = (TrainerDto) typeMap.get("trainer");
-                    model.addAttribute("member", trainer);
-                    return "/loginHome";
-                }
-            }
+        if (optionalPrincipal.isPresent()) {
+            model.addAttribute("member", typeCheckMap(principal.getName()));
+            return "/loginHome";
         }
 
+
         if (input.getUserId() == null) {
-            HttpSession session = request.getSession();
-            session.invalidate();
             return "/home";
         }
 
+
         if (input.getLoginType().equals("member")) {
             MemberDto member = memberService.findMember(input.getUserId());
-            if (!MemberDto.checkLoginType(member, request, model)) {
+            if (member == null) {
+                model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
                 return "/login/loginForm";
             }
+            model.addAttribute("member", member);
             return "/loginHome";
         }
 
         if (input.getLoginType().equals("trainer")) {
             TrainerDto trainer = trainerService.findTrainer(input.getUserId());
-            if (!TrainerDto.checkLoginType(trainer, request, model)) {
+            if (trainer == null) {
+                model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
                 return "/login/loginForm";
             }
+            model.addAttribute("member", trainer);
             return "/loginHome";
         }
         return "/home";
@@ -98,3 +80,4 @@ public class HomeController {
         return "/register";
     }
 }
+

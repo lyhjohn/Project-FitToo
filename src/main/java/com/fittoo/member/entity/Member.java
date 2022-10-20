@@ -45,7 +45,6 @@ public class Member extends BaseEntity {
 
     public static Member of(MemberInput memberInput, String encPassword) {
         return Member.builder()
-                .power(memberInput.getPower())
                 .userId(memberInput.getUserId())
                 .password(encPassword)
                 .gender(setGender(memberInput.getGender()))

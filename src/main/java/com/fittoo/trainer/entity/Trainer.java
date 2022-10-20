@@ -63,7 +63,6 @@ public class Trainer extends BaseEntity {
                 .region(trainerInput.getRegion())
                 .regDt(LocalDateTime.now())
                 .awards(trainerInput.getAwards())
-                .power(trainerInput.getPower())
                 .build();
     }
 
@@ -83,7 +82,6 @@ public class Trainer extends BaseEntity {
                 .region(trainerInput.getRegion())
                 .regDt(LocalDateTime.now())
                 .awards(trainerInput.getAwards())
-                .power(trainerInput.getPower())
                 .build();
     }
 
@@ -107,8 +105,15 @@ public class Trainer extends BaseEntity {
         this.setRegion(input.getRegion());
         this.setUdtDt(LocalDateTime.now());
         this.setAwards(input.getAwards());
-        this.setPower(input.getPower());
         this.setLoginType(LoginType.TRAINER);
         return this;
     }
+
+    public void updateProfilePicture(String[] filenames) {
+        this.profilePictureNewName = filenames[1];
+        this.profilePictureOriName = filenames[0];
+    }
+
+
+
 }

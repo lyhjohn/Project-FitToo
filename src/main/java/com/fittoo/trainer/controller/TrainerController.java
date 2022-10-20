@@ -3,6 +3,8 @@ package com.fittoo.trainer.controller;
 
 import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
+import com.fittoo.member.model.LoginType;
+import com.fittoo.member.service.MemberService;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
@@ -16,17 +18,19 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.File;
 import java.net.MalformedURLException;
+import java.security.Principal;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-import static com.fittoo.trainer.model.TrainerDto.*;
+import static com.fittoo.trainer.model.TrainerDto.whatIsGender;
 import static java.time.LocalDate.now;
 
 @Controller
@@ -35,6 +39,7 @@ import static java.time.LocalDate.now;
 @Slf4j
 public class TrainerController {
     private final TrainerService trainerService;
+    private final MemberService memberService;
 
     @ModelAttribute(name = "mainPtList")
     private static Map<String, String> getMainPtList() {
@@ -69,25 +74,29 @@ public class TrainerController {
     }
 
     @GetMapping("/profile")
-    public String profile(TrainerInput input, Model model, HttpServletRequest request) {
-        TrainerDto trainer = trainerService.findTrainer(input.getUserId());
+    public String profile(Model model, HttpServletRequest request, Principal principal) {
+        String userId = principal.getName();
+        TrainerDto trainer = trainerService.findTrainer(userId);
 
-        if (trainer == null) {
+        if (trainerIsNotFound(trainer, request)) {
             model.addAttribute("errorMessage", ErrorMessage.ACCESS_REJECT.description());
-            log.info("유저 정보 불일치");
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                session.invalidate();
-            }
             return "/error/error";
         }
 
-        String gender = trainer.getGender();
-        whatIsGender(input.getGender(), model);
-
+        whatIsGender(trainer.getGender(), model);
 
         model.addAttribute("member", trainer);
         return "/trainer/profile";
+    }
+
+    /**
+     * 프로필사진 불러오는 메서드
+     */
+    @ResponseBody // 파일 이미지 띄우기
+    @GetMapping("/images/{filename}")
+    public Resource getImage(@PathVariable String filename) throws MalformedURLException {
+        log.info("filename={}", getFullPath(filename, "trainer"));
+        return new UrlResource("file:" + getFullPath(filename, "trainer"));
     }
 
     public String getFullPath(String fileName, String loginType) {
@@ -98,33 +107,20 @@ public class TrainerController {
         return dirs + fileName;
     }
 
-    /**
-     * 프로필사진 불러오는 메서드
-     */
-    @ResponseBody // 파일 이미지 띄우기
-    @GetMapping("/images/{filename}")
-    public Resource getImage(@PathVariable String filename) throws MalformedURLException {
-        return new UrlResource("file:" + getFullPath(filename, "trainer"));
-    }
-
-
     @PostMapping("/profileUpdate")
-    public String profileUpdate(@Validated UpdateInput input, BindingResult bindingResult, Model model, HttpServletRequest request) {
-
-        TrainerDto trainer = trainerService.update(input);
-        String gender = trainer.getGender();
-
+    public String profileUpdate(@Validated @ModelAttribute(name = "member") UpdateInput input, BindingResult bindingResult,
+                                Model model, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
-
-
+            log.info("error={}", bindingResult);
             whatIsGender(input.getGender(), model);
             model.addAttribute("member", input);
             return "/trainer/profile";
         }
 
-        if (trainer == null) {
-            HttpSession session = request.getSession();
-            session.invalidate();
+
+        TrainerDto trainer = trainerService.update(input);
+
+        if (trainerIsNotFound(trainer, request)) {
             return "redirect:/";
         }
 
@@ -134,25 +130,63 @@ public class TrainerController {
         return "/trainer/profile";
     }
 
+    @PostMapping("profilePicture/update")
+    public String profilePictureUpdate(MultipartFile file, Principal principal, Model model) {
+        TrainerDto trainer = trainerService.updateProfilePicture(file, principal.getName());
+        if (trainer == null) {
+            model.addAttribute("errorMessage", ErrorMessage.INVALID_PROFILE_PICTURE);
+            return "/error/error";
+        }
+        return "redirect:/trainer/profile";
+    }
 
-//    public void whatIsGender(Object gender, Model model) {
-//
-//        if (gender != null) {
-//            if (gender instanceof String) {
-//                if (gender.equals("남자")) {
-//                    model.addAttribute("isMan", true);
-//                } else {
-//                    model.addAttribute("isGirl", true);
-//                }
-//            }
-//
-//            if (gender instanceof Integer) {
-//                if ((int) gender == 1) {
-//                    model.addAttribute("isMan", true);
-//                } else {
-//                    model.addAttribute("isGirl", true);
-//                }
-//            }
-//        }
-//    }
+    @GetMapping("/trainerList")
+    public String trainerList(Principal principal, Model model,
+                              @RequestParam(required = false) String trainerId,
+                              @RequestParam(required = false) String errorMessage,
+                              LoginType loginType) {
+
+        trainerExistAndTypeCheck(trainerId, errorMessage, loginType, model);
+
+        List<TrainerDto> trainerList = trainerService.findAll();
+
+        model.addAttribute("trainerList", trainerList);
+        return "/trainer/trainerList";
+    }
+
+    private void trainerExistAndTypeCheck(String trainerId, String errorMessage,
+                                          LoginType loginType, Model model) {
+        if (trainerId != null) {
+            TrainerDto trainer = trainerService.findTrainer(trainerId);
+            System.out.println("trainer.getProfilePictureNewName() = " + trainer.getProfilePictureNewName());
+            model.addAttribute("loginType", trainer.getLoginType().description());
+            model.addAttribute("trainerDetail", trainer);
+        } else {
+            model.addAttribute("loginType", loginType.description());
+        }
+
+        if (errorMessage != null) {
+            model.addAttribute("errorMessage", errorMessage);
+        }
+    }
+
+    @GetMapping("/detail")
+    public String trainerDetail(String userId, RedirectAttributes redirectAttributes) {
+        if (userId == null) {
+            redirectAttributes.addAttribute("errorMessage", ErrorMessage.NOT_FOUND_TRAINER);
+            return "redirect:/trainer/trainerList";
+        }
+        redirectAttributes.addAttribute("trainerId", userId);
+        return "redirect:/trainer/trainerList";
+    }
+
+
+    private boolean trainerIsNotFound(TrainerDto trainer, HttpServletRequest request) {
+        if (trainer == null) {
+            HttpSession session = request.getSession(false);
+            session.invalidate();
+            return true;
+        }
+        return false;
+    }
 }

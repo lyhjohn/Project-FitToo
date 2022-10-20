@@ -30,7 +30,6 @@ public abstract class BaseEntity {
     private LocalDateTime regDt;
     private LocalDateTime udtDt;
     private String region;
-    private int power;
 
 
 

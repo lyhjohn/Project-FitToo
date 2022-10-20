@@ -23,11 +23,11 @@ public class MemberDto {
 
     private Long id;
 
-    private int power; // 3대측정
     private String regPurpose;
 
     private long point;
 
+    @Builder.Default // 빌더는 초기화 표현을 무시하므로 Builder.Default 혹은 final로 선언해야함
     private List<Reservation> reservationList = new ArrayList<>();
 
     private String userId;
@@ -43,7 +43,6 @@ public class MemberDto {
     private LocalDateTime udtDt;
     public static MemberDto of(Member member) {
         return MemberDto.builder()
-                .power(member.getPower())
                 .userId(member.getUserId())
                 .password(member.getPassword())
                 .gender(member.getGender())
@@ -63,18 +62,6 @@ public class MemberDto {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
 
         return regDt != null ? this.regDt.format(formatter) : "";
-    }
-
-    public static boolean checkLoginType(MemberDto member, HttpServletRequest request, Model model) {
-        if (member == null) {
-            model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
-            HttpSession session = request.getSession();
-            session.invalidate();
-            return false;
-        }
-
-        model.addAttribute("member", member);
-        return true;
     }
 
 

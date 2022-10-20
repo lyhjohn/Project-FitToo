@@ -81,10 +81,6 @@
             <option value="4년 이상">4년 이상</option>
         </select>
     </div>
-    <div>
-        <label for="power">3대 측정(선택)</label>
-        <input type="text" id="power" th:field="*{power}" name="power">
-    </div>
     <div>가입 목적</div>
     <div th:each="purpose : ${regPurposes}" class="form-check form-check-inline">
         <input type="checkbox" th:value="${purpose.key}" name="regPurposeList" th:field="${member.regPurposeList}"

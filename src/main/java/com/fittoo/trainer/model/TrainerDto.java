@@ -4,10 +4,7 @@ import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.BaseDto;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.trainer.entity.Trainer;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.ui.Model;
 
@@ -15,15 +12,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@ToString
 public class TrainerDto extends BaseDto {
 
-    private Long id;
     private long price;
     private String awards;
     private String mainPtList;
@@ -49,8 +48,13 @@ public class TrainerDto extends BaseDto {
                 .userName(trainer.getUserName())
                 .region(trainer.getRegion())
                 .regDt(trainer.getRegDt())
-                .power(trainer.getPower())
                 .build();
+    }
+
+    public static List<TrainerDto> of(List<Trainer> trainerList) {
+        List<TrainerDto> list = new ArrayList<>();
+        trainerList.forEach(trainer -> list.add(TrainerDto.of(trainer)));
+        return list;
     }
 
     public String getRegDt() {
@@ -78,16 +82,5 @@ public class TrainerDto extends BaseDto {
                 }
             }
         }
-    }
-
-    public static boolean checkLoginType(TrainerDto trainer, HttpServletRequest request, Model model) {
-        if (trainer == null) {
-            model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
-            HttpSession session = request.getSession();
-            session.invalidate();
-            return false;
-        }
-        model.addAttribute("member", trainer);
-        return true;
     }
 }

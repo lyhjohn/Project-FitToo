@@ -30,8 +30,6 @@ public class UpdateInput {
 
     private String exercisePeriod;
 
-    private int power; // 3대측정
-
     private String awards;
     private String userName;
 

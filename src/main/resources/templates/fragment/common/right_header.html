@@ -11,17 +11,25 @@
 </head>
 <body>
 <div th:fragment="right_header">
-    <div class="rightTop" th:if="|${member.loginType.description().toString() eq '일반 회원'}|">
-        <a href="/member/profile">내 정보</a>
-        <a href="/logout">로그아웃</a>
+    <div th:if="${member != null}">
+        <div class="rightTop" th:if="|${member?.loginType.description().toString() eq '일반 회원'}|">
+            <a href="/member/profile">내 정보</a>
+            <a href="/logout">로그아웃</a>
+        </div>
+        <div class="rightTop" th:if="|${member?.loginType.description().toString() eq '트레이너'}|">
+            <a href="/trainer/profile">내 정보</a>
+            <a href="/logout">로그아웃</a>
+        </div>
     </div>
-    <div class="rightTop" th:if="|${member.loginType.description().toString() eq '트레이너'}|">
-        <div>
-            <form action="/trainer/profile">
-                <input type="hidden" th:value="${member.userId}" name="userId">
-                <button type="submit" class="btn btn-primary">내 정보</button>
-                <button type="button" th:onclick="|location.href='@{/logout}'|" class="btn btn-primary">로그아웃</button>
-            </form>
+
+    <div th:if="${member == null}">
+        <div class="rightTop" th:if="|${loginType eq '일반 회원'}|">
+            <a href="/member/profile">내 정보</a>
+            <a href="/logout">로그아웃</a>
+        </div>
+        <div class="rightTop" th:if="|${loginType eq '트레이너'}|">
+            <a href="/trainer/profile">내 정보</a>
+            <a href="/logout">로그아웃</a>
         </div>
     </div>
 </div>

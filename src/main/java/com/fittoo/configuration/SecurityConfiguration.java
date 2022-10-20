@@ -50,6 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/register",
                         "/member/register",
                         "/trainer/register",
+                        "/trainer/images/**",
                         "/images/**",
                         "/logout")
                 .permitAll(); // 경로에 접근 권한 허용 설정
@@ -70,12 +71,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .logoutSuccessUrl("/"); // 로그아웃 성공 화면
 
 
-        http.exceptionHandling() // 오류페이지 핸들링
-                .accessDeniedPage("/error/denied");
+//        http.exceptionHandling() // 오류페이지 핸들링
+//                .accessDeniedPage("/error/denied");
 
-        http.authorizeRequests()
-                .antMatchers("/trainer/**")
-                .hasAuthority("ROLE_TRAINER");
+//        http.authorizeRequests()
+//                .antMatchers("/trainer/**")
+//                .hasAuthority("ROLE_TRAINER");
 
         super.configure(http);
     }

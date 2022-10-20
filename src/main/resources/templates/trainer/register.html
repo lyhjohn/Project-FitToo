@@ -84,10 +84,6 @@
             <option value="3년~4년">10년 이상</option>
         </select>
     </div>
-    <div>
-        <label for="power" th:text="#{power}">3대 측정(선택)</label>
-        <input type="text" id="power" th:field="*{power}" name="power">
-    </div>
     <div th:text="#{mainPt}">주 분야</div>
     <div th:each="mainPt : ${mainPtList}" class="form-check form-check-inline">
         <input type="checkbox" th:value="${mainPt.key}" name="regPurposeList" th:field="${trainer.mainPtList}"
