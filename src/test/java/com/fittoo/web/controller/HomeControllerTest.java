@@ -13,15 +13,4 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class HomeControllerTest {
 
-    @Autowired
-    MemberService memberService;
-
-    @Test
-    void loginHomeTest() {
-        String id = "1111";
-
-        MemberDto member = memberService.findMember(id);
-        System.out.println("member.getUserId() = " + member.getUserId());
-    }
-
 }

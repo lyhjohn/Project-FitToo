@@ -14,15 +14,4 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class MemberServiceImplTest {
 
-    @Autowired
-    MemberService memberService;
-
-    @Test
-    void findMemberTest () {
-        //given
-        //when
-        MemberDto member = memberService.findMember("1111");
-        //then
-        System.out.println(member.getUserId());
-    }
 }

@@ -18,25 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class MemberControllerTest {
-
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    TrainerRepository trainerRepository;
-
-    @Test
-    @Transactional
-    @Commit
-    void setRegPurposeTest() {
-        //given
-        List<String> regPurposeList = Arrays.asList("diet", "weight", "재활", "health", "partner_training");
-        //when
-        String regPurposes = Member.setRegPurpose(regPurposeList);
-        //then
-        assertThat(regPurposes).isEqualTo("diet,weight,재활,health,partner_training");
-    }
-
-
-
+    
 
 }
