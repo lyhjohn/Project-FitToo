@@ -16,7 +16,6 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew clean test jacocoTestReport
-
       - name: Add test coverage in PR comment
         id: jacoco
         uses: madrapps/jacoco-report@v1.2
