@@ -22,7 +22,7 @@ jobs:
         uses: madrapps/jacoco-report@v1.2
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
-          token: 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
+          token: ${{ secrets.ACTIONS_TOKEN }}
 
 
       - name: Generate JaCoCo Badge
