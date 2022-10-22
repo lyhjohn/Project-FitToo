@@ -40,7 +40,7 @@ public class UpdateInput {
     private long price;
 
     private String introduce;
-    private String region;
+    private String address;
     private LoginType loginType;
 
 

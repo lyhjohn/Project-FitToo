@@ -1,19 +1,18 @@
 package com.fittoo.trainer.model;
 
-import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.BaseDto;
 import com.fittoo.member.model.LoginType;
+import com.fittoo.reservation.dto.ReservationDto;
 import com.fittoo.trainer.entity.Trainer;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.ui.Model;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -31,6 +30,10 @@ public class TrainerDto extends BaseDto {
     private String profilePictureOriName;
     private LocalDateTime regDt;
 
+    @Builder.Default
+    private List<ReservationDto> reservation = new ArrayList<>();
+
+
 
     public static TrainerDto of(Trainer trainer) {
         return TrainerDto.builder()
@@ -45,8 +48,10 @@ public class TrainerDto extends BaseDto {
                 .introduce(trainer.getIntroduce())
                 .profilePictureOriName(trainer.getProfilePictureOriName())
                 .profilePictureNewName(trainer.getProfilePictureNewName())
+                .reservation(trainer.getReservationList().stream().map(ReservationDto::of)
+                        .collect(Collectors.toList()))
                 .userName(trainer.getUserName())
-                .region(trainer.getRegion())
+                .address(trainer.getAddress())
                 .regDt(trainer.getRegDt())
                 .build();
     }

@@ -44,7 +44,7 @@ public class TrainerInput {
     private long price;
 
     private String introduce;
-    private String region;
+    private String address;
     private LoginType loginType;
 
 

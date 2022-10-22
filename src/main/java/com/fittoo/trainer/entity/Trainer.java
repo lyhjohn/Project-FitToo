@@ -2,6 +2,8 @@ package com.fittoo.trainer.entity;
 
 import com.fittoo.common.entity.BaseEntity;
 import com.fittoo.member.model.LoginType;
+import com.fittoo.reservation.Reservation;
+import com.fittoo.review.entity.Review;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
 import lombok.*;
@@ -10,7 +12,9 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,6 +34,24 @@ public class Trainer extends BaseEntity {
     private String introduce;
     private String profilePictureNewName;
     private String profilePictureOriName;
+    
+    @OneToMany(mappedBy = "trainer")
+    @Builder.Default
+    private List<Review> reviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "trainer")
+    @Builder.Default
+    private List<Reservation> reservationList = new ArrayList<>();
+
+    public void addReservation(Reservation reservation) {
+        this.reservationList.add(reservation);
+        reservation.setTrainer(this);
+    }
+
+    public void addReview(Review review) {
+        this.reviewList.add(review);
+        review.setTrainer(this);
+    }
 
 
     public static String setMainPtList(List<String> ptList) {
@@ -60,7 +82,7 @@ public class Trainer extends BaseEntity {
                 .profilePictureOriName(fileNames[0])
                 .profilePictureNewName(fileNames[1])
                 .userName(trainerInput.getUserName())
-                .region(trainerInput.getRegion())
+                .address(trainerInput.getAddress())
                 .regDt(LocalDateTime.now())
                 .awards(trainerInput.getAwards())
                 .build();
@@ -79,7 +101,7 @@ public class Trainer extends BaseEntity {
                 .gender(setGender(trainerInput.getGender()))
                 .introduce(trainerInput.getIntroduce())
                 .userName(trainerInput.getUserName())
-                .region(trainerInput.getRegion())
+                .address(trainerInput.getAddress())
                 .regDt(LocalDateTime.now())
                 .awards(trainerInput.getAwards())
                 .build();
@@ -102,7 +124,7 @@ public class Trainer extends BaseEntity {
         this.setGender(setGender(input.getGender()));
         this.setIntroduce(input.getIntroduce());
         this.setUserName(input.getUserName());
-        this.setRegion(input.getRegion());
+        this.setAddress(input.getAddress());
         this.setUdtDt(LocalDateTime.now());
         this.setAwards(input.getAwards());
         this.setLoginType(LoginType.TRAINER);

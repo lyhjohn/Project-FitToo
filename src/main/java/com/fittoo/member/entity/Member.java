@@ -4,6 +4,7 @@ import com.fittoo.common.entity.BaseEntity;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.Reservation;
+import com.fittoo.review.entity.Review;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -27,7 +28,22 @@ public class Member extends BaseEntity {
     private long point;
 
     @OneToMany(mappedBy = "member")
+    @Builder.Default
     private List<Reservation> reservationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    @Builder.Default
+    private List<Review> reviewList = new ArrayList<>();
+
+    public void addReservation(Reservation reservation) {
+        this.reservationList.add(reservation);
+        reservation.setMember(this);
+    }
+
+    public void addReview(Review review) {
+        this.reviewList.add(review);
+        review.setMember(this);
+    }
 
     public static String setRegPurpose(List<String> regPurposeList) {
 
@@ -53,7 +69,7 @@ public class Member extends BaseEntity {
                 .exercisePeriod(memberInput.getExercisePeriod())
                 .regPurpose(setRegPurpose(memberInput.getRegPurposeList()))
                 .userName(memberInput.getUserName())
-                .region(memberInput.getRegion())
+                .address(memberInput.getAddress())
                 .build();
     }
 

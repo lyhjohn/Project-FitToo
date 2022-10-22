@@ -29,7 +29,9 @@ public abstract class BaseEntity {
     private String exercisePeriod;
     private LocalDateTime regDt;
     private LocalDateTime udtDt;
-    private String region;
+    private String address;
+    
+    private String zipcode;
 
 
 

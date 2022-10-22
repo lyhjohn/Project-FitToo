@@ -23,6 +23,7 @@ public class Review {
     private String comment;
     private String regDt;
     private String udtDt;
+    private int score;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

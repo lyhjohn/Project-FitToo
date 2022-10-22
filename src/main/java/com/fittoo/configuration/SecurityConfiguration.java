@@ -35,6 +35,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/favicon.ico"); // 지정된 정적인 파일은 인증 무시
         web.ignoring().antMatchers("/inflearn/image/**");
         web.ignoring().antMatchers("/inflearn/**");
+        web.ignoring().antMatchers("/templates/css/**");
+        web.ignoring().antMatchers("/templates/js/**");
         super.configure(web);
     }
 
@@ -52,6 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/trainer/register",
                         "/trainer/images/**",
                         "/images/**",
+                        "/templates/js/**",
                         "/logout")
                 .permitAll(); // 경로에 접근 권한 허용 설정
 

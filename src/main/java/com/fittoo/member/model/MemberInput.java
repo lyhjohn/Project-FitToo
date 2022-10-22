@@ -33,6 +33,6 @@ public class MemberInput {//
 
     @NotNull
     private List<String> regPurposeList;
-    private String region;
+    private String address;
 
 }

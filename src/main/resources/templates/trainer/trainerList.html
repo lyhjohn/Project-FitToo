@@ -196,10 +196,13 @@
         <img th:src="|/trainer/images/${trainerDetail?.getProfilePictureNewName()}|" width="300" height="300"/>
         <div th:object="${trainerDetail}">
             <div>이름: <span th:field="*{userName}" th:text="*{userName}"></span></div>
-            <div>지역: <span th:field="*{region}" th:text="*{region}"></span></div>
+            <div>지역: <span th:field="*{address}" th:text="*{address}"></span></div>
             <div>금액: <span th:field="*{price}" th:text="*{price}"></span></div>
         </div>
         소개: <div th:text="${trainerDetail.introduce}"></div>
+        <form action="/member/reservation" method="get">
+            <button type="submit" th:value="${trainerDetail.userId}" name="trainerId">예약</button>
+        </form>
     </div>
 </div>
 

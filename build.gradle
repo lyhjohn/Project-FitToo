@@ -2,6 +2,14 @@ plugins {
     id 'org.springframework.boot' version '2.7.4'
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'java'
+    id 'jacoco'
+}
+
+jacocoTestReport {
+    reports {
+        csv.enabled true
+        xml.enabled true
+    }
 }
 
 group = 'com.fit-too'
@@ -35,3 +43,4 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 targetCompatibility = JavaVersion.VERSION_11
+

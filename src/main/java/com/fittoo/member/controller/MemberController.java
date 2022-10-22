@@ -3,9 +3,12 @@ package com.fittoo.member.controller;
 import com.fittoo.common.model.ServiceResult;
 import com.fittoo.member.model.MemberDto;
 import com.fittoo.member.model.MemberInput;
+import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.service.MemberService;
+import com.fittoo.reservation.dto.ReservationDto;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.TrainerDto;
+import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.service.TrainerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,5 +65,16 @@ public class MemberController {
             return "/member/register";
         }
         return "redirect:/";
+    }
+
+
+    @GetMapping("/reservation")
+    public String reservation(ReservationParam param, Principal principal, Model model) {
+        TrainerDto trainer = trainerService.findTrainer(param.getTrainerId());
+        List<ReservationDto> reservation = trainer.getReservation();
+        model.addAttribute("reserve", reservation);
+
+
+        return "/calendar";
     }
 }
