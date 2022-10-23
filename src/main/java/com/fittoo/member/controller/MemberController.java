@@ -8,6 +8,7 @@ import com.fittoo.reservation.dto.ReservationDto;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.service.TrainerService;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,12 +68,20 @@ public class MemberController {
 	}
 
 
-	@GetMapping("/reservation")
-	public String reservation(ReservationParam param, Principal principal, Model model) {
+	@GetMapping("/calendar")
+	public String calendar(ReservationParam param, Principal principal, Model model) {
 		TrainerDto trainer = trainerService.findTrainer(param.getTrainerId());
 		List<ReservationDto> reservation = trainer.getReservation();
 		model.addAttribute("reserve", reservation);
+		model.addAttribute("trainerId", param.getTrainerId());
+		return "/reservation/calendar";
+	}
 
-		return "/calendar";
+	@PostMapping("/reservation")
+	public String reservation(ReservationParam param, Principal principal, Model model, String date) {
+		System.out.println("param.getTrainerId() = " + param.getTrainerId());
+		model.addAttribute("trainerId", param.getTrainerId());
+		model.addAttribute("date", date);
+		return "/reservation/reservationForm";
 	}
 }

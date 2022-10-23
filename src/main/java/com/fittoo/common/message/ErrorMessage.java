@@ -11,7 +11,12 @@ public enum ErrorMessage {
 
     ACCESS_REJECT("비정상적인 접근입니다."),
 
-    NOT_FOUND_TRAINER("트레이너 정보 없음");
+    NOT_FOUND_TRAINER("트레이너 정보 없음"),
+
+    INVALID_DATE("올바른 날짜를 입력해주세요"),
+
+    START_DAY_BIGGER_THAN_END_DAY("시작 날짜가 종료 날짜보다 클 수 없습니다.");
+
 
     private final String description;
     ErrorMessage(String description) {

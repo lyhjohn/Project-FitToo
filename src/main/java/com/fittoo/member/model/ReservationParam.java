@@ -7,5 +7,4 @@ import lombok.Setter;
 @Setter
 public class ReservationParam {
     private String trainerId;
-    private long price;
 }

@@ -54,7 +54,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/trainer/register",
                         "/trainer/images/**",
                         "/images/**",
-                        "/templates/js/**",
                         "/logout")
                 .permitAll(); // 경로에 접근 권한 허용 설정
 

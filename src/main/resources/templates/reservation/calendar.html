@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Fit-Too</title>
+    <style>
+        .reserve-btn {
+            border: 0;
+            background-color: white;
+            font-size: 200%;
+            color: dodgerblue;
+        }
 
-
+    </style>
 </head>
 <body>
 <h1>TIME TABLE</h1>
 <div th:text="${reserve}"></div>
+<form action="/member/reservation" method="post">
 <table border="5" cellspacing="0" align="center">
     <thead>
     <tr>
@@ -45,18 +53,28 @@
     <tbody>
     <tr>
         <td align="center" height="50"></td>
+        <td align="center" height="50"></td>
         <td align="center" height="50">
-            <div></div>
-            <button>1</button>
+            <input type="hidden" th:value="${trainerId}" name="trainerId">
+            <button type="submit" class="reserve-btn" value="2022-11-01" name="date">1</button>
         </td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
+        <td align="center" height="50">
+            <button type="submit" class="reserve-btn" value="2022-11-02" name="date">2</button>
+        </td>
+        <td align="center" height="50">
+            <button type="submit" class="reserve-btn" value="2022-11-03" name="date">3</button>
+        </td>
+        <td align="center" height="50">
+            <button type="submit" class="reserve-btn" value="2022-11-04" name="date">4</button>
+        </td>
+        <td align="center" height="50">
+            <button type="submit" class="reserve-btn" value="2022-11-05" name="date">5</button>
+        </td>
     </tr>
     <tr>
-        <td align="center" height="50"></td>
+        <td align="center" height="50">
+            <button type="submit" class="reserve-btn" value="2022-11-06" name="date">6</button>
+        </td>
         <td align="center" height="50"></td>
         <td align="center" height="50"></td>
         <td align="center" height="50"></td>
@@ -102,6 +120,6 @@
     </tr>
     </tbody>
 </table>
+</form>
 </body>
-
 </html>

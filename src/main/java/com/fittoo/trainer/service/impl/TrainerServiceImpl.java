@@ -2,106 +2,172 @@ package com.fittoo.trainer.service.impl;
 
 import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
+import com.fittoo.exception.DateParseException;
+import com.fittoo.trainer.entity.CantReserveDate;
+import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
+import com.fittoo.trainer.model.ScheduleDto;
+import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerDto;
-import com.fittoo.trainer.model.UpdateInput;
-import com.fittoo.utills.FileStore;
 import com.fittoo.trainer.model.TrainerInput;
+import com.fittoo.trainer.model.UpdateInput;
+import com.fittoo.trainer.repository.CantReserveDateRepository;
+import com.fittoo.trainer.repository.ScheduleRepository;
 import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.trainer.service.TrainerService;
+import com.fittoo.utills.FileStore;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
 
-    private final TrainerRepository trainerRepository;
+	private final TrainerRepository trainerRepository;
+	private final ScheduleRepository scheduleRepository;
+	private final CantReserveDateRepository cantReserveDateRepository;
 
 
-    @Override
-    @Transactional
-    public ServiceResult trainerRegister(TrainerInput trainerInput) {
-        Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(trainerInput.getUserId());
-        if (optionalTrainer.isPresent()) {
-            return new ServiceResult(false, ErrorMessage.ALREADY_EXIST_USERID);
-        }
 
-        String[] fileNames;
-        try {
-            fileNames = new FileStore().storeFile(trainerInput.getProfilePicture(), "trainer");
-        } catch (IOException e) {
-            return new ServiceResult(false, ErrorMessage.INVALID_FILE);
-        }
+	@Override
+	@Transactional
+	public ServiceResult trainerRegister(TrainerInput trainerInput) {
+		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(
+			trainerInput.getUserId());
+		if (optionalTrainer.isPresent()) {
+			return new ServiceResult(false, ErrorMessage.ALREADY_EXIST_USERID);
+		}
 
-        String encPassword = BCrypt.hashpw(trainerInput.getPassword(), BCrypt.gensalt());
-        trainerInput.setPassword(encPassword);
-        Trainer trainer = Trainer.of(trainerInput, fileNames);
-        trainerRepository.save(trainer);
+		String[] fileNames;
+		try {
+			fileNames = new FileStore().storeFile(trainerInput.getProfilePicture(), "trainer");
+		} catch (IOException e) {
+			return new ServiceResult(false, ErrorMessage.INVALID_FILE);
+		}
 
-        return new ServiceResult();
-    }
+		String encPassword = BCrypt.hashpw(trainerInput.getPassword(), BCrypt.gensalt());
+		trainerInput.setPassword(encPassword);
+		Trainer trainer = Trainer.of(trainerInput, fileNames);
+		trainerRepository.save(trainer);
 
-    @Override
-    @Transactional(readOnly = true)
-    public TrainerDto findTrainer(String userId) {
-        Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
-        if (optionalTrainer.isEmpty()) {
-            return null;
-        }
-        if (!optionalTrainer.get().getUserId().equals(userId)) {
-            return null;
-        }
+		return new ServiceResult();
+	}
 
-        return optionalTrainer.map(TrainerDto::of).orElse(null);
-    }
+	@Override
+	@Transactional(readOnly = true)
+	public TrainerDto findTrainer(String userId) {
+		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
+		if (optionalTrainer.isEmpty()) {
+			return null;
+		}
+		if (!optionalTrainer.get().getUserId().equals(userId)) {
+			return null;
+		}
 
-    @Override
-    @Transactional
-    public TrainerDto update(UpdateInput input) {
-        Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(input.getUserId());
-        if (optionalTrainer.isEmpty()) {
-            return null;
-        }
+		return optionalTrainer.map(TrainerDto::of).orElse(null);
+	}
 
-        Trainer trainer = optionalTrainer.get();
-        Trainer updateTrainer = trainer.update(input);
+	@Override
+	@Transactional
+	public TrainerDto update(UpdateInput input) {
+		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(input.getUserId());
+		if (optionalTrainer.isEmpty()) {
+			return null;
+		}
 
-        return TrainerDto.of(updateTrainer);
-    }
+		Trainer trainer = optionalTrainer.get();
+		Trainer updateTrainer = trainer.update(input);
 
-    @Override
-    @Transactional
-    public TrainerDto updateProfilePicture(MultipartFile file, String userId) {
-        Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
-        if (optionalTrainer.isEmpty()) {
-            return null;
-        }
-        Trainer trainer = optionalTrainer.get();
+		return TrainerDto.of(updateTrainer);
+	}
 
-        String[] fileNames;
-        try {
-            fileNames = new FileStore().storeFile(file, "trainer");
-        } catch (IOException e) {
-            return null;
-        }
-        trainer.updateProfilePicture(fileNames);
+	@Override
+	@Transactional
+	public TrainerDto updateProfilePicture(MultipartFile file, String userId) {
+		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
+		if (optionalTrainer.isEmpty()) {
+			return null;
+		}
+		Trainer trainer = optionalTrainer.get();
 
-        return TrainerDto.of(trainer);
-    }
+		String[] fileNames;
+		try {
+			fileNames = new FileStore().storeFile(file, "trainer");
+		} catch (IOException e) {
+			return null;
+		}
+		trainer.updateProfilePicture(fileNames);
 
-    @Override
-    @Transactional
-    public List<TrainerDto> findAll() {
-        List<Trainer> trainerList = trainerRepository.findAll();
+		return TrainerDto.of(trainer);
+	}
 
-        return TrainerDto.of(trainerList);
-    }
+	@Override
+	@Transactional
+	public List<TrainerDto> findAll() {
+		List<Trainer> trainerList = trainerRepository.findAll();
+
+		return TrainerDto.of(trainerList);
+	}
+
+	@Override
+	@Transactional
+	public ScheduleDto showSchedule(String userId) {
+		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
+
+		TrainerDto trainer = optionalTrainer.map(TrainerDto::of).orElse(null);
+
+		if (optionalTrainer.isEmpty()) {
+			return null;
+		}
+
+		return trainer.getSchedule();
+	}
+
+	@Override
+	@Transactional
+	public ServiceResult createSchedule(String userId, ScheduleInput input) {
+		if (!isStartDateLowerThanEndDate(input)) {
+			return new ServiceResult(false, ErrorMessage.START_DAY_BIGGER_THAN_END_DAY);
+		}
+
+		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
+		if (optionalTrainer.isEmpty()) {
+			return new ServiceResult(false, ErrorMessage.NOT_FOUND_TRAINER);
+		}
+		Trainer trainer = optionalTrainer.get();
+		try {
+			if (trainer.getSchedule() == null) {
+				Schedule schedule = new Schedule();
+				Schedule newSchedule = schedule.createSchedule(input, trainer);
+				scheduleRepository.save(newSchedule);
+			}
+
+			List<CantReserveDate> cantReserveDates = trainer.getSchedule()
+				.setCantReserveDate(input.getStartDate(), input.getEndDate());
+
+			cantReserveDateRepository.saveAll(cantReserveDates);
+
+		} catch (DateParseException e) {
+			return new ServiceResult(false, ErrorMessage.INVALID_DATE);
+		}
+
+		return new ServiceResult();
+	}
+
+	private static boolean isStartDateLowerThanEndDate(ScheduleInput input) {
+		return
+			LocalDate.parse(input.getStartDate()).getYear() <= LocalDate.parse(input.getEndDate())
+				.getYear() &&
+				LocalDate.parse(input.getStartDate()).getMonthValue() <= LocalDate.parse(
+					input.getEndDate()).getMonthValue() &&
+				LocalDate.parse(input.getStartDate()).getDayOfMonth() <= LocalDate.parse(
+					input.getEndDate()).getDayOfMonth();
+	}
 }

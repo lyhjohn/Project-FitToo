@@ -18,4 +18,8 @@ spring:
 logging:
   level:
     root: info
-
+mybatis:
+  mapper-locations: mybatis/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true # 언더바를 카멜 표기법으로 변환
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 로그 찍기
