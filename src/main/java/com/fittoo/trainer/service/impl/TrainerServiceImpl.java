@@ -118,16 +118,13 @@ public class TrainerServiceImpl implements TrainerService {
 
 	@Override
 	@Transactional
-	public ScheduleDto showSchedule(String userId) {
+	public Optional<ScheduleDto> showSchedule(String userId) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
-
-		TrainerDto trainer = optionalTrainer.map(TrainerDto::of).orElse(null);
-
 		if (optionalTrainer.isEmpty()) {
-			return null;
+			return Optional.empty();
 		}
-
-		return trainer.getSchedule();
+		Trainer trainer = optionalTrainer.get();
+		return Optional.ofNullable(ScheduleDto.of(trainer.getSchedule()));
 	}
 
 	@Override

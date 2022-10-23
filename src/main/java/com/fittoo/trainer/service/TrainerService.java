@@ -7,6 +7,7 @@ import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface TrainerService {
@@ -15,7 +16,7 @@ public interface TrainerService {
 
 	TrainerDto findTrainer(String userId);
 
-	ScheduleDto showSchedule(String userId);
+	Optional<ScheduleDto> showSchedule(String userId);
 
 	TrainerDto update(UpdateInput input);
 

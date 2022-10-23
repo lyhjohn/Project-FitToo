@@ -1,5 +1,6 @@
 package com.fittoo.trainer.entity;
 
+import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.exception.DateParseException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -33,7 +34,7 @@ public class CantReserveDate {
 	@GeneratedValue
 	private Long id;
 
-	private String date;
+	private LocalDate date;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "schedule_id")
@@ -43,8 +44,17 @@ public class CantReserveDate {
 		String year = String.valueOf(date.get(Calendar.YEAR));
 		String month = String.valueOf(date.get(Calendar.MONTH));
 		String day = String.valueOf(date.get(Calendar.DAY_OF_MONTH));
-		this.date = year + "-" + month + "-" + day;
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		if (month.length() == 1) {
+			month = "0" + month;
+		}
+		if (day.length() == 1) {
+			day = "0" + day;
+		}
+
+		String strDate = year + "-" + month + "-" + day;
+		this.date = LocalDate.parse(strDate, formatter);
 	}
-
-
 }

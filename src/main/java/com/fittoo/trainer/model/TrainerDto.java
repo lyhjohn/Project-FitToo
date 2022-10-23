@@ -53,11 +53,12 @@ public class TrainerDto extends BaseDto {
 			.introduce(trainer.getIntroduce())
 			.profilePictureOriName(trainer.getProfilePictureOriName())
 			.profilePictureNewName(trainer.getProfilePictureNewName())
-			.reservation(trainer.getReservationList().stream().map(ReservationDto::of)
-				.collect(Collectors.toList()))
+//			.reservation(trainer.getReservationList().stream().map(ReservationDto::of)
+//				.collect(Collectors.toList()))
 			.userName(trainer.getUserName())
 			.address(trainer.getAddress())
 			.regDt(trainer.getRegDt())
+			.schedule(ScheduleDto.of(trainer.getSchedule()))
 			.build();
 	}
 

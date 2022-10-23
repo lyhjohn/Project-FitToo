@@ -8,6 +8,7 @@ import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.member.service.MemberService;
+import com.fittoo.trainer.model.CantReserveDateDto;
 import com.fittoo.trainer.model.ScheduleDto;
 import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerDto;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -204,16 +206,21 @@ public class TrainerController {
 	@GetMapping("/schedule")
 	public String scheduleManager(Principal principal, Model model) {
 		String userId = principal.getName();
-		ScheduleDto schedule = trainerService.showSchedule(userId);
+		Optional<ScheduleDto> optionalSchedule = trainerService.showSchedule(userId);
+		if (optionalSchedule.isEmpty()) {
+			return "/trainer/schedule/schedule";
+		}
+		ScheduleDto schedule = optionalSchedule.get();
+		List<CantReserveDateDto> list = schedule.getCantReserveDateList();
+
 		model.addAttribute("loginType", "트레이너");
-		model.addAttribute("schedule", schedule);
+		model.addAttribute("scheduleList", list);
 		return "/trainer/schedule/schedule";
 	}
 
 	@PostMapping("/schedule/create")
 	public String createSchedule(Principal principal, ScheduleInput input) {
 		trainerService.createSchedule(principal.getName(), input);
-		return "/trainer/schedule/schedule";
-//		return "redirect:/trainer/schedule";
+		return "redirect:/trainer/schedule";
 	}
 }

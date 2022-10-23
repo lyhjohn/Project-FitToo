@@ -25,5 +25,11 @@
   </div>
   <button type="submit">저장</button>
 </form>
+
+<div th:if="${scheduleList != null}">
+  <div th:each="schedule : ${scheduleList}">
+    <div th:text="${schedule.getDate()}"></div>
+  </div>
+</div>
 </body>
 </html>

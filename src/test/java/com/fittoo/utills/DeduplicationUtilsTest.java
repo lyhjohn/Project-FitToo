@@ -68,4 +68,21 @@ class DeduplicationUtilsTest {
 	}
 
 
+	@Test
+	void dateTest() {
+		String year = String.valueOf(2022);
+		String month = String.valueOf(12);
+		String day = String.valueOf(13);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		String strDate = year + "-" + month + "-" + day;
+		System.out.println("strDate = " + strDate);
+
+//		LocalDate parse = LocalDate.parse(strDate, formatter);
+		LocalDate parse = LocalDate.parse(strDate, formatter);
+		System.out.println("parse = " + parse);
+	}
+
+
 }
