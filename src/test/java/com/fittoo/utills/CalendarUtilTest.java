@@ -28,13 +28,13 @@ class CalendarUtilTest {
         //then
     }
 
-    @Test
-    void getCalendarTest() {
-        //given
-        int dayOfOneDay = CalendarUtil.getDayOfOneDay();
-        int lastDayOfMonth = CalendarUtil.getLastDayOfMonth();
-        System.out.println("dayOfOneDay = " + dayOfOneDay);
-        System.out.println("lastDayOfMonth = " + lastDayOfMonth);
-    }
+//    @Test
+//    void getCalendarTest() {
+//        //given
+////        int dayOfOneDay = CalendarUtil.getDayOfOneDay();
+//        int lastDayOfMonth = CalendarUtil.getLastDayOfMonth();
+//        System.out.println("dayOfOneDay = " + dayOfOneDay);
+//        System.out.println("lastDayOfMonth = " + lastDayOfMonth);
+//    }
 
 }

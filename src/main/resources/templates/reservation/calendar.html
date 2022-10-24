@@ -1,125 +1,88 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Fit-Too</title>
-    <style>
-        .reserve-btn {
-            border: 0;
-            background-color: white;
-            font-size: 200%;
-            color: dodgerblue;
-        }
+  <meta charset="UTF-8">
+  <title>Fit-Too</title>
+  <style>
+    .reserve-btn {
+      border: 0;
+      background-color: white;
+      font-size: 200%;
+      color: dodgerblue;
+    }
 
-    </style>
+    .inline-div {
+      display: inline;
+    }
+
+    table.type11 {
+      border-collapse: collapse;
+      /*border-spacing: 1px;*/
+      text-align: center;
+      vertical-align: middle;
+      line-height: 1.5;
+      margin: auto;
+      font-size: 40px;
+    }
+    table.type11 th {
+      width: 200px;
+      padding: 10px;
+      font-weight: bold;
+      color: #fff;
+      background: cornflowerblue ;
+    }
+    table.type11 td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      background: #eee;
+      height: 100px;
+    }
+    h1 {
+      text-align: center;
+      /*display: inline;*/
+    }
+    .calendar-page {
+      border: cornflowerblue;
+      text-align: center;
+      font-size: 40px;
+      font-weight: bold;
+    }
+    .calendar-page > a {
+      text-decoration: none;
+      color: cornflowerblue;
+    }
+
+    .bold-text {
+      color: black;
+    }
+
+  </style>
 </head>
 <body>
-<h1>TIME TABLE</h1>
-<div th:text="${reserve}"></div>
-<form action="/member/reservation" method="post">
-<table border="5" cellspacing="0" align="center">
-    <thead>
-    <tr>
-        <td align="center" height="50"
-            width="100">
-            <b>일</b>
-        </td>
-        <td align="center" height="50"
-            width="100">
-            <b>월</b>
-        </td>
-        <td align="center" height="50"
-            width="100">
-            <b>화</b>
-        </td>
-        <td align="center" height="50"
-            width="100">
-            <b>수</b>
-        </td>
-        <td align="center" height="50"
-            width="100">
-            <b>목</b>
-        </td>
-        <td align="center" height="50"
-            width="100">
-            <b>금</b>
-        </td>
-        <td align="center" height="50"
-            width="100">
-            <b>토</b>
-        </td>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50">
-            <input type="hidden" th:value="${trainerId}" name="trainerId">
-            <button type="submit" class="reserve-btn" value="2022-11-01" name="date">1</button>
-        </td>
-        <td align="center" height="50">
-            <button type="submit" class="reserve-btn" value="2022-11-02" name="date">2</button>
-        </td>
-        <td align="center" height="50">
-            <button type="submit" class="reserve-btn" value="2022-11-03" name="date">3</button>
-        </td>
-        <td align="center" height="50">
-            <button type="submit" class="reserve-btn" value="2022-11-04" name="date">4</button>
-        </td>
-        <td align="center" height="50">
-            <button type="submit" class="reserve-btn" value="2022-11-05" name="date">5</button>
-        </td>
-    </tr>
-    <tr>
-        <td align="center" height="50">
-            <button type="submit" class="reserve-btn" value="2022-11-06" name="date">6</button>
-        </td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-    </tr>
-    <tr>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-    </tr>
-    <tr>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-    </tr>
-    <tr>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-    </tr>
-    <tr>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-        <td align="center" height="50"></td>
-    </tr>
-    </tbody>
+<div class="calendar-page">
+  <a href="">◀</a>
+<span class="bold-text" th:text="|${currentMonth}월|"></span>
+  <a href="">▶</a>
+</div>
+<br>
+
+<table border="0" class="type11">
+  <thead>
+  <tr>
+    <th th:each="day: ${dayMap}" th:if="${day.key} < 8" th:text="${day.value}" height="70"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <span th:each="day: ${dayMap}">
+    <div th:if="${day.key} % 7 eq 1 and ${day.key} != 1">
+      <tr></tr>
+    </div>
+    <td th:text="${day.key}"></td>
+    </span>
+  </tbody>
 </table>
-</form>
+
+
+
 </body>
 </html>

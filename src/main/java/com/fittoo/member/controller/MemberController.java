@@ -7,6 +7,7 @@ import com.fittoo.member.service.MemberService;
 import com.fittoo.reservation.dto.ReservationDto;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.service.TrainerService;
+import com.fittoo.utills.CalendarUtil;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.thymeleaf.util.NumberUtils;
 
 @Controller
 @RequiredArgsConstructor
@@ -69,9 +71,16 @@ public class MemberController {
 
 
 	@GetMapping("/calendar")
-	public String calendar(ReservationParam param, Principal principal, Model model) {
+	public String calendar(ReservationParam param, Principal principal, Model model, Integer currentMonth) {
 		TrainerDto trainer = trainerService.findTrainer(param.getTrainerId());
 		List<ReservationDto> reservation = trainer.getReservation();
+
+		Map<Integer, String> dayMap = CalendarUtil.getDayMap(0);
+		if (currentMonth == null) {
+			currentMonth = LocalDate.now().getMonthValue();
+		}
+		model.addAttribute("currentMonth", currentMonth);
+		model.addAttribute("dayMap", dayMap);
 		model.addAttribute("reserve", reservation);
 		model.addAttribute("trainerId", param.getTrainerId());
 		return "/reservation/calendar";
