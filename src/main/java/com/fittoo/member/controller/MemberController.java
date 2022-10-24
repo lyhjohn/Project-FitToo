@@ -1,17 +1,18 @@
 package com.fittoo.member.controller;
 
 import com.fittoo.common.model.ServiceResult;
+import com.fittoo.common.textEnum.LoginType;
+import com.fittoo.member.model.DateParam;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.service.MemberService;
-import com.fittoo.reservation.dto.ReservationDto;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.service.TrainerService;
 import com.fittoo.utills.CalendarUtil;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.thymeleaf.util.NumberUtils;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -71,26 +73,68 @@ public class MemberController {
 
 
 	@GetMapping("/calendar")
-	public String calendar(ReservationParam param, Principal principal, Model model, Integer currentMonth) {
-		TrainerDto trainer = trainerService.findTrainer(param.getTrainerId());
-		List<ReservationDto> reservation = trainer.getReservation();
+	public String calendar(ReservationParam param, Principal principal, Model model,
+		@RequestParam(required = false) Integer prevMonth,
+		@RequestParam(required = false) Integer nextMonth,
+		@RequestParam(required = false) Integer year,
+		@RequestParam(required = false) String trainerId) {
 
-		Map<Integer, String> dayMap = CalendarUtil.getDayMap(0);
-		if (currentMonth == null) {
-			currentMonth = LocalDate.now().getMonthValue();
+
+
+		if (param != null) {
+			TrainerDto trainer = trainerService.findTrainer(param.getTrainerId());
+			model.addAttribute("trainerId", param.getTrainerId());
 		}
-		model.addAttribute("currentMonth", currentMonth);
+		if (trainerId != null) {
+			TrainerDto trainer = trainerService.findTrainer(trainerId);
+			model.addAttribute("trainerId", trainerId);
+		}
+
+		Map<Integer, String> dayMap = new HashMap<>();
+
+		if (prevMonth != null) {
+			int[] curMonthAndYear = CalendarUtil.getNewMonthAndYear(year, prevMonth);
+			dayMap = CalendarUtil.getPrevMonthMap(year, prevMonth);
+			model.addAttribute("year", curMonthAndYear[0]);
+			model.addAttribute("currentMonth", curMonthAndYear[1]);
+		}
+
+		if (nextMonth != null) {
+			dayMap = CalendarUtil.getNextMonthMap(year, nextMonth);
+			int[] curMonthAndYear = CalendarUtil.getNewMonthAndYear(year, nextMonth);
+			model.addAttribute("year", curMonthAndYear[0]);
+			model.addAttribute("currentMonth", curMonthAndYear[1]);
+		}
+
+		if (prevMonth == null && nextMonth == null) {
+			dayMap = CalendarUtil.getMonthMap(LocalDate.now().getYear(),
+				LocalDate.now().getMonthValue());
+			model.addAttribute("currentMonth", LocalDate.now().getMonthValue());
+			model.addAttribute("year", LocalDate.now().getYear());
+		}
 		model.addAttribute("dayMap", dayMap);
-		model.addAttribute("reserve", reservation);
-		model.addAttribute("trainerId", param.getTrainerId());
 		return "/reservation/calendar";
 	}
 
 	@PostMapping("/reservation")
-	public String reservation(ReservationParam param, Principal principal, Model model, String date) {
+	public String reservation(ReservationParam param, Principal principal, Model model,
+		String date) {
 		System.out.println("param.getTrainerId() = " + param.getTrainerId());
 		model.addAttribute("trainerId", param.getTrainerId());
 		model.addAttribute("date", date);
 		return "/reservation/reservationForm";
+	}
+
+	@PostMapping(value = {"/calendar/prev", "/calendar/next"})
+	public String prevCalendar(RedirectAttributes redirectAttributes, DateParam dateParam,
+		ReservationParam param) {
+		if (dateParam.getPrevMonth() != null) {
+			redirectAttributes.addAttribute("prevMonth", dateParam.getPrevMonth());
+		} else {
+			redirectAttributes.addAttribute("nextMonth", dateParam.getNextMonth());
+		}
+		redirectAttributes.addAttribute("year", dateParam.getYear());
+		redirectAttributes.addAttribute("trainerId", param.getTrainerId());
+		return "redirect:/member/calendar";
 	}
 }

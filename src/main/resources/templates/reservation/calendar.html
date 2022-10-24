@@ -4,15 +4,13 @@
   <meta charset="UTF-8">
   <title>Fit-Too</title>
   <style>
-    .reserve-btn {
-      border: 0;
-      background-color: white;
-      font-size: 200%;
-      color: dodgerblue;
+
+    .leftTop {
+      float: left;
     }
 
-    .inline-div {
-      display: inline;
+    .rightTop {
+      float: right;
     }
 
     table.type11 {
@@ -24,45 +22,79 @@
       margin: auto;
       font-size: 40px;
     }
+
     table.type11 th {
       width: 200px;
       padding: 10px;
       font-weight: bold;
       color: #fff;
-      background: cornflowerblue ;
+      background: cornflowerblue;
     }
+
     table.type11 td {
       padding: 10px;
       border-bottom: 1px solid #ccc;
       background: #eee;
       height: 100px;
     }
+
     h1 {
       text-align: center;
       /*display: inline;*/
     }
+
     .calendar-page {
       border: cornflowerblue;
       text-align: center;
       font-size: 40px;
       font-weight: bold;
     }
-    .calendar-page > a {
-      text-decoration: none;
+
+    /*.calendar-page > a {*/
+    /*  text-decoration: none;*/
+    /*  color: cornflowerblue;*/
+    /*}*/
+
+    .calendar-page button {
+      background-color: transparent;
       color: cornflowerblue;
+      border: 0;
+      font-size: 40px;
     }
 
     .bold-text {
       color: black;
     }
 
+    .calendar-page form {
+      display: inline;
+    }
+    .calendar-year {
+      color: cornflowerblue;
+      font-size: 40px;
+      font-weight: bold;
+      position: absolute;
+      left: 2%;
+    }
   </style>
 </head>
 <body>
+<a href="/">홈</a>
+<div class="calendar-year" th:text="|${year}년|"></div>
 <div class="calendar-page">
-  <a href="">◀</a>
-<span class="bold-text" th:text="|${currentMonth}월|"></span>
-  <a href="">▶</a>
+  <form action="/member/calendar/prev" method="post">
+    <input type="hidden" th:value="${trainerId}" name="trainerId">
+    <input type="hidden" th:value="|${currentMonth}| - 1" name="prevMonth">
+    <input type="hidden" th:value="|${year}|" name="year">
+    <button type="submit">◀</button>
+  </form>
+  <span class="bold-text" th:text="|${currentMonth}월|"></span>
+  <form action="/member/calendar/next" method="post">
+    <input type="hidden" th:value="${trainerId}" name="trainerId">
+    <input type="hidden" th:value="|${currentMonth}| + 1" name="nextMonth">
+    <input type="hidden" th:value="|${year}|" name="year">
+    <button type="submit">▶</button>
+  </form>
 </div>
 <br>
 
@@ -81,7 +113,6 @@
     </span>
   </tbody>
 </table>
-
 
 
 </body>
