@@ -5,6 +5,7 @@ import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.Reservation;
 import com.fittoo.review.entity.Review;
+import java.time.LocalDateTime;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -62,16 +63,17 @@ public class Member extends BaseEntity {
 
     public static Member of(MemberInput memberInput, String encPassword) {
         return Member.builder()
-                .userId(memberInput.getUserId())
-                .password(encPassword)
-                .gender(setGender(memberInput.getGender()))
-                .loginType(LoginType.NORMAL)
-                .phoneNumber(memberInput.getPhoneNumber())
-                .exercisePeriod(memberInput.getExercisePeriod())
-                .regPurpose(setRegPurpose(memberInput.getRegPurposeList()))
-                .userName(memberInput.getUserName())
-                .address(memberInput.getAddress())
-                .build();
+            .userId(memberInput.getUserId())
+            .password(encPassword)
+            .gender(setGender(memberInput.getGender()))
+            .loginType(LoginType.NORMAL)
+            .phoneNumber(memberInput.getPhoneNumber())
+            .exercisePeriod(memberInput.getExercisePeriod())
+            .regPurpose(setRegPurpose(memberInput.getRegPurposeList()))
+            .userName(memberInput.getUserName())
+            .address(memberInput.getAddress())
+            .regDt(LocalDateTime.now())
+            .build();
     }
 
     public static String setGender(int num) {
