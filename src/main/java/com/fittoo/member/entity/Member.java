@@ -27,6 +27,7 @@ public class Member extends BaseEntity {
 
     private long point;
 
+
     @OneToMany(mappedBy = "member")
     @Builder.Default
     private List<Reservation> reservationList = new ArrayList<>();
