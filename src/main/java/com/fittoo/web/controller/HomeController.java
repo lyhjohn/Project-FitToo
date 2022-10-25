@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -43,12 +42,12 @@ public class HomeController {
         Optional<Principal> optionalPrincipal = Optional.ofNullable(principal);
         if (optionalPrincipal.isPresent()) {
             model.addAttribute("member", typeCheckMap(principal.getName()));
-            return "/loginHome";
+            return "/home/loginHome";
         }
 
 
         if (input.getUserId() == null) {
-            return "/home";
+            return "/home/home";
         }
 
 
@@ -59,7 +58,7 @@ public class HomeController {
                 return "/login/loginForm";
             }
             model.addAttribute("member", member);
-            return "/loginHome";
+            return "/home/loginHome";
         }
 
         if (input.getLoginType().equals("trainer")) {
@@ -69,9 +68,9 @@ public class HomeController {
                 return "/login/loginForm";
             }
             model.addAttribute("member", trainer);
-            return "/loginHome";
+            return "/home/loginHome";
         }
-        return "/home";
+        return "/home/home";
     }
 
     @GetMapping("/register")

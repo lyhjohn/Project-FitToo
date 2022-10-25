@@ -6,20 +6,28 @@ import com.fittoo.reservation.Reservation;
 import com.fittoo.review.entity.Review;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @Setter
@@ -34,6 +42,10 @@ public class Trainer extends BaseEntity {
     private String introduce;
     private String profilePictureNewName;
     private String profilePictureOriName;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
     
     @OneToMany(mappedBy = "trainer")
     @Builder.Default
@@ -42,6 +54,7 @@ public class Trainer extends BaseEntity {
     @OneToMany(mappedBy = "trainer")
     @Builder.Default
     private List<Reservation> reservationList = new ArrayList<>();
+
 
     public void addReservation(Reservation reservation) {
         this.reservationList.add(reservation);
