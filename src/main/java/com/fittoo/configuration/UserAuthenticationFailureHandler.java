@@ -14,7 +14,7 @@ public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        String msg = ErrorMessage.INVALID_ID_OR_PWD.description();
+        String msg = ErrorMessage.INVALID_ID_OR_PWD.message();
         if (exception instanceof InternalAuthenticationServiceException) {
             msg = exception.getMessage();
         }

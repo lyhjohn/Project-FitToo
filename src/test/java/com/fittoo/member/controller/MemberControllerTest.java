@@ -48,5 +48,4 @@ class MemberControllerTest {
 		//then
 		assertThat(testId.getGender()).isEqualTo("남자");
 	}
-
 }

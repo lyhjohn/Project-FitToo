@@ -2,7 +2,6 @@ package com.fittoo.web.model;
 
 
 import com.fittoo.member.entity.Member;
-import com.fittoo.member.model.LoginType;
 import com.fittoo.trainer.entity.Trainer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +25,7 @@ public class LoginInfo {
     public static LoginInfo of(Member member) {
         return LoginInfo.builder()
                 .userId(member.getUserId())
-                .loginType(member.getLoginType().description())
+                .loginType(member.getLoginType().memberType())
                 .gender(member.getGender())
                 .phoneNumber(member.getPhoneNumber())
                 .build();
@@ -35,7 +34,7 @@ public class LoginInfo {
     public static LoginInfo of(Trainer trainer) {
         return LoginInfo.builder()
                 .userId(trainer.getUserId())
-                .loginType(trainer.getLoginType().description())
+                .loginType(trainer.getLoginType().memberType())
                 .gender(trainer.getGender())
                 .phoneNumber(trainer.getPhoneNumber())
                 .build();

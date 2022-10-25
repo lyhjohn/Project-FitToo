@@ -54,7 +54,7 @@ public class HomeController {
         if (input.getLoginType().equals("member")) {
             MemberDto member = memberService.findMember(input.getUserId());
             if (member == null) {
-                model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
+                model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.message());
                 return "/login/loginForm";
             }
             model.addAttribute("member", member);
@@ -64,7 +64,7 @@ public class HomeController {
         if (input.getLoginType().equals("trainer")) {
             TrainerDto trainer = trainerService.findTrainer(input.getUserId());
             if (trainer == null) {
-                model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.description());
+                model.addAttribute("errorMessage", ErrorMessage.INVALID_ID_OR_PWD.message());
                 return "/login/loginForm";
             }
             model.addAttribute("member", trainer);

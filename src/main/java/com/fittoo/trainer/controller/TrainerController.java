@@ -8,7 +8,6 @@ import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.member.service.MemberService;
-import com.fittoo.trainer.model.CantReserveDateDto;
 import com.fittoo.trainer.model.ScheduleDto;
 import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerDto;
@@ -17,7 +16,6 @@ import com.fittoo.trainer.model.UpdateInput;
 import com.fittoo.trainer.service.TrainerService;
 import java.net.MalformedURLException;
 import java.security.Principal;
-import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +89,7 @@ public class TrainerController {
 		TrainerDto trainer = trainerService.findTrainer(userId);
 
 		if (trainerIsNotFound(trainer, request)) {
-			model.addAttribute("errorMessage", ErrorMessage.ACCESS_REJECT.description());
+			model.addAttribute("errorMessage", ErrorMessage.ACCESS_REJECT.message());
 			return "/error/error";
 		}
 
@@ -172,10 +170,10 @@ public class TrainerController {
 			TrainerDto trainer = trainerService.findTrainer(trainerId);
 			System.out.println(
 				"trainer.getProfilePictureNewName() = " + trainer.getProfilePictureNewName());
-			model.addAttribute("loginType", trainer.getLoginType().description());
+			model.addAttribute("loginType", trainer.getLoginType().memberType());
 			model.addAttribute("trainerDetail", trainer);
 		} else {
-			model.addAttribute("loginType", loginType.description());
+			model.addAttribute("loginType", loginType.memberType());
 		}
 
 		if (errorMessage != null) {
@@ -206,15 +204,14 @@ public class TrainerController {
 	@GetMapping("/schedule")
 	public String scheduleManager(Principal principal, Model model) {
 		String userId = principal.getName();
-		Optional<ScheduleDto> optionalSchedule = trainerService.showSchedule(userId);
-		if (optionalSchedule.isEmpty()) {
+		Optional<List<ScheduleDto>> optionalList = trainerService.showSchedule(userId);
+		if (optionalList.isEmpty()) {
 			return "/trainer/schedule/schedule";
 		}
-		ScheduleDto schedule = optionalSchedule.get();
-		List<CantReserveDateDto> list = schedule.getCantReserveDateList();
+		List<ScheduleDto> scheduleList = optionalList.get();
 
 		model.addAttribute("loginType", "트레이너");
-		model.addAttribute("scheduleList", list);
+		model.addAttribute("scheduleList", scheduleList);
 		return "/trainer/schedule/schedule";
 	}
 

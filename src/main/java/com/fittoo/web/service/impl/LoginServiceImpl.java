@@ -6,8 +6,6 @@ import com.fittoo.member.model.LoginType;
 import com.fittoo.member.repository.MemberRepository;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.repository.TrainerRepository;
-import com.fittoo.web.model.LoginInput;
-import com.fittoo.web.model.LoginInfo;
 import com.fittoo.web.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +45,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
 
-        throw new UsernameNotFoundException(ErrorMessage.INVALID_ID_OR_PWD.description());
+        throw new UsernameNotFoundException(ErrorMessage.INVALID_ID_OR_PWD.message());
     }
 
 
@@ -55,7 +53,7 @@ public class LoginServiceImpl implements LoginService {
     public UserDetails loginValidMember(Member member) {
 
         if (!member.getLoginType().equals(LoginType.NORMAL)) {
-            throw new UsernameNotFoundException(ErrorMessage.INVALID_ID_OR_PWD.description());
+            throw new UsernameNotFoundException(ErrorMessage.INVALID_ID_OR_PWD.message());
         }
         // 회원 ROLE 추가
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
@@ -68,7 +66,7 @@ public class LoginServiceImpl implements LoginService {
     public UserDetails loginValidTrainer(Trainer trainer) {
 
         if (!trainer.getLoginType().equals(LoginType.TRAINER)) {
-            throw new UsernameNotFoundException(ErrorMessage.INVALID_ID_OR_PWD.description());
+            throw new UsernameNotFoundException(ErrorMessage.INVALID_ID_OR_PWD.message());
         }
         // 회원 ROLE 추가
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

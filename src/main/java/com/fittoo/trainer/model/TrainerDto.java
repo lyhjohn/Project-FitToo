@@ -1,6 +1,6 @@
 package com.fittoo.trainer.model;
 
-import com.fittoo.common.model.BaseDto;
+import com.fittoo.common.model.UserBaseDto;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.dto.ReservationDto;
 import com.fittoo.trainer.entity.Trainer;
@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +23,7 @@ import org.springframework.ui.Model;
 @NoArgsConstructor
 @SuperBuilder
 @ToString
-public class TrainerDto extends BaseDto {
+public class TrainerDto extends UserBaseDto {
 
 	private long price;
 	private String awards;
@@ -37,7 +36,7 @@ public class TrainerDto extends BaseDto {
 	@Builder.Default
 	private List<ReservationDto> reservation = new ArrayList<>();
 
-	private ScheduleDto schedule;
+	private List<ScheduleDto> scheduleList;
 
 
 	public static TrainerDto of(Trainer trainer) {
@@ -58,7 +57,7 @@ public class TrainerDto extends BaseDto {
 			.userName(trainer.getUserName())
 			.address(trainer.getAddress())
 			.regDt(trainer.getRegDt())
-			.schedule(ScheduleDto.of(trainer.getSchedule()))
+			.scheduleList(ScheduleDto.of(trainer.getScheduleList()))
 			.build();
 	}
 

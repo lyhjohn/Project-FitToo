@@ -5,12 +5,12 @@ public enum LoginType {
     NORMAL("일반 회원"),
     TRAINER("트레이너");
 
-    private final String description;
-    LoginType(String description) {
-        this.description = description;
+    private final String memberType;
+    LoginType(String memberType) {
+        this.memberType = memberType;
     }
 
-    public String description() {
-        return description;
+    public String memberType() {
+        return memberType;
     }
 }

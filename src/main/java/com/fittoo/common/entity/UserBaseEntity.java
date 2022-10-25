@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @MappedSuperclass
 @SuperBuilder
-public abstract class BaseEntity {
+public abstract class UserBaseEntity {
 
     private String userId;
     private String password;

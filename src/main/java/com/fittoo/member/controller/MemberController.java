@@ -1,7 +1,6 @@
 package com.fittoo.member.controller;
 
 import com.fittoo.common.model.ServiceResult;
-import com.fittoo.common.textEnum.LoginType;
 import com.fittoo.member.model.DateParam;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.ReservationParam;
@@ -65,7 +64,7 @@ public class MemberController {
 		}
 
 		if (!result.isResult()) {
-			model.addAttribute("errorMessage", result.getErrorMessage().description());
+			model.addAttribute("errorMessage", result.getErrorMessage().message());
 			return "/member/register";
 		}
 		return "redirect:/";

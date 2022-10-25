@@ -1,6 +1,6 @@
 package com.fittoo.member.entity;
 
-import com.fittoo.common.entity.BaseEntity;
+import com.fittoo.common.entity.UserBaseEntity;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.Reservation;
@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
-public class Member extends BaseEntity {
+public class Member extends UserBaseEntity {
 
     @Id
     @GeneratedValue
