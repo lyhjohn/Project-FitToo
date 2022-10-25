@@ -22,6 +22,10 @@ class DeduplicationUtilsTest {
 
 	@Autowired
 	CantReserveDateRepository cantReserveDateRepository;
+	@Autowired
+	public DeduplicationUtilsTest(CantReserveDateRepository cantReserveDateRepository) {
+		this.cantReserveDateRepository = cantReserveDateRepository;
+	}
 
 	@Test
 	void deduplicationTest() {
