@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import lombok.AccessLevel;
@@ -43,6 +44,7 @@ public class Trainer extends BaseEntity {
     private String profilePictureOriName;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
     private Schedule schedule;
     
     @OneToMany(mappedBy = "trainer")

@@ -34,7 +34,7 @@ public class Schedule {
 
 	private String comment;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(mappedBy = "schedule")
 	private Trainer trainer;
 
 	public Schedule createSchedule(ScheduleInput input, Trainer trainer) {
