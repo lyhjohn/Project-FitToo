@@ -13,12 +13,13 @@ import java.io.IOException;
 public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+        AuthenticationException exception) throws IOException, ServletException {
+
         String msg = ErrorMessage.INVALID_ID_OR_PWD.message();
         if (exception instanceof InternalAuthenticationServiceException) {
             msg = exception.getMessage();
         }
-
         setUseForward(true);
         setDefaultFailureUrl("/login?error=true");
         request.setAttribute("errorMessage", msg);

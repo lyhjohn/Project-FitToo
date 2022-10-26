@@ -1,27 +1,16 @@
 package com.fittoo.utills;
 
-import static org.assertj.core.api.Assertions.*;
-
-import com.fittoo.trainer.entity.CantReserveDate;
-import com.fittoo.trainer.repository.CantReserveDateRepository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
 class DeduplicationUtilsTest {
-
-	@Autowired
-	CantReserveDateRepository cantReserveDateRepository;
 
 	@Test
 	void CalendarTest() {

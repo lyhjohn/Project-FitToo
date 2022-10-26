@@ -23,9 +23,10 @@ public class LoginController {
         return "/login/loginForm";
     }
 
-    @GetMapping("/logout")
-    public String logout() {
-
-        return "redirect:/";
-    }
+//    @RequestMapping("/logout/complete")
+//    public String logout(@RequestParam(name = "errorMessage") String errorMessage, HttpServletRequest request) {
+//        System.out.println("errorMessage = " + errorMessage);
+//        System.out.println("request.getAttribute() = " + request.getAttribute("errorMessage"));
+//        return "/login/loginForm";
+//    }
 }

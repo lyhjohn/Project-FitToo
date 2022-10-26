@@ -17,8 +17,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ScheduleDto {
 
-//	private List<CantReserveDateDto> cantReserveDateList = new ArrayList<>();
-
 
 	private String comment;
 
@@ -36,13 +34,6 @@ public class ScheduleDto {
 			.date(schedule.getExcludeDate())
 			.build();
 	}
-
-//	public static List<CantReserveDateDto> getCantReserveDateList(List<CantReserveDate> dateList) {
-//		List<CantReserveDateDto> dto = CantReserveDateDto.of(dateList);
-//		return DeduplicationUtils.deduplication(dto, CantReserveDateDto::getDate)
-//			.stream().sorted(Comparator.comparing(CantReserveDateDto::getDate))
-//			.collect(Collectors.toList());
-//	}
 
 
 	public static List<ScheduleDto> of(List<Schedule> scheduleList) {

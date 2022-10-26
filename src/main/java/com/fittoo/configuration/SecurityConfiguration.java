@@ -33,10 +33,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/favicon.ico"); // 지정된 정적인 파일은 인증 무시
-        web.ignoring().antMatchers("/inflearn/image/**");
-        web.ignoring().antMatchers("/inflearn/**");
-        web.ignoring().antMatchers("/templates/css/**");
-        web.ignoring().antMatchers("/templates/js/**");
         super.configure(web);
     }
 
@@ -52,8 +48,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/register",
                         "/member/register",
                         "/trainer/register",
-                        "/trainer/images/**",
-                        "/images/**",
                         "/logout")
                 .permitAll(); // 경로에 접근 권한 허용 설정
 
@@ -67,9 +61,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .successForwardUrl("/"); // 로그인 성공 시 이동 url (POST)
 
         http.logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) //로그아웃 요청 url 매핑
-                .invalidateHttpSession(true) // 세션 초기화
-                .logoutSuccessUrl("/");
+            .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) //로그아웃 요청 url 매핑
+            .invalidateHttpSession(true) // 세션 초기화
+            .logoutSuccessUrl("/logout/complete");
 //                .logoutSuccessUrl("/"); // 로그아웃 성공 화면
 
 
