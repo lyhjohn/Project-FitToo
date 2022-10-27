@@ -76,6 +76,9 @@
       position: absolute;
       left: 2%;
     }
+    .cantReserve {
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -98,7 +101,24 @@
 </div>
 <br>
 
-<table border="0" class="type11">
+<table border="0" class="type11" th:if="${canReserveDay != null}">
+  <thead>
+  <tr>
+    <th th:each="day: ${dayMap}" th:if="${day.key} < 8" th:text="${day.value}" height="70"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <span th:each="day: ${canReserveDay}">
+    <div th:if="${day.key} % 7 eq 1 and ${day.key} != 1">
+      <tr></tr>
+    </div>
+    <td th:text="${day.key}" th:if="${!day.value}" class="cantReserve"></td>
+    <td th:text="${day.key}" th:if="${day.value}" class="canReserve"></td>
+    </span>
+  </tbody>
+</table>
+
+<table border="0" class="type11" th:if="${canReserveDay == null}">
   <thead>
   <tr>
     <th th:each="day: ${dayMap}" th:if="${day.key} < 8" th:text="${day.value}" height="70"></th>
@@ -113,7 +133,6 @@
     </span>
   </tbody>
 </table>
-
 
 </body>
 </html>

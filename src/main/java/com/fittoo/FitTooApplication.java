@@ -13,7 +13,6 @@ public class FitTooApplication {
     JPAQueryFactory JPAQueryFactory(EntityManager em) {
         return new JPAQueryFactory(em);
     }
-
     public static void main(String[] args) {
         SpringApplication.run(FitTooApplication.class, args);
     }

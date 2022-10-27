@@ -4,12 +4,13 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.ui.Model;
 
 public class CalendarUtil {
 
 
 	/**
-	 * 이 메서드 하나로 모든 달의 시작 요일, 최대 일 수 구할 수 있음
+	 * 모든 달의 시작 요일, 최대 일 수 구하기 위한 메서드들
 	 */
 	public static Map<Integer, String> getMonthMap(int year, int currentMonth) {
 		Map<Integer, String> dayMap = new HashMap<>();
@@ -88,8 +89,7 @@ public class CalendarUtil {
 		}
 		return "";
 	}
-
-
+	
 	public static int[] getNewMonthAndYear(int year, int month) {
 		if (month == 13) {
 			int curYear = year + 1;
@@ -105,5 +105,51 @@ public class CalendarUtil {
 		return new int[]{year, month};
 	}
 
+	/**
+	 * 캘린더에서 이전달, 다음달로 넘김에 따라 캘린더 view를 바꿔주기 위한 메서드
+	 * @param prevMonth
+	 * @param nextMonth
+	 * @param year 1월 이전 or 12월 이후로 넘기면 년도를 바꿔줘야함
+	 * @param model
+	 * @return
+	 */
+	public static int[] pageControl(Integer prevMonth, Integer nextMonth, Integer year,
+		Model model) {
 
+		Map<Integer, String> dayMap = new HashMap<>();
+		int[] totalDayCountAndNowMonthYear = new int[3];
+
+		if (prevMonth != null) {
+			int[] curMonthAndYear = getNewMonthAndYear(year, prevMonth);
+			dayMap = getPrevMonthMap(year, prevMonth);
+			model.addAttribute("year", curMonthAndYear[0]);
+			model.addAttribute("currentMonth", curMonthAndYear[1]);
+			totalDayCountAndNowMonthYear[0] = dayMap.size(); // 총 일 수
+			totalDayCountAndNowMonthYear[1] = curMonthAndYear[1]; // 현재 월
+			totalDayCountAndNowMonthYear[2] = curMonthAndYear[0]; // 현재 년도
+		}
+
+		if (nextMonth != null) {
+			dayMap = getNextMonthMap(year, nextMonth);
+			int[] curMonthAndYear = getNewMonthAndYear(year, nextMonth);
+			model.addAttribute("year", curMonthAndYear[0]);
+			model.addAttribute("currentMonth", curMonthAndYear[1]);
+			totalDayCountAndNowMonthYear[0] = dayMap.size(); // 총 일 수
+			totalDayCountAndNowMonthYear[1] = curMonthAndYear[1]; // 현재 월
+			totalDayCountAndNowMonthYear[2] = curMonthAndYear[0]; // 현재 년도
+		}
+
+		if (prevMonth == null && nextMonth == null) {
+			dayMap = getMonthMap(LocalDate.now().getYear(),
+				LocalDate.now().getMonthValue());
+			model.addAttribute("currentMonth", LocalDate.now().getMonthValue());
+			model.addAttribute("year", LocalDate.now().getYear());
+			totalDayCountAndNowMonthYear[0] = dayMap.size(); // 총 일 수
+			totalDayCountAndNowMonthYear[1] = LocalDate.now().getMonthValue(); // 현재 월
+			totalDayCountAndNowMonthYear[2] = LocalDate.now().getYear(); // 현재 년도
+		}
+
+		model.addAttribute("dayMap", dayMap);
+		return totalDayCountAndNowMonthYear;
+	}
 }

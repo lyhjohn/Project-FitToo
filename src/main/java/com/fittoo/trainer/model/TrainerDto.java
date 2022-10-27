@@ -2,7 +2,7 @@ package com.fittoo.trainer.model;
 
 import com.fittoo.common.model.UserBaseDto;
 import com.fittoo.member.model.LoginType;
-import com.fittoo.reservation.dto.ReservationDto;
+import com.fittoo.reservation.model.ReservationDto;
 import com.fittoo.trainer.entity.Trainer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

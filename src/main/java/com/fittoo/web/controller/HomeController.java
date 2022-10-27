@@ -41,7 +41,6 @@ public class HomeController {
 
 	@RequestMapping("/")
 	public String home(LoginInput input, Model model, Principal principal, HttpServletRequest request) {
-
 		Optional<Principal> optionalPrincipal = Optional.ofNullable(principal);
 		if (optionalPrincipal.isPresent()) {
 			model.addAttribute("member", typeCheckMap(principal.getName()));

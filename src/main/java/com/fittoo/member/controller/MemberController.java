@@ -5,14 +5,24 @@ import com.fittoo.member.model.DateParam;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.service.MemberService;
+import com.fittoo.reservation.util.UnschedulableDateMark;
+import com.fittoo.trainer.model.ScheduleDto;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.service.TrainerService;
 import com.fittoo.utills.CalendarUtil;
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -25,6 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.util.ListUtils;
 
 @Controller
 @RequiredArgsConstructor
@@ -78,54 +89,29 @@ public class MemberController {
 		@RequestParam(required = false) Integer year,
 		@RequestParam(required = false) String trainerId) {
 
-
-
 		if (param != null) {
 			TrainerDto trainer = trainerService.findTrainer(param.getTrainerId());
 			model.addAttribute("trainerId", param.getTrainerId());
 		}
 		if (trainerId != null) {
-			TrainerDto trainer = trainerService.findTrainer(trainerId);
+			Optional<List<ScheduleDto>> optionalList = trainerService.showSchedule(trainerId);
+
+			/**
+			 * 트레이너가 예약 불가능한 날짜로 등록한 날은 캘린더에 빨간 글씨로 표시할 수 있게 Map을 만들어 view로 전달
+			 */
+			Map<Integer, Boolean> canReserveDayMap = UnschedulableDateMark.canReserveDate(
+				CalendarUtil.pageControl(prevMonth, nextMonth, year, model), trainerId,
+				optionalList);
+
+			model.addAttribute("canReserveDay", canReserveDayMap);
 			model.addAttribute("trainerId", trainerId);
 		}
 
-		Map<Integer, String> dayMap = new HashMap<>();
-
-		if (prevMonth != null) {
-			int[] curMonthAndYear = CalendarUtil.getNewMonthAndYear(year, prevMonth);
-			dayMap = CalendarUtil.getPrevMonthMap(year, prevMonth);
-			model.addAttribute("year", curMonthAndYear[0]);
-			model.addAttribute("currentMonth", curMonthAndYear[1]);
-		}
-
-		if (nextMonth != null) {
-			dayMap = CalendarUtil.getNextMonthMap(year, nextMonth);
-			int[] curMonthAndYear = CalendarUtil.getNewMonthAndYear(year, nextMonth);
-			model.addAttribute("year", curMonthAndYear[0]);
-			model.addAttribute("currentMonth", curMonthAndYear[1]);
-		}
-
-		if (prevMonth == null && nextMonth == null) {
-			dayMap = CalendarUtil.getMonthMap(LocalDate.now().getYear(),
-				LocalDate.now().getMonthValue());
-			model.addAttribute("currentMonth", LocalDate.now().getMonthValue());
-			model.addAttribute("year", LocalDate.now().getYear());
-		}
-		model.addAttribute("dayMap", dayMap);
 		return "/reservation/calendar";
 	}
 
-	@PostMapping("/reservation")
-	public String reservation(ReservationParam param, Principal principal, Model model,
-		String date) {
-		System.out.println("param.getTrainerId() = " + param.getTrainerId());
-		model.addAttribute("trainerId", param.getTrainerId());
-		model.addAttribute("date", date);
-		return "/reservation/reservationForm";
-	}
-
 	@PostMapping(value = {"/calendar/prev", "/calendar/next"})
-	public String prevCalendar(RedirectAttributes redirectAttributes, DateParam dateParam,
+	public String calendarPage(RedirectAttributes redirectAttributes, DateParam dateParam,
 		ReservationParam param) {
 		if (dateParam.getPrevMonth() != null) {
 			redirectAttributes.addAttribute("prevMonth", dateParam.getPrevMonth());
