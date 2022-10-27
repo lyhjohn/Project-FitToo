@@ -11,16 +11,10 @@
     <style>
         .leftTop {
             float: left;
-            position: fixed;
-            top: 5%;
-            left: 0;
         }
 
         .rightTop {
             float: right;
-            position: fixed;
-            top: 10%;
-            right: 2%;
         }
 
         .table-size {
@@ -179,14 +173,13 @@
             background-color: skyblue;
             top: 30%;
         }
-
     </style>
     <title>내 정보</title>
 </head>
-<h1>트레이너 리스트</h1>
 <body>
 <div th:replace="/fragment/common/home_header.html::home_header"></div>
 <div th:replace="/fragment/common/right_header.html::right_header"></div>
+<h1>트레이너 리스트</h1>
 
 <div class="container">
     <div th:if="${trainerDetail == null}">
@@ -200,7 +193,7 @@
             <div>금액: <span th:field="*{price}" th:text="*{price}"></span></div>
         </div>
         소개: <div th:text="${trainerDetail.introduce}"></div>
-        <form action="/member/reservation" method="get">
+        <form action="/member/calendar" method="get">
             <button type="submit" th:value="${trainerDetail.userId}" name="trainerId">예약</button>
         </form>
     </div>

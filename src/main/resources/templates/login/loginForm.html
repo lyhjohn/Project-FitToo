@@ -18,6 +18,7 @@
 <body>
 <div th:replace="/fragment/common/home_header.html :: home_header"></div>
 <h1>로그인 페이지</h1>
+
 <div th:text="${errorMessage}" class="field-error"></div>
 <form method="post" class="login-form" action="/login">
     <div>

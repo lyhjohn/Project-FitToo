@@ -1,10 +1,11 @@
 package com.fittoo.member.entity;
 
-import com.fittoo.common.entity.BaseEntity;
+import com.fittoo.common.entity.UserBaseEntity;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.Reservation;
 import com.fittoo.review.entity.Review;
+import java.time.LocalDateTime;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
-public class Member extends BaseEntity {
+public class Member extends UserBaseEntity {
 
     @Id
     @GeneratedValue
@@ -26,6 +27,7 @@ public class Member extends BaseEntity {
     private String regPurpose;
 
     private long point;
+
 
     @OneToMany(mappedBy = "member")
     @Builder.Default
@@ -61,16 +63,17 @@ public class Member extends BaseEntity {
 
     public static Member of(MemberInput memberInput, String encPassword) {
         return Member.builder()
-                .userId(memberInput.getUserId())
-                .password(encPassword)
-                .gender(setGender(memberInput.getGender()))
-                .loginType(LoginType.NORMAL)
-                .phoneNumber(memberInput.getPhoneNumber())
-                .exercisePeriod(memberInput.getExercisePeriod())
-                .regPurpose(setRegPurpose(memberInput.getRegPurposeList()))
-                .userName(memberInput.getUserName())
-                .address(memberInput.getAddress())
-                .build();
+            .userId(memberInput.getUserId())
+            .password(encPassword)
+            .gender(setGender(memberInput.getGender()))
+            .loginType(LoginType.NORMAL)
+            .phoneNumber(memberInput.getPhoneNumber())
+            .exercisePeriod(memberInput.getExercisePeriod())
+            .regPurpose(setRegPurpose(memberInput.getRegPurposeList()))
+            .userName(memberInput.getUserName())
+            .address(memberInput.getAddress())
+            .regDt(LocalDateTime.now())
+            .build();
     }
 
     public static String setGender(int num) {

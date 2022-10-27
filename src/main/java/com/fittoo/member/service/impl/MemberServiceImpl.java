@@ -1,5 +1,7 @@
 package com.fittoo.member.service.impl;
 
+import static com.fittoo.common.message.ErrorMessage.ALREADY_EXIST_USERID;
+
 import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
 import com.fittoo.member.entity.Member;
@@ -19,31 +21,32 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberServiceImpl implements MemberService {
-    private final MemberRepository memberRepository;
+
+	private final MemberRepository memberRepository;
 
 
-    @Override
-    @Transactional
-    public ServiceResult memberRegister(MemberInput memberInput) {
-        Optional<Member> optionalMember = memberRepository.findByUserId(memberInput.getUserId());
-        if (optionalMember.isPresent()) {
-            return new ServiceResult(false, ErrorMessage.ALREADY_EXIST_USERID);
-        }
+	@Override
+	@Transactional
+	public ServiceResult memberRegister(MemberInput memberInput) {
+		Optional<Member> optionalMember = memberRepository.findByUserId(memberInput.getUserId());
+		if (optionalMember.isPresent()) {
+			return new ServiceResult(false, ALREADY_EXIST_USERID);
+		}
 
-        String encPassword = BCrypt.hashpw(memberInput.getPassword(), BCrypt.gensalt());
+		String encPassword = BCrypt.hashpw(memberInput.getPassword(), BCrypt.gensalt());
 
-        Member member = Member.of(memberInput, encPassword);
-        memberRepository.save(member);
+		Member member = Member.of(memberInput, encPassword);
+		memberRepository.save(member);
 
-        return new ServiceResult();
-    }
+		return new ServiceResult();
+	}
 
-    @Override
-    @Transactional
-    public MemberDto findMember(String userId) {
-        Optional<Member> optionalMember = memberRepository.findByUserId(userId);
+	@Override
+	@Transactional
+	public MemberDto findMember(String userId) {
+		Optional<Member> optionalMember = memberRepository.findByUserId(userId);
 
-        return optionalMember.map(MemberDto::of).orElse(null);
-    }
+		return optionalMember.map(MemberDto::of).orElse(null);
+	}
 
 }

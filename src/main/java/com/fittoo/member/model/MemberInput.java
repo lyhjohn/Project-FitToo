@@ -1,15 +1,20 @@
 package com.fittoo.member.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-public class MemberInput {//
+@Accessors(chain = true)
+public class MemberInput {
 
     @NotNull
     @NotEmpty
