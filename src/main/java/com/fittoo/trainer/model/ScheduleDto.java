@@ -1,8 +1,8 @@
 package com.fittoo.trainer.model;
 
-import com.fittoo.trainer.entity.CantReserveDate;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.utills.DeduplicationUtils;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -17,29 +17,34 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ScheduleDto {
 
-	private List<CantReserveDateDto> cantReserveDateList = new ArrayList<>();
 
 	private String comment;
 
+	private LocalDate date;
 
 	@Builder
-	public ScheduleDto(Long id, List<CantReserveDateDto> cantReserveDateList, String comment) {
-		this.cantReserveDateList = cantReserveDateList;
+	public ScheduleDto(String comment, LocalDate date) {
 		this.comment = comment;
+		this.date = date;
 	}
 
 	public static ScheduleDto of(Schedule schedule) {
 		return ScheduleDto.builder()
 			.comment(schedule.getComment())
-			.comment(schedule.getComment())
-			.cantReserveDateList(getCantReserveDateList(schedule.getCantReserveDateList()))
+			.date(schedule.getExcludeDate())
 			.build();
 	}
 
-	public static List<CantReserveDateDto> getCantReserveDateList(List<CantReserveDate> dateList) {
-		List<CantReserveDateDto> dto = CantReserveDateDto.of(dateList);
-		return DeduplicationUtils.deduplication(dto, CantReserveDateDto::getDate)
-			.stream().sorted(Comparator.comparing(CantReserveDateDto::getDate))
+
+	public static List<ScheduleDto> of(List<Schedule> scheduleList) {
+		List<ScheduleDto> dtoList = new ArrayList<>();
+
+		for (Schedule schedule : scheduleList) {
+			dtoList.add(ScheduleDto.of(schedule));
+		}
+
+		return DeduplicationUtils.deduplication(dtoList, ScheduleDto::getDate)
+			.stream().sorted(Comparator.comparing(ScheduleDto::getDate))
 			.collect(Collectors.toList());
 	}
 

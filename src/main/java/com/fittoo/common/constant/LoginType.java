@@ -1,4 +1,4 @@
-package com.fittoo.common.textEnum;
+package com.fittoo.common.constant;
 
 
 import lombok.Getter;

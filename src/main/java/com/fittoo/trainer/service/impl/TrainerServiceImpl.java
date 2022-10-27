@@ -3,7 +3,6 @@ package com.fittoo.trainer.service.impl;
 import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
 import com.fittoo.exception.DateParseException;
-import com.fittoo.trainer.entity.CantReserveDate;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.ScheduleDto;
@@ -11,7 +10,6 @@ import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
-import com.fittoo.trainer.repository.CantReserveDateRepository;
 import com.fittoo.trainer.repository.ScheduleRepository;
 import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.trainer.service.TrainerService;
@@ -32,8 +30,6 @@ public class TrainerServiceImpl implements TrainerService {
 
 	private final TrainerRepository trainerRepository;
 	private final ScheduleRepository scheduleRepository;
-	private final CantReserveDateRepository cantReserveDateRepository;
-
 
 
 	@Override
@@ -118,13 +114,13 @@ public class TrainerServiceImpl implements TrainerService {
 
 	@Override
 	@Transactional
-	public Optional<ScheduleDto> showSchedule(String userId) {
+	public Optional<List<ScheduleDto>> showSchedule(String userId) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 		if (optionalTrainer.isEmpty()) {
 			return Optional.empty();
 		}
 		Trainer trainer = optionalTrainer.get();
-		return Optional.ofNullable(ScheduleDto.of(trainer.getSchedule()));
+		return Optional.ofNullable(ScheduleDto.of(trainer.getScheduleList()));
 	}
 
 	@Override
@@ -140,16 +136,8 @@ public class TrainerServiceImpl implements TrainerService {
 		}
 		Trainer trainer = optionalTrainer.get();
 		try {
-			if (trainer.getSchedule() == null) {
-				Schedule schedule = new Schedule();
-				Schedule newSchedule = schedule.createSchedule(input, trainer);
-				scheduleRepository.save(newSchedule);
-			}
-
-			List<CantReserveDate> cantReserveDates = trainer.getSchedule()
-				.setCantReserveDate(input.getStartDate(), input.getEndDate());
-
-			cantReserveDateRepository.saveAll(cantReserveDates);
+			List<Schedule> scheduleList = trainer.setSchedule(input);
+			scheduleRepository.saveAll(scheduleList);
 
 		} catch (DateParseException e) {
 			return new ServiceResult(false, ErrorMessage.INVALID_DATE);

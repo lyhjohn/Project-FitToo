@@ -1,15 +1,11 @@
-package com.fittoo.reservation.dto;
+package com.fittoo.reservation.model;
 
 import com.fittoo.member.entity.Member;
 import com.fittoo.reservation.Reservation;
 import com.fittoo.trainer.entity.Trainer;
 import lombok.*;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
-
-import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter

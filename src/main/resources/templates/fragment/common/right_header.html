@@ -12,11 +12,11 @@
 <body>
 <div th:fragment="right_header">
     <div th:if="${member != null}">
-        <div class="rightTop" th:if="|${member?.loginType.description().toString() eq '일반 회원'}|">
+        <div class="rightTop" th:if="|${member?.loginType.memberType().toString() eq '일반 회원'}|">
             <a href="/member/profile">내 정보</a>
             <a href="/logout">로그아웃</a>
         </div>
-        <div class="rightTop" th:if="|${member?.loginType.description().toString() eq '트레이너'}|">
+        <div class="rightTop" th:if="|${member?.loginType.memberType().toString() eq '트레이너'}|">
             <a href="/trainer/profile">내 정보</a>
             <a href="/trainer/schedule">스케줄 관리</a>
             <a href="/logout">로그아웃</a>

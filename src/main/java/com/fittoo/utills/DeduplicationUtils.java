@@ -1,7 +1,5 @@
 package com.fittoo.utills;
 
-import com.fittoo.trainer.entity.CantReserveDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
