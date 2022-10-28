@@ -29,4 +29,19 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 		log.info("errorMessage.log={}", e.getMessage());
 		return "redirect:/logout";
 	}
+
+	@ExceptionHandler(UserNotFoundException.class)
+	public String findException(LoginFailException e, Model model, HttpServletRequest request,
+		RedirectAttributes attributes)
+		throws ServletException, IOException {
+
+		HttpSession session = request.getSession(false);
+
+		if (session != null) {
+			session.invalidate();
+		}
+
+		log.info("errorMessage.log={}", e.getMessage());
+		return "redirect:/logout";
+	}
 }

@@ -1,9 +1,6 @@
 package com.fittoo.member.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
@@ -39,5 +36,6 @@ public class MemberInput {
     @NotNull
     private List<String> regPurposeList;
     private String address;
-
+    private String addrDetail;
+    private String zipCode;
 }

@@ -1,5 +1,6 @@
 package com.fittoo.review.entity;
 
+import com.fittoo.common.entity.DateBaseEntity;
 import com.fittoo.member.entity.Member;
 import com.fittoo.trainer.entity.Trainer;
 import lombok.AllArgsConstructor;
@@ -14,15 +15,14 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Review {
+public class Review extends DateBaseEntity {
 
     @Id
     @GeneratedValue
     private Long id;
 
     private String comment;
-    private String regDt;
-    private String udtDt;
+
     private int score;
 
     @ManyToOne(fetch = FetchType.LAZY)

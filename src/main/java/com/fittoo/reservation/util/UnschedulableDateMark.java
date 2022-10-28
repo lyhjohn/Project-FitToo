@@ -22,8 +22,6 @@ public class UnschedulableDateMark {
 		Map<Integer, Boolean> canReserveMap = new HashMap<>();
 		String month = String.valueOf(totalDayCountAndNowMonthYear[1]);
 		String year = String.valueOf(totalDayCountAndNowMonthYear[2]);
-		System.out.println("year = " + year);
-		System.out.println("month = " + month);
 
 		if (optionalList.isEmpty()) {
 			return null;

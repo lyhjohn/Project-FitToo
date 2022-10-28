@@ -21,6 +21,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,8 +31,7 @@ import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @SuperBuilder
 @Setter
@@ -99,26 +99,9 @@ public class Trainer extends UserBaseEntity {
 			.profilePictureOriName(fileNames[0])
 			.profilePictureNewName(fileNames[1])
 			.userName(trainerInput.getUserName())
-			.address(trainerInput.getAddress())
-			.regDt(LocalDateTime.now())
-			.awards(trainerInput.getAwards())
-			.build();
-	}
-
-	public static Trainer of(TrainerInput trainerInput) {
-		return Trainer.builder()
-			.userId(trainerInput.getUserId())
-			.password(trainerInput.getPassword())
-			.phoneNumber(trainerInput.getPhoneNumber())
-			.loginType(LoginType.TRAINER)
-			.awards(trainerInput.getAwards())
-			.mainPtList(setMainPtList(trainerInput.getMainPtList()))
-			.price(trainerInput.getPrice())
-			.exercisePeriod(trainerInput.getExercisePeriod())
-			.gender(setGender(trainerInput.getGender()))
-			.introduce(trainerInput.getIntroduce())
-			.userName(trainerInput.getUserName())
-			.address(trainerInput.getAddress())
+			.addr(trainerInput.getAddr())
+			.addrDetail(trainerInput.getAddrDetail())
+			.zipcode(trainerInput.getZipcode())
 			.regDt(LocalDateTime.now())
 			.awards(trainerInput.getAwards())
 			.build();
@@ -135,16 +118,17 @@ public class Trainer extends UserBaseEntity {
 	}
 
 	public Trainer update(UpdateInput input) {
-		this.setPhoneNumber(input.getPhoneNumber());
-		this.setAwards(input.getAwards());
-		this.setPrice(input.getPrice());
-		this.setGender(setGender(input.getGender()));
-		this.setIntroduce(input.getIntroduce());
-		this.setUserName(input.getUserName());
-		this.setAddress(input.getAddress());
-		this.setUdtDt(LocalDateTime.now());
-		this.setAwards(input.getAwards());
-		this.setLoginType(LoginType.TRAINER);
+		setPhoneNumber(input.getPhoneNumber());
+		setAwards(input.getAwards());
+		setPrice(input.getPrice());
+		setGender(setGender(input.getGender()));
+		setIntroduce(input.getIntroduce());
+		setUserName(input.getUserName());
+		setAddr(input.getAddr());
+		setAddrDetail(input.getAddrDetail());
+		setZipcode(input.getZipcode());
+		setAwards(input.getAwards());
+		setLoginType(LoginType.TRAINER);
 		return this;
 	}
 
