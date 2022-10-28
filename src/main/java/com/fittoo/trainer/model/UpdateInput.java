@@ -40,7 +40,9 @@ public class UpdateInput {
     private long price;
 
     private String introduce;
-    private String address;
+    private String addr;
+    private String addrDetail;
+    private String zipcode;
     private LoginType loginType;
 
 

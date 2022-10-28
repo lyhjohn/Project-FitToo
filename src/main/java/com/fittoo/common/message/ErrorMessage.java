@@ -15,7 +15,9 @@ public enum ErrorMessage {
 
     INVALID_DATE("올바른 날짜를 입력해주세요"),
 
-    START_DAY_BIGGER_THAN_END_DAY("시작 날짜가 종료 날짜보다 클 수 없습니다.");
+    START_DAY_BIGGER_THAN_END_DAY("시작 날짜가 종료 날짜보다 클 수 없습니다."),
+
+    NOT_FOUND_USER("회원 정보를 조회할 수 없습니다.");
 
 
     private final String message;

@@ -1,24 +1,15 @@
 package com.fittoo.trainer.service.impl;
 
-import com.fittoo.common.model.ServiceResult;
-import com.fittoo.member.entity.Member;
-import com.fittoo.trainer.entity.Trainer;
+import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.model.TrainerInput;
-import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.trainer.service.TrainerService;
-import javax.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -26,18 +17,28 @@ class TrainerServiceImplTest {
 
 	@Autowired
 	TrainerService trainerService;
-	@Autowired
-	TrainerRepository trainerRepository;
-
-	@Autowired
-	EntityManager em;
 
 	@BeforeEach
 	public void setData() {
-		Trainer trainer = new Trainer();
+		TrainerInput trainer = new TrainerInput();
 		trainer.setPrice(50000);
 		trainer.setUserName("userA");
-		trainerRepository.save(trainer);
+		trainer.setGender(1);
+		trainer.setUserId("trainerA");
+		trainer.setPassword("1234");
+		trainer.setAddr("address");
+		trainer.setAddrDetail("addrDetail");
+		trainer.setZipcode("123-456");
+		trainer.setExercisePeriod("2");
+		trainerService.trainerRegister(trainer);
+	}
+
+	@Test
+	void register() {
+	    //given
+		TrainerDto trainer = trainerService.findTrainer("trainerA");
+		//when & then
+		assertThat(trainer.getZipcode()).isEqualTo("123-456");
 	}
 
 

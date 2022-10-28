@@ -3,6 +3,7 @@ package com.fittoo.trainer.service.impl;
 import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
 import com.fittoo.exception.DateParseException;
+import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.ScheduleDto;
@@ -60,28 +61,20 @@ public class TrainerServiceImpl implements TrainerService {
 	@Transactional(readOnly = true)
 	public TrainerDto findTrainer(String userId) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
-		if (optionalTrainer.isEmpty()) {
-			return null;
-		}
-		if (!optionalTrainer.get().getUserId().equals(userId)) {
-			return null;
-		}
 
-		return optionalTrainer.map(TrainerDto::of).orElse(null);
+		return optionalTrainer.map(TrainerDto::of).orElseThrow(()
+			-> new UserNotFoundException(ErrorMessage.NOT_FOUND_TRAINER.message(),
+			new RuntimeException()));
 	}
 
 	@Override
 	@Transactional
 	public TrainerDto update(UpdateInput input) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(input.getUserId());
-		if (optionalTrainer.isEmpty()) {
-			return null;
-		}
 
-		Trainer trainer = optionalTrainer.get();
-		Trainer updateTrainer = trainer.update(input);
-
-		return TrainerDto.of(updateTrainer);
+		return optionalTrainer.map(x -> TrainerDto.of(x.update(input)))
+			.orElseThrow(() -> new UserNotFoundException(ErrorMessage.NOT_FOUND_TRAINER.message(),
+				new RuntimeException()));
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "reservationList")
 public class MemberDto {
 
     private Long id;
@@ -59,9 +60,15 @@ public class MemberDto {
     }
 
     public String getRegDt() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
 
         return regDt != null ? this.regDt.format(formatter) : "";
+    }
+
+    public String getUdtDt() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
+
+        return udtDt != null ? this.udtDt.format(formatter) : "";
     }
 
 

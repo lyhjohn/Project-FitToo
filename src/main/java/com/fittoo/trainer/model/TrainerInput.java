@@ -1,6 +1,5 @@
 package com.fittoo.trainer.model;
 
-import com.fittoo.member.model.LoginType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,16 +35,21 @@ public class TrainerInput {
     private String awards;
     private String userName;
 
-    @NotNull
     private MultipartFile profilePicture;
 
     private List<String> mainPtList;
 
+
     private long price;
 
     private String introduce;
-    private String address;
-    private LoginType loginType;
 
+    @NotNull
+    private String addr;
 
+    @NotNull
+    private String addrDetail;
+
+    @NotNull
+    private String zipcode;
 }

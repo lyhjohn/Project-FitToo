@@ -22,7 +22,7 @@ import org.springframework.ui.Model;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@ToString
+@ToString(exclude = {"reservation", "scheduleList"})
 public class TrainerDto extends UserBaseDto {
 
 	private long price;
@@ -31,7 +31,15 @@ public class TrainerDto extends UserBaseDto {
 	private String introduce;
 	private String profilePictureNewName;
 	private String profilePictureOriName;
+
 	private LocalDateTime regDt;
+	private LocalDateTime udtDt;
+
+	private String addr;
+	private String addrDetail;
+
+	private String zipcode;
+
 
 	@Builder.Default
 	private List<ReservationDto> reservation = new ArrayList<>();
@@ -52,11 +60,12 @@ public class TrainerDto extends UserBaseDto {
 			.introduce(trainer.getIntroduce())
 			.profilePictureOriName(trainer.getProfilePictureOriName())
 			.profilePictureNewName(trainer.getProfilePictureNewName())
-//			.reservation(trainer.getReservationList().stream().map(ReservationDto::of)
-//				.collect(Collectors.toList()))
 			.userName(trainer.getUserName())
-			.address(trainer.getAddress())
+			.addr(trainer.getAddr())
+			.addrDetail(trainer.getAddrDetail())
+			.zipcode(trainer.getZipcode())
 			.regDt(trainer.getRegDt())
+			.udtDt(trainer.getUdtDt())
 			.scheduleList(ScheduleDto.of(trainer.getScheduleList()))
 			.build();
 	}
@@ -70,7 +79,7 @@ public class TrainerDto extends UserBaseDto {
 	public String getRegDt() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
 
-		return this.regDt != null ? this.regDt.format(formatter) : "";
+		return this.getRegDt() != null ? this.regDt.format(formatter) : "";
 	}
 
 

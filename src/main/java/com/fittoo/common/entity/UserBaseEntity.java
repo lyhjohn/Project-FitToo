@@ -7,7 +7,6 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,25 +14,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @MappedSuperclass
 @SuperBuilder
-public abstract class UserBaseEntity {
+public abstract class UserBaseEntity extends DateBaseEntity {
 
-    private String userId;
-    private String password;
-    private String phoneNumber;
-    private String gender; // 1=남자 2=여자
-    private String userName;
+	private String userId;
+	private String password;
+	private String phoneNumber;
+	private String gender; // 1=남자 2=여자
+	private String userName;
 
-    @Enumerated(EnumType.STRING)
-    private LoginType loginType;
+	@Enumerated(EnumType.STRING)
+	private LoginType loginType;
 
-    private String exercisePeriod;
-    private LocalDateTime regDt;
-    private LocalDateTime udtDt;
-    private String address;
-    
-    private String zipcode;
-
-
-
-
+	private String exercisePeriod;
+	private String addr;
+	private String addrDetail;
+	private String zipcode;
 }

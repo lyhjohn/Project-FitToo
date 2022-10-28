@@ -88,11 +88,6 @@ public class TrainerController {
 		String userId = principal.getName();
 		TrainerDto trainer = trainerService.findTrainer(userId);
 
-		if (trainerIsNotFound(trainer, request)) {
-			model.addAttribute("errorMessage", ErrorMessage.ACCESS_REJECT.message());
-			return "/error/error";
-		}
-
 		whatIsGender(trainer.getGender(), model);
 
 		model.addAttribute("member", trainer);
@@ -119,20 +114,15 @@ public class TrainerController {
 
 	@PostMapping("/profileUpdate")
 	public String profileUpdate(@Validated @ModelAttribute(name = "member") UpdateInput input,
-		BindingResult bindingResult,
-		Model model, HttpServletRequest request) {
+		BindingResult bindingResult, Model model) {
+
 		if (bindingResult.hasErrors()) {
-			log.info("error={}", bindingResult);
 			whatIsGender(input.getGender(), model);
 			model.addAttribute("member", input);
 			return "/trainer/profile";
 		}
 
 		TrainerDto trainer = trainerService.update(input);
-
-		if (trainerIsNotFound(trainer, request)) {
-			return "redirect:/";
-		}
 
 		whatIsGender(input.getGender(), model);
 
@@ -189,16 +179,6 @@ public class TrainerController {
 		}
 		redirectAttributes.addAttribute("trainerId", userId);
 		return "redirect:/trainer/trainerList";
-	}
-
-
-	private boolean trainerIsNotFound(TrainerDto trainer, HttpServletRequest request) {
-		if (trainer == null) {
-			HttpSession session = request.getSession(false);
-			session.invalidate();
-			return true;
-		}
-		return false;
 	}
 
 	@GetMapping("/schedule")
