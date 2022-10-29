@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,15 +49,15 @@ public class TrainerController {
 	private final TrainerService trainerService;
 	private final MemberService memberService;
 
-	@ModelAttribute(name = "mainPtList")
-	private static Map<String, String> getMainPtList() {
-		Map<String, String> mainPtListMap = new LinkedHashMap<>();
-		mainPtListMap.put("diet", "다이어트");
-		mainPtListMap.put("weight", "웨이트");
-		mainPtListMap.put("rehabilitation", "재활");
-		mainPtListMap.put("health", "체력");
-		mainPtListMap.put("partner_training", "파트너트레이닝");
-		return mainPtListMap;
+	@ModelAttribute(name = "exerciseType")
+	private static Map<String, String> getExerciseType() {
+		Map<String, String> exerciseType = new LinkedHashMap<>();
+		exerciseType.put("diet", "다이어트");
+		exerciseType.put("weight", "웨이트");
+		exerciseType.put("rehabilitation", "재활");
+		exerciseType.put("health", "체력");
+		exerciseType.put("partner_training", "파트너트레이닝");
+		return exerciseType;
 	}
 
 

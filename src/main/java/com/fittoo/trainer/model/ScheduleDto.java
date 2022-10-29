@@ -31,7 +31,7 @@ public class ScheduleDto {
 	public static ScheduleDto of(Schedule schedule) {
 		return ScheduleDto.builder()
 			.comment(schedule.getComment())
-			.date(schedule.getExcludeDate())
+			.date(schedule.getDate())
 			.build();
 	}
 

@@ -27,7 +27,7 @@ public class TrainerDto extends UserBaseDto {
 
 	private long price;
 	private String awards;
-	private String mainPtList;
+	private String exerciseType;
 	private String introduce;
 	private String profilePictureNewName;
 	private String profilePictureOriName;
@@ -53,7 +53,7 @@ public class TrainerDto extends UserBaseDto {
 			.phoneNumber(trainer.getPhoneNumber())
 			.loginType(LoginType.TRAINER)
 			.awards(trainer.getAwards())
-			.mainPtList(trainer.getMainPtList())
+			.exerciseType(trainer.getExercise())
 			.price(trainer.getPrice())
 			.exercisePeriod(trainer.getExercisePeriod())
 			.gender(trainer.getGender())

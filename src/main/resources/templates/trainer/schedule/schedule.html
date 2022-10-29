@@ -10,6 +10,9 @@
     .rightTop {
       float: right;
     }
+    .block-input {
+      display: block;
+    }
   </style>
   <title>Fit-Too</title>
 </head>
@@ -20,9 +23,21 @@
 <form action="/trainer/schedule/create" method="post">
   <div>
     <p>범위 날짜 선택</p>
-    <input type="date" name="startDate">부터
-    <input type="date" name="endDate">까지 일정에서 제외하기
+    시작일: <input type="date" name="startDate" class="block-input">
+    종료일: <input type="date" name="endDate" class="block-input">
   </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>종목: </th>
+      <td>
+        <input type="text">
+      </td>
+    </tr>
+    </thead>
+  </table>
+
   <button type="submit">저장</button>
 </form>
 
