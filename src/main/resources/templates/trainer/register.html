@@ -55,6 +55,7 @@
 
 <h1>회원 가입 페이지</h1>
 
+<div th:text="${errorMessage}" class="field-error"></div>
 <form method="post" th:object="${trainer}" class="container" onsubmit="return chkchk(this);"
       enctype="multipart/form-data">
   <div th:if="${#fields.hasGlobalErrors()}">
@@ -99,9 +100,9 @@
     </select>
   </div>
   <br>
-  <div th:text="#{exercise}">주 분야</div>
+  <div th:text="#{exercise}">운동 종류</div>
   <div th:each="exercise : ${exerciseType}" class="form-check form-check-inline">
-    <input type="checkbox" th:value="${exercise.key}" name="regPurposeList"
+    <input type="radio" th:value="${exercise.key}" name="regPurposeList"
            th:field="${trainer.exerciseType}"
            class="form-check">
     <label class="form-check-label" th:for="${#ids.prev('exerciseType')}"
@@ -135,15 +136,16 @@
   <div> 운동 장소
     <div>
       <span th:text="#{zipcode}"></span>
-      <input type="text" th:field="*{zipcode}" name="zipcode" readonly
+      <input type="text" th:field="*{zipcode}" name="zipcode" readonly required
              placeholder="우편번호" class="block-input">
       <button onclick="execDaumPostcode()" type="button" class="inline-button">우편번호 찾기</button>
     </div>
     <div>
       <span th:text="#{addr}"></span><input type="text" th:field="*{addr}" name="addr" readonly
-                                            placeholder="주소 입력" class="block-input">
-      <span th:text="#{addrDetail}"></span><input type="text" th:field="*{addrDetail}"
-                                                  name="addrDetail" placeholder="주소 입력" class="block-input">
+                                            required placeholder="주소 입력" class="block-input">
+      <span th:text="#{addrDetail}"></span><input type="text" th:field="*{addrDetail}" required
+                                                  name="addrDetail" placeholder="주소 입력"
+                                                  class="block-input">
     </div>
   </div>
 

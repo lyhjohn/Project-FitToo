@@ -3,6 +3,7 @@ package com.fittoo.trainer.model;
 import com.fittoo.common.model.UserBaseDto;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.model.ReservationDto;
+import com.fittoo.trainer.entity.ExerciseType;
 import com.fittoo.trainer.entity.Trainer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +28,7 @@ public class TrainerDto extends UserBaseDto {
 
 	private long price;
 	private String awards;
-	private String exerciseType;
+	private ExerciseTypeDto exerciseType;
 	private String introduce;
 	private String profilePictureNewName;
 	private String profilePictureOriName;
@@ -53,7 +54,7 @@ public class TrainerDto extends UserBaseDto {
 			.phoneNumber(trainer.getPhoneNumber())
 			.loginType(LoginType.TRAINER)
 			.awards(trainer.getAwards())
-			.exerciseType(trainer.getExercise())
+			.exerciseType(ExerciseTypeDto.of(trainer.getExerciseType()))
 			.price(trainer.getPrice())
 			.exercisePeriod(trainer.getExercisePeriod())
 			.gender(trainer.getGender())
