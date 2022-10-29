@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 @Setter
 public class ReservationParam {
     private String trainerId;
-    private String year;
-    private String currentMonth;
-    private String day;
+    private int year;
+    private int currentMonth;
+    private int day;
 }

@@ -213,9 +213,9 @@
         <tr>
             <td>
                 <form action="/trainer/detail">
-<!--                    <input type="hidden" th:text="${trainer.userId}" th:value="${trainer.userId}" name="userId">-->
+                    <!--                    <input type="hidden" th:text="${trainer.userId}" th:value="${trainer.userId}" name="userId">-->
                     <button type="submit" th:text="${trainer.userName}" id="user-name" th:value="${trainer.userId}"
-                    name="userId"></button>
+                            name="userId"></button>
                 </form>
 
             </td>
@@ -225,6 +225,34 @@
         </thead>
     </table>
 </div>
+
+
+<!--<div>-->
+<!--    <table class="rwd-table">-->
+<!--        <thead th:each="trainer : ${trainerList}">-->
+<!--        <tr>-->
+<!--            <td rowspan="2" class="no-color">-->
+<!--                <img th:src="|/trainer/images/${trainer.getProfilePictureNewName()}|" width="100" height="100"/>-->
+<!--            </td>-->
+<!--            <td th:text="#{name}"></td>-->
+<!--            <td th:text="#{gender}"></td>-->
+<!--            <td th:text="#{price}"></td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td>-->
+<!--                <form action="/trainer/detail">-->
+<!--&lt;!&ndash;                    <input type="hidden" th:text="${trainer.userId}" th:value="${trainer.userId}" name="userId">&ndash;&gt;-->
+<!--                    <button type="submit" th:text="${trainer.userName}" id="user-name" th:value="${trainer.userId}"-->
+<!--                    name="userId"></button>-->
+<!--                </form>-->
+
+<!--            </td>-->
+<!--            <td th:text="${trainer.gender}"></td>-->
+<!--            <td th:text="${trainer.price}"></td>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--    </table>-->
+<!--</div>-->
 
 
 </body>

@@ -5,20 +5,12 @@ import com.fittoo.member.model.DateParam;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.service.MemberService;
-import com.fittoo.reservation.util.UnschedulableDateMark;
+import com.fittoo.reservation.util.SchedulableDateMark;
 import com.fittoo.trainer.model.ScheduleDto;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.service.TrainerService;
 import com.fittoo.utills.CalendarUtil;
 import java.security.Principal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.thymeleaf.util.ListUtils;
 
 @Controller
 @RequiredArgsConstructor
@@ -99,7 +90,7 @@ public class MemberController {
 			/**
 			 * 트레이너가 예약 불가능한 날짜로 등록한 날은 캘린더에 빨간 글씨로 표시할 수 있게 Map을 만들어 view로 전달
 			 */
-			Map<Integer, Boolean> canReserveDayMap = UnschedulableDateMark.canReserveDate(
+			Map<Integer, Boolean> canReserveDayMap = SchedulableDateMark.canReserveDate(
 				CalendarUtil.pageControl(prevMonth, nextMonth, year, model), trainerId,
 				optionalList);
 

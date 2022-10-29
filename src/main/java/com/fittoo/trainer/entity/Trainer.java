@@ -42,7 +42,7 @@ public class Trainer extends UserBaseEntity {
 	private Long id;
 	private long price;
 	private String awards;
-	private String mainPtList;
+	private String exercise;
 	private String introduce;
 	private String profilePictureNewName;
 	private String profilePictureOriName;
@@ -71,7 +71,7 @@ public class Trainer extends UserBaseEntity {
 	}
 
 
-	public static String setMainPtList(List<String> ptList) {
+	public static String setExercise(List<String> ptList) {
 		StringBuilder sb = new StringBuilder();
 		int length = ptList.size();
 		for (String pt : ptList) {
@@ -91,7 +91,7 @@ public class Trainer extends UserBaseEntity {
 			.phoneNumber(trainerInput.getPhoneNumber())
 			.loginType(LoginType.TRAINER)
 			.awards(trainerInput.getAwards())
-			.mainPtList(setMainPtList(trainerInput.getMainPtList()))
+			.exercise(setExercise(trainerInput.getExerciseType()))
 			.price(trainerInput.getPrice())
 			.exercisePeriod(trainerInput.getExercisePeriod())
 			.gender(setGender(trainerInput.getGender()))

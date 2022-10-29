@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.Optional;
 import org.thymeleaf.util.ListUtils;
 
-public class UnschedulableDateMark {
+public class SchedulableDateMark {
 
-	public static Map<Integer, Boolean> canReserveDate(int[] totalDayCountAndNowMonthYear, String trainerId,
-		Optional<List<ScheduleDto>> optionalList) {
+	public static Map<Integer, Boolean> canReserveDate(int[] totalDayCountAndNowMonthYear,
+		String trainerId, Optional<List<ScheduleDto>> optionalList) {
 		int totalDayCount = totalDayCountAndNowMonthYear[0];
 		Map<Integer, Boolean> canReserveMap = new HashMap<>();
 		String month = String.valueOf(totalDayCountAndNowMonthYear[1]);
@@ -45,7 +45,7 @@ public class UnschedulableDateMark {
 				LocalDate localDate = LocalDate.ofInstant(calendar.toInstant(),
 					ZoneId.systemDefault());
 
-				canReserveMap.put(i + 1, !ListUtils.contains(list, localDate));
+				canReserveMap.put(i + 1, ListUtils.contains(list, localDate));
 			} catch (ParseException e) {
 				throw new RuntimeException(e);
 			}

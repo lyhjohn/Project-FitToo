@@ -35,7 +35,7 @@ public class UpdateInput {
 
     private String profilePictureNewName;
 
-    private List<String> mainPtList;
+    private List<String> exerciseType;
 
     private long price;
 

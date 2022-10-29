@@ -28,9 +28,9 @@ public class Schedule {
 	@JoinColumn(name = "trainer_id")
 	private Trainer trainer;
 
-	private LocalDate excludeDate;
+	private LocalDate date;
 
-	public Schedule(Calendar excludeDate) {
-		this.excludeDate = LocalDate.ofInstant(excludeDate.toInstant(), ZoneId.systemDefault());
+	public Schedule(Calendar date) {
+		this.date = LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
 	}
 }
