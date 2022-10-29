@@ -13,6 +13,10 @@
     .block-input {
       display: block;
     }
+    .error {
+      font-weight: bold;
+      color: red;
+    }
   </style>
   <title>Fit-Too</title>
 </head>
@@ -23,6 +27,7 @@
 <form action="/trainer/schedule/create" method="post">
   <div>
     <p>범위 날짜 선택</p>
+    <div th:text="${errorMessage}" th:if="${errorMessage != null}" class="error"></div>
     시작일: <input type="date" name="startDate" class="block-input">
     종료일: <input type="date" name="endDate" class="block-input">
   </div>
@@ -32,7 +37,7 @@
     <tr>
       <th>종목: </th>
       <td>
-        <input type="text">
+<!--        <input type="text" th:text="">-->
       </td>
     </tr>
     </thead>

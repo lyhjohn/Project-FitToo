@@ -18,8 +18,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -42,7 +45,6 @@ public class Trainer extends UserBaseEntity {
 	private Long id;
 	private long price;
 	private String awards;
-	private String exercise;
 	private String introduce;
 	private String profilePictureNewName;
 	private String profilePictureOriName;
@@ -59,6 +61,9 @@ public class Trainer extends UserBaseEntity {
 	@Builder.Default
 	private List<Reservation> reservationList = new ArrayList<>();
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "exercise_type")
+	private ExerciseType exerciseType;
 
 	public void addReservation(Reservation reservation) {
 		this.reservationList.add(reservation);
@@ -70,20 +75,6 @@ public class Trainer extends UserBaseEntity {
 		review.setTrainer(this);
 	}
 
-
-	public static String setExercise(List<String> ptList) {
-		StringBuilder sb = new StringBuilder();
-		int length = ptList.size();
-		for (String pt : ptList) {
-			if (--length == 0) {
-				sb.append(pt);
-			} else {
-				sb.append(pt).append(",");
-			}
-		}
-		return sb.toString();
-	}
-
 	public static Trainer of(TrainerInput trainerInput, String[] fileNames) {
 		return Trainer.builder()
 			.userId(trainerInput.getUserId())
@@ -91,7 +82,6 @@ public class Trainer extends UserBaseEntity {
 			.phoneNumber(trainerInput.getPhoneNumber())
 			.loginType(LoginType.TRAINER)
 			.awards(trainerInput.getAwards())
-			.exercise(setExercise(trainerInput.getExerciseType()))
 			.price(trainerInput.getPrice())
 			.exercisePeriod(trainerInput.getExercisePeriod())
 			.gender(setGender(trainerInput.getGender()))

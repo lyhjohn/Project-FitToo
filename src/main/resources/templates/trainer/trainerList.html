@@ -1,180 +1,187 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="/templates/css/tableStyle.css" type="text/css">
-    <!--    <link th:href="@{/templates/css/bootstrap.min.css}"-->
-    <!--          href="/templates/css/bootstrap.min.css" rel="stylesheet">-->
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="/templates/css/tableStyle.css" type="text/css">
+  <!--    <link th:href="@{/templates/css/bootstrap.min.css}"-->
+  <!--          href="/templates/css/bootstrap.min.css" rel="stylesheet">-->
 
-    <style>
-        .leftTop {
-            float: left;
-        }
+  <style>
+    .leftTop {
+      float: left;
+    }
 
-        .rightTop {
-            float: right;
-        }
+    .rightTop {
+      float: right;
+    }
 
-        .table-size {
-            width: 50%;
-            height: 20%;
-            border: 1px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    .table-size {
+      width: 50%;
+      height: 20%;
+      border: 1px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-        #picture-button {
-            float: left;
-            position: fixed;
-            top: 30%;
-            left: 5%;
-        }
+    #picture-button {
+      float: left;
+      position: fixed;
+      top: 30%;
+      left: 5%;
+    }
 
-        .line {
-            top: 80%;
-            height: 50px;
-            width: 40%;
-            color: #0d6efd;
-        }
+    .line {
+      top: 80%;
+      height: 50px;
+      width: 40%;
+      color: #0d6efd;
+    }
 
-        * {
-            font-family: 'Open Sans', sans-serif;
-        }
+    * {
+      font-family: 'Open Sans', sans-serif;
+    }
 
-        .rwd-table {
-            margin: auto;
-            min-width: 300px;
-            max-width: 100%;
-            border-collapse: collapse;
-        }
+    .rwd-table {
+      margin: auto;
+      min-width: 300px;
+      max-width: 100%;
+      border-collapse: collapse;
+    }
 
-        .rwd-table tr:first-child {
-            border-top: none;
-            background: #428bca;
-            color: #fff;
-        }
+    .rwd-table tr:first-child {
+      border-top: none;
+      background: #428bca;
+      color: #fff;
+    }
 
-        .rwd-table tr {
-            border-top: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
-            background-color: #f5f9fc;
-        }
+    .rwd-table tr {
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      background-color: #f5f9fc;
+    }
 
-        .rwd-table tr:nth-child(odd):not(:first-child) {
-            background-color: #ebf3f9;
-        }
+    .rwd-table tr:nth-child(odd):not(:first-child) {
+      background-color: #ebf3f9;
+    }
 
-        .rwd-table th {
-            display: none;
-        }
+    .rwd-table th {
+      display: none;
+    }
 
-        .rwd-table td {
-            display: block;
-        }
+    .rwd-table td {
+      display: block;
+    }
 
-        .rwd-table td:first-child {
-            margin-top: .5em;
-        }
+    .rwd-table td:first-child {
+      margin-top: .5em;
+    }
 
-        .rwd-table td:last-child {
-            margin-bottom: .5em;
-        }
+    .rwd-table td:last-child {
+      margin-bottom: .5em;
+    }
 
-        .rwd-table td:before {
-            content: attr(data-th) ": ";
-            font-weight: bold;
-            width: 120px;
-            display: inline-block;
-            color: #000;
-        }
+    .rwd-table td:before {
+      content: attr(data-th) ": ";
+      font-weight: bold;
+      width: 120px;
+      display: inline-block;
+      color: #000;
+    }
 
-        .rwd-table th,
-        .rwd-table td {
-            text-align: left;
-        }
+    .rwd-table th,
+    .rwd-table td {
+      text-align: left;
+    }
 
-        .rwd-table {
-            color: #333;
-            border-radius: .4em;
-            overflow: hidden;
-        }
+    .rwd-table {
+      color: #333;
+      border-radius: .4em;
+      overflow: hidden;
+    }
 
-        .rwd-table tr {
-            border-color: #bfbfbf;
-        }
+    .rwd-table tr {
+      border-color: #bfbfbf;
+    }
 
-        .rwd-table th,
-        .rwd-table td {
-            padding: .5em 1em;
-        }
+    .rwd-table th,
+    .rwd-table td {
+      padding: .5em 1em;
+    }
 
-        @media screen and (max-width: 601px) {
-            .rwd-table tr:nth-child(2) {
-                border-top: none;
-            }
-        }
+    @media screen and (max-width: 601px) {
+      .rwd-table tr:nth-child(2) {
+        border-top: none;
+      }
+    }
 
-        @media screen and (min-width: 600px) {
-            .rwd-table tr:hover:not(:first-child) {
-                background-color: #d8e7f3;
-            }
+    @media screen and (min-width: 600px) {
+      .rwd-table tr:hover:not(:first-child) {
+        background-color: #d8e7f3;
+      }
 
-            .rwd-table td:before {
-                display: none;
-            }
+      .rwd-table td:before {
+        display: none;
+      }
 
-            .rwd-table th,
-            .rwd-table td {
-                display: table-cell;
-                padding: .25em .5em;
-            }
+      .rwd-table th,
+      .rwd-table td {
+        display: table-cell;
+        padding: .25em .5em;
+      }
 
-            .rwd-table th:first-child,
-            .rwd-table td:first-child {
-                padding-left: 0;
-            }
+      .rwd-table th:first-child,
+      .rwd-table td:first-child {
+        padding-left: 0;
+      }
 
-            .rwd-table th:last-child,
-            .rwd-table td:last-child {
-                padding-right: 0;
-            }
+      .rwd-table th:last-child,
+      .rwd-table td:last-child {
+        padding-right: 0;
+      }
 
-            .rwd-table th,
-            .rwd-table td {
-                padding: 1em !important;
-            }
-        }
+      .rwd-table th,
+      .rwd-table td {
+        padding: 1em !important;
+      }
+    }
 
-        h1 {
-            text-align: left;
-            font-size: 2.4em;
-            color: #0c63e4;
-            position: absolute;
-            left: 2%;
-            top: 5%;
-        }
+    h1 {
+      text-align: left;
+      font-size: 2.4em;
+      color: #0c63e4;
+      position: absolute;
+      left: 2%;
+      top: 5%;
+    }
 
-        .rwd-table {
-            display: block;
-            position: absolute;
-            right: 10%;
-            top: 10%;
-        }
+    .rwd-table {
+      display: block;
+      position: absolute;
+      right: 10%;
+      top: 10%;
+    }
 
-        #user-name {
-            background-color: white;
-            color: #0d6efd;
-        }
+    #user-name {
+      background-color: white;
+      color: #0d6efd;
+    }
 
-        .container {
-            position: absolute;
-            background-color: skyblue;
-            top: 30%;
-        }
-    </style>
-    <title>내 정보</title>
+    .container {
+      position: absolute;
+      background-color: skyblue;
+      top: 30%;
+    }
+
+    .right-in-div {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+  <title>내 정보</title>
 </head>
 <body>
 <div th:replace="/fragment/common/home_header.html::home_header"></div>
@@ -182,77 +189,54 @@
 <h1>트레이너 리스트</h1>
 
 <div class="container">
-    <div th:if="${trainerDetail == null}">
-        트레이너를 선택하세요.
+  <div th:if="${trainerDetail == null}">
+    트레이너를 선택하세요.
+  </div>
+  <div th:if="${trainerDetail != null}">
+    <div style="display:inline-block;vertical-align:top;">
+      <img th:src="|/trainer/images/${trainerDetail?.getProfilePictureNewName()}|" width="300"
+           height="300"/>
     </div>
-    <div th:if="${trainerDetail != null}">
-        <img th:src="|/trainer/images/${trainerDetail?.getProfilePictureNewName()}|" width="300" height="300"/>
-        <div th:object="${trainerDetail}">
-            <div>이름: <span th:field="*{userName}" th:text="*{userName}"></span></div>
-            <div>지역: <span th:field="*{getAddr}" th:text="*{getAddr}"></span></div>
-            <div>금액: <span th:field="*{price}" th:text="*{price}"></span></div>
-        </div>
-        소개: <div th:text="${trainerDetail.introduce}"></div>
-        <form action="/member/calendar" method="get">
-            <button type="submit" th:value="${trainerDetail.userId}" name="trainerId">예약</button>
-        </form>
+    <div th:text="${trainerDetail.introduce}" style="display:inline-block;"></div>
+    <div th:object="${trainerDetail}">
+      <div>이름: <span th:field="*{userName}" th:text="*{userName}"></span></div>
+      <div>지역: <span th:field="*{getAddr}" th:text="*{getAddr}"></span></div>
+      <div>금액: <span th:field="*{price}" th:text="*{price}"></span></div>
     </div>
+    <form action="/member/calendar" method="get">
+      <button type="submit" th:value="${trainerDetail.userId}" name="trainerId">예약</button>
+    </form>
+  </div>
 </div>
+
 
 <div>
-    <table class="rwd-table">
-        <thead th:each="trainer : ${trainerList}">
-        <tr>
-            <td rowspan="2" class="no-color">
-                <img th:src="|/trainer/images/${trainer.getProfilePictureNewName()}|" width="100" height="100"/>
-            </td>
-            <td th:text="#{name}"></td>
-            <td th:text="#{gender}"></td>
-            <td th:text="#{price}"></td>
-        </tr>
-        <tr>
-            <td>
-                <form action="/trainer/detail">
-                    <!--                    <input type="hidden" th:text="${trainer.userId}" th:value="${trainer.userId}" name="userId">-->
-                    <button type="submit" th:text="${trainer.userName}" id="user-name" th:value="${trainer.userId}"
-                            name="userId"></button>
-                </form>
+  <table class="rwd-table">
+    <thead th:each="trainer : ${trainerList}">
+    <tr>
+      <td rowspan="2" class="no-color">
+        <img th:src="|/trainer/images/${trainer.getProfilePictureNewName()}|" width="100"
+             height="100"/>
+      </td>
+      <td th:text="#{name}"></td>
+      <td th:text="#{exercise}"></td>
+      <td th:text="#{price}"></td>
+    </tr>
+    <tr>
+      <td>
+        <form action="/trainer/detail">
+          <button type="submit" th:text="${trainer.userName}" id="user-name"
+                  th:value="${trainer.userId}"
+                  name="userId"></button>
+        </form>
 
-            </td>
-            <td th:text="${trainer.gender}"></td>
-            <td th:text="${trainer.price}"></td>
-        </tr>
-        </thead>
-    </table>
+      </td>
+      <td th:text="${trainer.exerciseType.getExercise()}"></td>
+      <td th:text="${trainer.price}"></td>
+    </tr>
+    </thead>
+  </table>
 </div>
-
-
-<!--<div>-->
-<!--    <table class="rwd-table">-->
-<!--        <thead th:each="trainer : ${trainerList}">-->
-<!--        <tr>-->
-<!--            <td rowspan="2" class="no-color">-->
-<!--                <img th:src="|/trainer/images/${trainer.getProfilePictureNewName()}|" width="100" height="100"/>-->
-<!--            </td>-->
-<!--            <td th:text="#{name}"></td>-->
-<!--            <td th:text="#{gender}"></td>-->
-<!--            <td th:text="#{price}"></td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td>-->
-<!--                <form action="/trainer/detail">-->
-<!--&lt;!&ndash;                    <input type="hidden" th:text="${trainer.userId}" th:value="${trainer.userId}" name="userId">&ndash;&gt;-->
-<!--                    <button type="submit" th:text="${trainer.userName}" id="user-name" th:value="${trainer.userId}"-->
-<!--                    name="userId"></button>-->
-<!--                </form>-->
-
-<!--            </td>-->
-<!--            <td th:text="${trainer.gender}"></td>-->
-<!--            <td th:text="${trainer.price}"></td>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--    </table>-->
-<!--</div>-->
 
 
 </body>

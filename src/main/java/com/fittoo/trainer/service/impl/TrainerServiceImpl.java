@@ -4,6 +4,7 @@ import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
 import com.fittoo.exception.DateParseException;
 import com.fittoo.exception.UserNotFoundException;
+import com.fittoo.trainer.entity.ExerciseType;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.ScheduleDto;
@@ -11,6 +12,7 @@ import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
+import com.fittoo.trainer.repository.ExerciseTypeRepository;
 import com.fittoo.trainer.repository.ScheduleRepository;
 import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.trainer.service.TrainerService;
@@ -31,28 +33,46 @@ public class TrainerServiceImpl implements TrainerService {
 
 	private final TrainerRepository trainerRepository;
 	private final ScheduleRepository scheduleRepository;
+	private final ExerciseTypeRepository exerciseTypeRepository;
 
 
 	@Override
 	@Transactional
-	public ServiceResult trainerRegister(TrainerInput trainerInput) {
+	public ServiceResult trainerRegister(TrainerInput input) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(
-			trainerInput.getUserId());
+			input.getUserId());
+
 		if (optionalTrainer.isPresent()) {
 			return new ServiceResult(false, ErrorMessage.ALREADY_EXIST_USERID);
 		}
 
 		String[] fileNames;
 		try {
-			fileNames = new FileStore().storeFile(trainerInput.getProfilePicture(), "trainer");
+			fileNames = new FileStore().storeFile(input.getProfilePicture(), "trainer");
 		} catch (IOException e) {
 			return new ServiceResult(false, ErrorMessage.INVALID_FILE);
 		}
 
-		String encPassword = BCrypt.hashpw(trainerInput.getPassword(), BCrypt.gensalt());
-		trainerInput.setPassword(encPassword);
-		Trainer trainer = Trainer.of(trainerInput, fileNames);
+		String encPassword = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());
+		input.setPassword(encPassword);
+		Trainer trainer = Trainer.of(input, fileNames);
+
+		Optional<ExerciseType> optionalExerciseType = exerciseTypeRepository.findById(
+			input.getExerciseType());
+
 		trainerRepository.save(trainer);
+
+		if (optionalExerciseType.isEmpty()) {
+			ExerciseType exerciseType = exerciseTypeRepository.save(
+				new ExerciseType(input.getExerciseType()));
+			exerciseType.addTrainer(trainer);
+			exerciseTypeRepository.save(exerciseType);
+		} else {
+			ExerciseType exerciseType = optionalExerciseType.get();
+			exerciseType.addTrainer(trainer);
+			exerciseTypeRepository.save(exerciseType);
+		}
+
 
 		return new ServiceResult();
 	}

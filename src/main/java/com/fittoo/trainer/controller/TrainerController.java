@@ -52,11 +52,14 @@ public class TrainerController {
 	@ModelAttribute(name = "exerciseType")
 	private static Map<String, String> getExerciseType() {
 		Map<String, String> exerciseType = new LinkedHashMap<>();
-		exerciseType.put("diet", "다이어트");
-		exerciseType.put("weight", "웨이트");
+		exerciseType.put("PT", "헬스 PT");
+		exerciseType.put("pilates", "필라테스");
+		exerciseType.put("yoga", "요가");
+		exerciseType.put("golf", "골프");
+		exerciseType.put("pole_dance", "폴댄스");
+		exerciseType.put("crossfit", "크로스핏");
 		exerciseType.put("rehabilitation", "재활");
-		exerciseType.put("health", "체력");
-		exerciseType.put("partner_training", "파트너트레이닝");
+		exerciseType.put("boxing", "복싱");
 		return exerciseType;
 	}
 
@@ -68,7 +71,8 @@ public class TrainerController {
 	}
 
 	@PostMapping("/register")
-	public String registerComplete(@ModelAttribute @Valid TrainerInput trainerInput,
+	public String registerComplete(
+		@ModelAttribute(name = "trainer") @Validated TrainerInput trainerInput,
 		BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) {
 			return "/register";
@@ -76,8 +80,8 @@ public class TrainerController {
 
 		ServiceResult result = trainerService.trainerRegister(trainerInput);
 		if (!result.isResult()) {
-			model.addAttribute("errorMessage", result.getErrorMessage());
-			return "/register";
+			model.addAttribute("errorMessage", result.getErrorMessage().message());
+			return "/trainer/register";
 		}
 		return "redirect:/";
 	}
@@ -182,21 +186,31 @@ public class TrainerController {
 
 	@GetMapping("/schedule")
 	public String scheduleManager(Principal principal, Model model) {
+
+		model.addAttribute("loginType", "트레이너");
+
+
 		String userId = principal.getName();
 		Optional<List<ScheduleDto>> optionalList = trainerService.showSchedule(userId);
 		if (optionalList.isEmpty()) {
-			return "/trainer/schedule/schedule";
+			return "trainer/schedule/schedule";
 		}
 		List<ScheduleDto> scheduleList = optionalList.get();
 
-		model.addAttribute("loginType", "트레이너");
 		model.addAttribute("scheduleList", scheduleList);
-		return "/trainer/schedule/schedule";
+		return "trainer/schedule/schedule";
 	}
 
 	@PostMapping("/schedule/create")
-	public String createSchedule(Principal principal, ScheduleInput input) {
-		trainerService.createSchedule(principal.getName(), input);
+	public String createSchedule(Principal principal, ScheduleInput input,
+		Model model) {
+		ServiceResult result = trainerService.createSchedule(principal.getName(), input);
+		if (!result.isResult()) {
+			model.addAttribute("errorMessage", result.getErrorMessage().message());
+			model.addAttribute("input", input);
+			return "trainer/schedule/schedule";
+		}
+
 		return "redirect:/trainer/schedule";
 	}
 }

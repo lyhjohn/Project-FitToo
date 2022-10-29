@@ -37,7 +37,7 @@ public class TrainerInput {
 
     private MultipartFile profilePicture;
 
-    private List<String> exerciseType;
+    private String exerciseType;
 
 
     private long price;
