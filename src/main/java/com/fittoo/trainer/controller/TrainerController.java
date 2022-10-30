@@ -28,6 +28,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -185,10 +186,15 @@ public class TrainerController {
 	}
 
 	@GetMapping("/schedule")
-	public String scheduleManager(Principal principal, Model model) {
+	public String scheduleManager(Principal principal, Model model,
+		@RequestParam(required = false) String errorMessage) {
 
 		model.addAttribute("loginType", "트레이너");
 
+		if (StringUtils.hasText(errorMessage)) {
+			model.addAttribute("errorMessage", errorMessage);
+			return "trainer/schedule/schedule";
+		}
 
 		String userId = principal.getName();
 		Optional<List<ScheduleDto>> optionalList = trainerService.showSchedule(userId);
@@ -202,14 +208,10 @@ public class TrainerController {
 	}
 
 	@PostMapping("/schedule/create")
-	public String createSchedule(Principal principal, ScheduleInput input,
+	public String createSchedule(Principal principal, @ModelAttribute ScheduleInput input,
 		Model model) {
-		ServiceResult result = trainerService.createSchedule(principal.getName(), input);
-		if (!result.isResult()) {
-			model.addAttribute("errorMessage", result.getErrorMessage().message());
-			model.addAttribute("input", input);
-			return "trainer/schedule/schedule";
-		}
+
+		trainerService.createSchedule(principal.getName(), input);
 
 		return "redirect:/trainer/schedule";
 	}

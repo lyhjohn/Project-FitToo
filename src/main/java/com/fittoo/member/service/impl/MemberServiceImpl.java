@@ -4,6 +4,7 @@ import static com.fittoo.common.message.ErrorMessage.ALREADY_EXIST_USERID;
 
 import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.common.model.ServiceResult;
+import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.member.entity.Member;
 import com.fittoo.member.model.MemberDto;
@@ -28,15 +29,16 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public ServiceResult memberRegister(MemberInput memberInput) {
-		Optional<Member> optionalMember = memberRepository.findByUserId(memberInput.getUserId());
+	public ServiceResult memberRegister(MemberInput input) {
+		Optional<Member> optionalMember = memberRepository.findByUserId(input.getUserId());
 		if (optionalMember.isPresent()) {
-			return new ServiceResult(false, ALREADY_EXIST_USERID);
+			throw new UserIdAlreadyExist(ALREADY_EXIST_USERID.message(), input);
+//			return new ServiceResult(false, ALREADY_EXIST_USERID);
 		}
 
-		String encPassword = BCrypt.hashpw(memberInput.getPassword(), BCrypt.gensalt());
+		String encPassword = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());
 
-		Member member = Member.of(memberInput, encPassword);
+		Member member = Member.of(input, encPassword);
 		memberRepository.save(member);
 
 		return new ServiceResult();

@@ -6,11 +6,13 @@ import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Getter
 @Setter
 @Accessors(chain = true)
+@ToString
 public class MemberInput {
 
     @NotNull
