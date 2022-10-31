@@ -1,6 +1,5 @@
 package com.fittoo.member.controller;
 
-import com.fittoo.common.model.ServiceResult;
 import com.fittoo.member.model.DateParam;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.ReservationParam;
@@ -11,7 +10,6 @@ import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.service.TrainerService;
 import com.fittoo.utills.CalendarUtil;
 import java.security.Principal;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,27 +36,18 @@ public class MemberController {
 	private final MemberService memberService;
 	private final TrainerService trainerService;
 
-	@ModelAttribute(name = "regPurposes")
-	private static Map<String, String> getRegPurposeMap() {
-		Map<String, String> regPurposeMap = new LinkedHashMap<>();
-		regPurposeMap.put("diet", "다이어트");
-		regPurposeMap.put("weight", "웨이트");
-		regPurposeMap.put("rehabilitation", "재활");
-		regPurposeMap.put("health", "체력");
-		regPurposeMap.put("partner_training", "파트너트레이닝");
-		return regPurposeMap;
+	@ModelAttribute(name = "loginType")
+	private String getLoginType() {
+		return "member";
 	}
 
 	@GetMapping("/register")
-	public String register(Model model, @RequestParam(required = false) String errorMessage,
-		@RequestParam(required = false) MemberInput member) {
+	public String register(Model model, @RequestParam(required = false) String errorMessage) {
 
 		if (StringUtils.hasText(errorMessage)) {
 			model.addAttribute("errorMessage", errorMessage);
 		}
-		if (member != null) {
-			model.addAttribute("member", member);
-		}
+
 		return "/member/register";
 	}
 
@@ -67,16 +56,12 @@ public class MemberController {
 	public String registerComplete(
 		@ModelAttribute(name = "member") @Validated MemberInput memberInput,
 		BindingResult bindingResult, Model model) {
-		ServiceResult result = memberService.memberRegister(memberInput);
+		memberService.memberRegister(memberInput);
 		if (bindingResult.hasErrors()) {
 			log.info("error={}", bindingResult);
 			return "/member/register";
 		}
 
-		if (!result.isResult()) {
-			model.addAttribute("errorMessage", result.getErrorMessage().message());
-			return "/member/register";
-		}
 		return "redirect:/";
 	}
 

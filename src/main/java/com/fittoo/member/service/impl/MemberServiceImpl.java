@@ -1,9 +1,11 @@
 package com.fittoo.member.service.impl;
 
-import static com.fittoo.common.message.ErrorMessage.ALREADY_EXIST_USERID;
+import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_USER;
+import static com.fittoo.common.message.RegisterErrorMessage.ALREADY_EXIST_USERID;
+import static com.fittoo.common.message.RegisterErrorMessage.Pwd_And_RePwd_Not_Equal;
 
-import com.fittoo.common.message.ErrorMessage;
-import com.fittoo.common.model.ServiceResult;
+import com.fittoo.common.message.RegisterErrorMessage;
+import com.fittoo.exception.RegisterException;
 import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.member.entity.Member;
@@ -29,19 +31,21 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public ServiceResult memberRegister(MemberInput input) {
+	public void memberRegister(MemberInput input) {
 		Optional<Member> optionalMember = memberRepository.findByUserId(input.getUserId());
 		if (optionalMember.isPresent()) {
-			throw new UserIdAlreadyExist(ALREADY_EXIST_USERID.message(), input);
-//			return new ServiceResult(false, ALREADY_EXIST_USERID);
+			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, new UserIdAlreadyExist());
+		}
+
+		if (!input.getPassword().equals(input.getRePassword())) {
+			input.setLoginType("member");
+			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input);
 		}
 
 		String encPassword = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());
 
 		Member member = Member.of(input, encPassword);
 		memberRepository.save(member);
-
-		return new ServiceResult();
 	}
 
 	@Override
@@ -57,7 +61,7 @@ public class MemberServiceImpl implements MemberService {
 	public void update(MemberUpdateInput input, String userId) {
 		Optional<Member> optionalMember = memberRepository.findByUserId(userId);
 		if (optionalMember.isEmpty()) {
-			throw new UserNotFoundException(ErrorMessage.NOT_FOUND_USER.message());
+			throw new UserNotFoundException(NOT_FOUND_USER.message());
 		}
 
 		Member member = optionalMember.get();
