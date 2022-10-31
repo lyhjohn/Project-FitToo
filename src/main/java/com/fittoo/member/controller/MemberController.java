@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +50,15 @@ public class MemberController {
 	}
 
 	@GetMapping("/register")
-	public String register(@ModelAttribute(name = "member") MemberInput memberInput, Model model) {
+	public String register(Model model, @RequestParam(required = false) String errorMessage,
+		@RequestParam(required = false) MemberInput member) {
+
+		if (StringUtils.hasText(errorMessage)) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
+		if (member != null) {
+			model.addAttribute("member", member);
+		}
 		return "/member/register";
 	}
 
@@ -59,7 +68,6 @@ public class MemberController {
 		@ModelAttribute(name = "member") @Validated MemberInput memberInput,
 		BindingResult bindingResult, Model model) {
 		ServiceResult result = memberService.memberRegister(memberInput);
-
 		if (bindingResult.hasErrors()) {
 			log.info("error={}", bindingResult);
 			return "/member/register";

@@ -10,9 +10,11 @@
     .rightTop {
       float: right;
     }
+
     .block-input {
       display: block;
     }
+
     .error {
       font-weight: bold;
       color: red;
@@ -28,16 +30,22 @@
   <div>
     <p>범위 날짜 선택</p>
     <div th:text="${errorMessage}" th:if="${errorMessage != null}" class="error"></div>
-    시작일: <input type="date" name="startDate" class="block-input">
-    종료일: <input type="date" name="endDate" class="block-input">
+    <div>
+      시작일: <input type="date" name="startDate" class="block-input">
+      종료일: <input type="date" name="endDate" class="block-input">
+    </div>
+    <div>
+      시작 시간: <input type="time" name="startTime" class="block-input">
+      종료 시간: <input type="time" name="endTime" class="block-input">
+    </div>
   </div>
 
   <table>
     <thead>
     <tr>
-      <th>종목: </th>
+      <th>종목:</th>
       <td>
-<!--        <input type="text" th:text="">-->
+        <!--        <input type="text" th:text="">-->
       </td>
     </tr>
     </thead>

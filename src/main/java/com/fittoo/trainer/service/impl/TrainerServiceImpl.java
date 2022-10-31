@@ -19,6 +19,7 @@ import com.fittoo.trainer.service.TrainerService;
 import com.fittoo.utills.FileStore;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +73,6 @@ public class TrainerServiceImpl implements TrainerService {
 			exerciseType.addTrainer(trainer);
 			exerciseTypeRepository.save(exerciseType);
 		}
-
 
 		return new ServiceResult();
 	}
@@ -138,34 +138,33 @@ public class TrainerServiceImpl implements TrainerService {
 
 	@Override
 	@Transactional
-	public ServiceResult createSchedule(String userId, ScheduleInput input) {
+	public void createSchedule(String userId, ScheduleInput input) {
 		if (!isStartDateLowerThanEndDate(input)) {
-			return new ServiceResult(false, ErrorMessage.START_DAY_BIGGER_THAN_END_DAY);
+			throw new DateParseException(ErrorMessage.START_DAY_BIGGER_THAN_END_DAY.message());
 		}
 
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 		if (optionalTrainer.isEmpty()) {
-			return new ServiceResult(false, ErrorMessage.NOT_FOUND_TRAINER);
+			throw new UserNotFoundException(ErrorMessage.NOT_FOUND_TRAINER.message());
 		}
 		Trainer trainer = optionalTrainer.get();
-		try {
-			List<Schedule> scheduleList = trainer.setSchedule(input);
-			scheduleRepository.saveAll(scheduleList);
 
-		} catch (DateParseException e) {
-			return new ServiceResult(false, ErrorMessage.INVALID_DATE);
-		}
-
-		return new ServiceResult();
+		List<Schedule> scheduleList = trainer.setSchedule(input);
+		scheduleRepository.saveAll(scheduleList);
 	}
 
 	private static boolean isStartDateLowerThanEndDate(ScheduleInput input) {
-		return
-			LocalDate.parse(input.getStartDate()).getYear() <= LocalDate.parse(input.getEndDate())
-				.getYear() &&
-				LocalDate.parse(input.getStartDate()).getMonthValue() <= LocalDate.parse(
-					input.getEndDate()).getMonthValue() &&
-				LocalDate.parse(input.getStartDate()).getDayOfMonth() <= LocalDate.parse(
-					input.getEndDate()).getDayOfMonth();
+		try {
+			return
+				LocalDate.parse(input.getStartDate()).getYear() <= LocalDate.parse(
+						input.getEndDate())
+					.getYear() &&
+					LocalDate.parse(input.getStartDate()).getMonthValue() <= LocalDate.parse(
+						input.getEndDate()).getMonthValue() &&
+					LocalDate.parse(input.getStartDate()).getDayOfMonth() <= LocalDate.parse(
+						input.getEndDate()).getDayOfMonth();
+		} catch (DateTimeParseException e) {
+			throw new DateParseException(ErrorMessage.INVALID_DATE.message(), e);
+		}
 	}
 }

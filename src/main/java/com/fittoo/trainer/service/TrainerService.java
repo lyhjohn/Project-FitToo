@@ -24,5 +24,5 @@ public interface TrainerService {
 
 	List<TrainerDto> findAll();
 
-	ServiceResult createSchedule(String userId, ScheduleInput input);
+	void createSchedule(String userId, ScheduleInput input);
 }
