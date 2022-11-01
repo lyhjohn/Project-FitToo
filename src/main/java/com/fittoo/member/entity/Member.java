@@ -26,8 +26,6 @@ public class Member extends UserBaseEntity {
 	@GeneratedValue
 	private Long id;
 
-	private String regPurpose;
-
 	private long point;
 
 
@@ -49,19 +47,6 @@ public class Member extends UserBaseEntity {
 		review.setMember(this);
 	}
 
-	public static String setRegPurpose(List<String> regPurposeList) {
-
-		StringBuilder purposeList = new StringBuilder();
-		int length = regPurposeList.size();
-		for (String regPurpose : regPurposeList) {
-			if (--length == 0) {
-				purposeList.append(regPurpose);
-			} else {
-				purposeList.append(regPurpose).append(",");
-			}
-		}
-		return purposeList.toString();
-	}
 
 	public static Member of(MemberInput memberInput, String encPassword) {
 		return Member.builder()
@@ -71,7 +56,6 @@ public class Member extends UserBaseEntity {
 			.loginType(LoginType.NORMAL)
 			.phoneNumber(memberInput.getPhoneNumber())
 			.exercisePeriod(memberInput.getExercisePeriod())
-			.regPurpose(setRegPurpose(memberInput.getRegPurposeList()))
 			.userName(memberInput.getUserName())
 			.addr(memberInput.getAddress())
 			.addrDetail(memberInput.getAddrDetail())
@@ -80,9 +64,6 @@ public class Member extends UserBaseEntity {
 	}
 
 	public void update(MemberUpdateInput input) {
-		if (!CollectionUtils.isEmpty(input.getRegPurposeList())) {
-			this.regPurpose = setRegPurpose(input.getRegPurposeList());
-		}
 		setUserId(input.getUserId());
 		setPhoneNumber(input.getPhoneNumber());
 		setGender(setGender(input.getGender()));

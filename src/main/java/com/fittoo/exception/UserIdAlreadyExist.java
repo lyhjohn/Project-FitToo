@@ -29,6 +29,11 @@ public class UserIdAlreadyExist extends RuntimeException{
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
+	public UserIdAlreadyExist(String message, MemberInput input, Throwable cause) {
+		super(message, cause);
+		this.memberInput = input;
+	}
+
 	public UserIdAlreadyExist(String message, MemberInput input) {
 		super(message);
 		this.memberInput = input;

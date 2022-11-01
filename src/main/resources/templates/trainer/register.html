@@ -85,9 +85,9 @@
   <div>
     <span>성별: </span>
     <label for="man" th:text="#{man}">남</label>
-    <input type="radio" id="man" name="gender" value="1" required>
+    <input type="radio" id="man" name="gender" value="1" th:checked="${isMan eq true}" required>
     <label for="girl" th:text="#{girl}">여</label>
-    <input type="radio" id="girl" name="gender" value="2" required>
+    <input type="radio" id="girl" name="gender" value="2" th:checked="${isGirl eq true}" required>
   </div>
   <div>
     <label for="period" th:text="#{exercisePeriod}">운동 경력</label>
@@ -103,8 +103,7 @@
   <div th:text="#{exercise}">운동 종류</div>
   <div th:each="exercise : ${exerciseType}" class="form-check form-check-inline">
     <input type="radio" th:value="${exercise.key}" name="regPurposeList"
-           th:field="${trainer.exerciseType}"
-           class="form-check">
+           th:field="${trainer.exerciseType}" class="form-check">
     <label class="form-check-label" th:for="${#ids.prev('exerciseType')}"
            th:text="${exercise.value}"></label>
   </div>
@@ -150,6 +149,7 @@
   </div>
 
   <hr>
+  <input type="hidden" value="trainer" name="loginType">
   <button type="submit" th:text="#{register}">회원 가입</button>
 </form>
 <!-- 다음 우편번호 레이어 -->

@@ -1,6 +1,8 @@
 package com.fittoo.configuration;
 
-import com.fittoo.common.message.ErrorMessage;
+import static com.fittoo.common.message.LoginErrorMessage.INVALID_ID_OR_PWD;
+
+import com.fittoo.common.message.LoginErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -19,7 +21,7 @@ public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
         AuthenticationException exception) throws IOException, ServletException {
 
         log.info("로그인 실패");
-        String msg = ErrorMessage.INVALID_ID_OR_PWD.message();
+        String msg = INVALID_ID_OR_PWD.message();
         if (exception instanceof InternalAuthenticationServiceException) {
             msg = exception.getMessage();
         }

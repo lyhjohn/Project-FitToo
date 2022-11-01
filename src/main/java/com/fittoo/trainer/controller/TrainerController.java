@@ -1,11 +1,15 @@
 package com.fittoo.trainer.controller;
 
 
+import static com.fittoo.common.message.FileErrorMessage.INVALID_FILE;
+import static com.fittoo.common.message.FileErrorMessage.INVALID_PROFILE_PICTURE;
+import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_TRAINER;
 import static com.fittoo.trainer.model.TrainerDto.whatIsGender;
 import static java.time.LocalDate.now;
 
-import com.fittoo.common.message.ErrorMessage;
-import com.fittoo.common.model.ServiceResult;
+import com.fittoo.common.message.FileErrorMessage;
+import com.fittoo.common.message.FindErrorMessage;
+import com.fittoo.exception.FileException;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.member.service.MemberService;
 import com.fittoo.trainer.model.ScheduleDto;
@@ -14,6 +18,8 @@ import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
 import com.fittoo.trainer.service.TrainerService;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.Principal;
 import java.util.LinkedHashMap;
@@ -21,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -50,6 +55,11 @@ public class TrainerController {
 	private final TrainerService trainerService;
 	private final MemberService memberService;
 
+	@ModelAttribute(name = "loginType")
+	private String getLoginType() {
+		return "trainer";
+	}
+
 	@ModelAttribute(name = "exerciseType")
 	private static Map<String, String> getExerciseType() {
 		Map<String, String> exerciseType = new LinkedHashMap<>();
@@ -66,8 +76,10 @@ public class TrainerController {
 
 
 	@GetMapping("/register")
-	public String register(@ModelAttribute(name = "trainer") TrainerInput trainerInput) {
-
+	public String register(Model model, @RequestParam(required = false) String errorMessage) {
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
 		return "/trainer/register";
 	}
 
@@ -76,19 +88,22 @@ public class TrainerController {
 		@ModelAttribute(name = "trainer") @Validated TrainerInput trainerInput,
 		BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) {
-			return "/register";
-		}
-
-		ServiceResult result = trainerService.trainerRegister(trainerInput);
-		if (!result.isResult()) {
-			model.addAttribute("errorMessage", result.getErrorMessage().message());
 			return "/trainer/register";
 		}
+
+		trainerService.trainerRegister(trainerInput);
+
 		return "redirect:/";
 	}
 
 	@GetMapping("/profile")
-	public String profile(Model model, HttpServletRequest request, Principal principal) {
+	public String profile(Model model, HttpServletRequest request, Principal principal,
+		@RequestParam(required = false) String errorMessage) {
+
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
+
 		String userId = principal.getName();
 		TrainerDto trainer = trainerService.findTrainer(userId);
 
@@ -103,9 +118,14 @@ public class TrainerController {
 	 */
 	@ResponseBody // 파일 이미지 띄우기
 	@GetMapping("/images/{filename}")
-	public Resource getImage(@PathVariable String filename) throws MalformedURLException {
+	public Resource getImage(@PathVariable String filename) {
 		log.info("filename={}", getFullPath(filename, "trainer"));
-		return new UrlResource("file:" + getFullPath(filename, "trainer"));
+
+		try {
+			return new UrlResource("file:" + getFullPath(filename, "trainer"));
+		} catch (IOException e) {
+			throw new FileException(INVALID_FILE.message(), new FileNotFoundException());
+		}
 	}
 
 	public String getFullPath(String fileName, String loginType) {
@@ -138,7 +158,7 @@ public class TrainerController {
 	public String profilePictureUpdate(MultipartFile file, Principal principal, Model model) {
 		TrainerDto trainer = trainerService.updateProfilePicture(file, principal.getName());
 		if (trainer == null) {
-			model.addAttribute("errorMessage", ErrorMessage.INVALID_PROFILE_PICTURE);
+			model.addAttribute("errorMessage", INVALID_PROFILE_PICTURE);
 			return "/error/error";
 		}
 		return "redirect:/trainer/profile";
@@ -148,37 +168,28 @@ public class TrainerController {
 	public String trainerList(Principal principal, Model model,
 		@RequestParam(required = false) String trainerId,
 		@RequestParam(required = false) String errorMessage,
-		LoginType loginType) {
+		@ModelAttribute String loginType) {
 
-		trainerExistAndTypeCheck(trainerId, errorMessage, loginType, model);
+		if (trainerId != null) {
+			TrainerDto trainer = trainerService.findTrainer(trainerId);
+			model.addAttribute("trainerDetail", trainer);
+		}
 
 		List<TrainerDto> trainerList = trainerService.findAll();
+
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
 
 		model.addAttribute("trainerList", trainerList);
 		return "/trainer/trainerList";
 	}
 
-	private void trainerExistAndTypeCheck(String trainerId, String errorMessage,
-		LoginType loginType, Model model) {
-		if (trainerId != null) {
-			TrainerDto trainer = trainerService.findTrainer(trainerId);
-			System.out.println(
-				"trainer.getProfilePictureNewName() = " + trainer.getProfilePictureNewName());
-			model.addAttribute("loginType", trainer.getLoginType().memberType());
-			model.addAttribute("trainerDetail", trainer);
-		} else {
-			model.addAttribute("loginType", loginType.memberType());
-		}
-
-		if (errorMessage != null) {
-			model.addAttribute("errorMessage", errorMessage);
-		}
-	}
 
 	@GetMapping("/detail")
 	public String trainerDetail(String userId, RedirectAttributes redirectAttributes) {
 		if (userId == null) {
-			redirectAttributes.addAttribute("errorMessage", ErrorMessage.NOT_FOUND_TRAINER);
+			redirectAttributes.addAttribute("errorMessage", NOT_FOUND_TRAINER);
 			return "redirect:/trainer/trainerList";
 		}
 		redirectAttributes.addAttribute("trainerId", userId);

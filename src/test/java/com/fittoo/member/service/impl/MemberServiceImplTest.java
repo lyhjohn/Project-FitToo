@@ -1,9 +1,7 @@
 package com.fittoo.member.service.impl;
 
-import static com.fittoo.member.entity.QMember.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fittoo.common.message.ErrorMessage;
 import com.fittoo.member.entity.Member;
 import com.fittoo.member.entity.QMember;
 import com.fittoo.member.model.MemberInput;

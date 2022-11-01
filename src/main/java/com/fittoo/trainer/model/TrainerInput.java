@@ -52,4 +52,8 @@ public class TrainerInput {
 
     @NotNull
     private String zipcode;
+
+    private String rePassword;
+
+    private String loginType;
 }

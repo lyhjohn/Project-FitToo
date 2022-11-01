@@ -1,8 +1,10 @@
 package com.fittoo.trainer.entity;
 
+import static com.fittoo.common.message.ScheduleErrorMessage.INVALID_DATE;
+
 import com.fittoo.common.entity.UserBaseEntity;
-import com.fittoo.common.message.ErrorMessage;
-import com.fittoo.exception.DateParseException;
+import com.fittoo.common.message.ScheduleErrorMessage;
+import com.fittoo.exception.ScheduleException;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.Reservation;
 import com.fittoo.review.entity.Review;
@@ -151,7 +153,7 @@ public class Trainer extends UserBaseEntity {
 			}
 			return newScheduleList;
 		} catch (ParseException e) {
-			throw new DateParseException(ErrorMessage.INVALID_DATE.message(), e);
+			throw new ScheduleException(INVALID_DATE.message(), e);
 		}
 	}
 

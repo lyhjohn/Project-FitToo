@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
@@ -25,6 +24,10 @@ public class MemberInput {
 
     @NotNull
     @NotEmpty
+    private String rePassword;
+
+    @NotNull
+    @NotEmpty
     private String phoneNumber;
     private String userName;
 
@@ -34,10 +37,9 @@ public class MemberInput {
     @NotNull
     private String exercisePeriod;
 
-
-    @NotNull
-    private List<String> regPurposeList;
     private String address;
     private String addrDetail;
     private String zipCode;
+
+    private String loginType;
 }

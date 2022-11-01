@@ -1,8 +1,17 @@
 package com.fittoo.trainer.service.impl;
 
-import com.fittoo.common.message.ErrorMessage;
-import com.fittoo.common.model.ServiceResult;
-import com.fittoo.exception.DateParseException;
+import static com.fittoo.common.message.FileErrorMessage.INVALID_FILE;
+import static com.fittoo.common.message.FileErrorMessage.INVALID_PROFILE_PICTURE;
+import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_TRAINER;
+import static com.fittoo.common.message.RegisterErrorMessage.ALREADY_EXIST_USERID;
+import static com.fittoo.common.message.RegisterErrorMessage.Pwd_And_RePwd_Not_Equal;
+import static com.fittoo.common.message.ScheduleErrorMessage.INVALID_DATE;
+import static com.fittoo.common.message.ScheduleErrorMessage.START_DAY_BIGGER_THAN_END_DAY;
+
+import com.fittoo.exception.FileException;
+import com.fittoo.exception.RegisterException;
+import com.fittoo.exception.ScheduleException;
+import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.trainer.entity.ExerciseType;
 import com.fittoo.trainer.entity.Schedule;
@@ -39,19 +48,24 @@ public class TrainerServiceImpl implements TrainerService {
 
 	@Override
 	@Transactional
-	public ServiceResult trainerRegister(TrainerInput input) {
+	public void trainerRegister(TrainerInput input) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(
 			input.getUserId());
 
 		if (optionalTrainer.isPresent()) {
-			return new ServiceResult(false, ErrorMessage.ALREADY_EXIST_USERID);
+			throw new RegisterException(ALREADY_EXIST_USERID.message(), new UserIdAlreadyExist());
+		}
+
+		if (!input.getPassword().equals(input.getRePassword())) {
+			input.setLoginType("trainer");
+			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input);
 		}
 
 		String[] fileNames;
 		try {
 			fileNames = new FileStore().storeFile(input.getProfilePicture(), "trainer");
 		} catch (IOException e) {
-			return new ServiceResult(false, ErrorMessage.INVALID_FILE);
+			throw new RegisterException(INVALID_FILE.message(), new FileException());
 		}
 
 		String encPassword = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());
@@ -73,8 +87,6 @@ public class TrainerServiceImpl implements TrainerService {
 			exerciseType.addTrainer(trainer);
 			exerciseTypeRepository.save(exerciseType);
 		}
-
-		return new ServiceResult();
 	}
 
 	@Override
@@ -82,9 +94,10 @@ public class TrainerServiceImpl implements TrainerService {
 	public TrainerDto findTrainer(String userId) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 
+
+
 		return optionalTrainer.map(TrainerDto::of).orElseThrow(()
-			-> new UserNotFoundException(ErrorMessage.NOT_FOUND_TRAINER.message(),
-			new RuntimeException()));
+			-> new UserNotFoundException(NOT_FOUND_TRAINER.message()));
 	}
 
 	@Override
@@ -93,8 +106,7 @@ public class TrainerServiceImpl implements TrainerService {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(input.getUserId());
 
 		return optionalTrainer.map(x -> TrainerDto.of(x.update(input)))
-			.orElseThrow(() -> new UserNotFoundException(ErrorMessage.NOT_FOUND_TRAINER.message(),
-				new RuntimeException()));
+			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_TRAINER.message()));
 	}
 
 	@Override
@@ -110,7 +122,7 @@ public class TrainerServiceImpl implements TrainerService {
 		try {
 			fileNames = new FileStore().storeFile(file, "trainer");
 		} catch (IOException e) {
-			return null;
+			throw new FileException(INVALID_PROFILE_PICTURE.message());
 		}
 		trainer.updateProfilePicture(fileNames);
 
@@ -140,12 +152,12 @@ public class TrainerServiceImpl implements TrainerService {
 	@Transactional
 	public void createSchedule(String userId, ScheduleInput input) {
 		if (!isStartDateLowerThanEndDate(input)) {
-			throw new DateParseException(ErrorMessage.START_DAY_BIGGER_THAN_END_DAY.message());
+			throw new ScheduleException(START_DAY_BIGGER_THAN_END_DAY.message());
 		}
 
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 		if (optionalTrainer.isEmpty()) {
-			throw new UserNotFoundException(ErrorMessage.NOT_FOUND_TRAINER.message());
+			throw new UserNotFoundException(NOT_FOUND_TRAINER.message());
 		}
 		Trainer trainer = optionalTrainer.get();
 
@@ -156,15 +168,14 @@ public class TrainerServiceImpl implements TrainerService {
 	private static boolean isStartDateLowerThanEndDate(ScheduleInput input) {
 		try {
 			return
-				LocalDate.parse(input.getStartDate()).getYear() <= LocalDate.parse(
-						input.getEndDate())
-					.getYear() &&
-					LocalDate.parse(input.getStartDate()).getMonthValue() <= LocalDate.parse(
-						input.getEndDate()).getMonthValue() &&
-					LocalDate.parse(input.getStartDate()).getDayOfMonth() <= LocalDate.parse(
-						input.getEndDate()).getDayOfMonth();
+				LocalDate.parse(input.getStartDate()).getYear()
+					<= LocalDate.parse(input.getEndDate()).getYear()
+					&& LocalDate.parse(input.getStartDate()).getMonthValue()
+					<= LocalDate.parse(input.getEndDate()).getMonthValue()
+					&& LocalDate.parse(input.getStartDate()).getDayOfMonth()
+					<= LocalDate.parse(input.getEndDate()).getDayOfMonth();
 		} catch (DateTimeParseException e) {
-			throw new DateParseException(ErrorMessage.INVALID_DATE.message(), e);
+			throw new ScheduleException(INVALID_DATE.message(), e);
 		}
 	}
 }
