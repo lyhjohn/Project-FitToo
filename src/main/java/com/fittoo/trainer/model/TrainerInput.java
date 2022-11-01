@@ -56,4 +56,5 @@ public class TrainerInput {
     private String rePassword;
 
     private String loginType;
+
 }

@@ -34,12 +34,15 @@ public class MemberServiceImpl implements MemberService {
 	public void memberRegister(MemberInput input) {
 		Optional<Member> optionalMember = memberRepository.findByUserId(input.getUserId());
 		if (optionalMember.isPresent()) {
-			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, new UserIdAlreadyExist());
+			input.setLoginType("member");
+			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, input.getLoginType(),
+				new UserIdAlreadyExist());
 		}
 
 		if (!input.getPassword().equals(input.getRePassword())) {
 			input.setLoginType("member");
-			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input);
+			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input,
+				input.getLoginType());
 		}
 
 		String encPassword = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());

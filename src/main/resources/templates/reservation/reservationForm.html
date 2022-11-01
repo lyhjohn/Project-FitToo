@@ -5,8 +5,29 @@
   <title>Title</title>
 </head>
 <body>
-<div th:text="${trainerId}"></div>
-<div>test</div>
-<div th:text="${date}"></div>
+<div>트레이닝 일정</div>
+<div th:object="${schedule}">
+
+  <span th:text="#{scheduleDate}"></span>
+  <div th:text="*{date}"></div>
+
+  <span th:text="#{startTime}"></span>
+  <div th:text="*{startTime}"></div>
+
+  <span th:text="#{endTime}"></span>
+  <div th:text="*{endTime}"></div>
+
+  <span th:text="#{exercise}"></span>
+  <div th:text="*{exercise}"></div>
+
+  <span th:text="#{price}"></span>
+  <div th:text="*{price}"></div>
+
+  <span th:text="#{personnel}">></span>
+  <div th:text="*{personnel}"></div>
+
+  <span th:text="#{comment}"></span>
+  <div th:text="*{comment}"></div>
+</div>
 </body>
 </html>

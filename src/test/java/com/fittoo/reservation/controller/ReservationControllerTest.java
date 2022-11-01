@@ -3,6 +3,7 @@ package com.fittoo.reservation.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.fittoo.reservation.service.ReservationService;
 import java.time.LocalDate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,9 @@ class ReservationControllerTest {
 	@Autowired
 	ReservationController reservationController;
 
+	@Autowired
+	ReservationService reservationService;
+
 	@Test
 	void getDateTest() {
 	    //given
@@ -24,5 +28,4 @@ class ReservationControllerTest {
 		//when & then
 		assertThat(date).isEqualTo("2020-12-25");
 	}
-
 }

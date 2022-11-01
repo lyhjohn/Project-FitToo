@@ -9,6 +9,7 @@ public class RegisterException extends RuntimeException{
 
 	private MemberInput memberInput;
 	private TrainerInput trainerInput;
+	private String loginType;
 
 
 	public RegisterException() {
@@ -32,23 +33,27 @@ public class RegisterException extends RuntimeException{
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public RegisterException(String message, MemberInput input, Throwable cause) {
+	public RegisterException(String message, MemberInput input, String loginType, Throwable cause) {
 		super(message, cause);
 		this.memberInput = input;
+		this.loginType = loginType;
 	}
 
-	public RegisterException(String message, TrainerInput input, Throwable cause) {
+	public RegisterException(String message, TrainerInput input, String loginType, Throwable cause) {
 		super(message, cause);
 		this.trainerInput = input;
+		this.loginType = loginType;
 	}
 
-	public RegisterException(String message, TrainerInput input) {
+	public RegisterException(String message, TrainerInput input, String loginType) {
 		super(message);
 		this.trainerInput = input;
+		this.loginType = loginType;
 	}
 
-	public RegisterException(String message, MemberInput input) {
+	public RegisterException(String message, MemberInput input, String loginType) {
 		super(message);
 		this.memberInput = input;
+		this.loginType = loginType;
 	}
 }

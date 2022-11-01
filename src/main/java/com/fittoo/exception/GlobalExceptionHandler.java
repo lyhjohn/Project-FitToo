@@ -47,11 +47,11 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 
 		attributes.addAttribute("errorMessage", e.getMessage());
 
-		if (e.getMemberInput().getLoginType().equals("member")) {
+		if (e.getLoginType().equals("member")) {
 			attributes.addFlashAttribute("member", e.getMemberInput());
 			whatIsGender(e.getMemberInput().getGender(), attributes);
 
-		} else if (e.getMemberInput().getLoginType().equals("trainer")) {
+		} else if (e.getLoginType().equals("trainer")) {
 			attributes.addFlashAttribute("trainer", e.getTrainerInput());
 			whatIsGender(e.getMemberInput().getGender(), attributes);
 			return "redirect:/trainer/register";
@@ -67,5 +67,15 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 		attributes.addAttribute("errorMessage", e.getMessage());
 
 		return "redirect:/trainer/trainerList";
+	}
+
+	@ExceptionHandler(ReservationException.class)
+	public String reservationException(ReservationException e, RedirectAttributes attributes) {
+
+		log.info("ReservationException.message={}", e.getMessage());
+
+		attributes.addAttribute("errorMessage", e.getMessage());
+
+		return "redirect:/reservation/empty";
 	}
 }

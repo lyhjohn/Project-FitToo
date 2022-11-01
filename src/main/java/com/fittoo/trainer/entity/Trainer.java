@@ -11,9 +11,11 @@ import com.fittoo.review.entity.Review;
 import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -129,7 +131,7 @@ public class Trainer extends UserBaseEntity {
 		this.profilePictureOriName = filenames[0];
 	}
 
-	public List<Schedule> setSchedule(ScheduleInput input) {
+	public List<Schedule> setSchedule(ScheduleInput input, String trainerId) {
 		List<Schedule> newScheduleList = new ArrayList<>();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		try {
@@ -143,13 +145,13 @@ public class Trainer extends UserBaseEntity {
 			endCalendar.setTime(parseEndDate);
 
 			if (startCalendar == endCalendar) {
-				newScheduleList.add(createSchedule(startCalendar, input.getComment()));
+				newScheduleList.add(createSchedule(startCalendar, input, trainerId));
 			} else {
 				while (startCalendar.compareTo(endCalendar) != 0) {
-					newScheduleList.add(createSchedule(startCalendar, input.getComment()));
+					newScheduleList.add(createSchedule(startCalendar, input, trainerId));
 					startCalendar.add(Calendar.DATE, 1);
 				}
-				newScheduleList.add(createSchedule(startCalendar, input.getComment()));
+				newScheduleList.add(createSchedule(startCalendar, input, trainerId));
 			}
 			return newScheduleList;
 		} catch (ParseException e) {
@@ -157,11 +159,12 @@ public class Trainer extends UserBaseEntity {
 		}
 	}
 
-	private Schedule createSchedule(Calendar calendar, String comment) {
-		Schedule schedule = new Schedule(calendar);
-		schedule.setComment(comment);
+	private Schedule createSchedule(Calendar calendar, ScheduleInput input, String trainerId)
+		throws ParseException {
+		Schedule schedule = new Schedule(trainerId, input.getComment(), input.getPersonnel(),
+			this.getExerciseType().getId(), this, calendar, input.getStartTime(), input.getEndTime(), input.getPrice());
+
 		this.scheduleList.add(schedule);
-		schedule.setTrainer(this);
 		return schedule;
 	}
 }

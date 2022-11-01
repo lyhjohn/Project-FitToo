@@ -27,7 +27,6 @@ class DateBaseEntityTest {
 		member.setGender(1);
 		member.setUserId("MemberA");
 		member.setPassword("1111");
-		member.setRegPurposeList(Arrays.asList("purpose"));
 		memberService.memberRegister(member);
 	}
 

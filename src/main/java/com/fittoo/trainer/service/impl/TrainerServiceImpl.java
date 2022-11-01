@@ -5,8 +5,11 @@ import static com.fittoo.common.message.FileErrorMessage.INVALID_PROFILE_PICTURE
 import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_TRAINER;
 import static com.fittoo.common.message.RegisterErrorMessage.ALREADY_EXIST_USERID;
 import static com.fittoo.common.message.RegisterErrorMessage.Pwd_And_RePwd_Not_Equal;
-import static com.fittoo.common.message.ScheduleErrorMessage.INVALID_DATE;
+import static com.fittoo.common.message.ScheduleErrorMessage.CONTAINS_REGISTERED_DATE;
 import static com.fittoo.common.message.ScheduleErrorMessage.START_DAY_BIGGER_THAN_END_DAY;
+import static com.fittoo.common.message.ScheduleErrorMessage.START_TIME_BIGGER_THAN_END_TIME;
+import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getEndTime;
+import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getStartTime;
 
 import com.fittoo.exception.FileException;
 import com.fittoo.exception.RegisterException;
@@ -25,16 +28,18 @@ import com.fittoo.trainer.repository.ExerciseTypeRepository;
 import com.fittoo.trainer.repository.ScheduleRepository;
 import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.trainer.service.TrainerService;
+import com.fittoo.utills.CalendarUtil.StringToLocalDate;
 import com.fittoo.utills.FileStore;
 import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -53,12 +58,15 @@ public class TrainerServiceImpl implements TrainerService {
 			input.getUserId());
 
 		if (optionalTrainer.isPresent()) {
-			throw new RegisterException(ALREADY_EXIST_USERID.message(), new UserIdAlreadyExist());
+			input.setLoginType("trainer");
+			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, input.getLoginType(),
+				new UserIdAlreadyExist());
 		}
 
 		if (!input.getPassword().equals(input.getRePassword())) {
 			input.setLoginType("trainer");
-			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input);
+			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input,
+				input.getLoginType());
 		}
 
 		String[] fileNames;
@@ -93,8 +101,6 @@ public class TrainerServiceImpl implements TrainerService {
 	@Transactional(readOnly = true)
 	public TrainerDto findTrainer(String userId) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
-
-
 
 		return optionalTrainer.map(TrainerDto::of).orElseThrow(()
 			-> new UserNotFoundException(NOT_FOUND_TRAINER.message()));
@@ -150,32 +156,44 @@ public class TrainerServiceImpl implements TrainerService {
 
 	@Override
 	@Transactional
-	public void createSchedule(String userId, ScheduleInput input) {
-		if (!isStartDateLowerThanEndDate(input)) {
+	public void createSchedule(String userId, ScheduleInput input) throws ParseException {
+		if (!isStartDateIsBeforeEndDate(input)) {
 			throw new ScheduleException(START_DAY_BIGGER_THAN_END_DAY.message());
+		}
+
+		if (!isStartTimeIsBeforeEndTime(input)) {
+			throw new ScheduleException(START_TIME_BIGGER_THAN_END_TIME.message());
 		}
 
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 		if (optionalTrainer.isEmpty()) {
 			throw new UserNotFoundException(NOT_FOUND_TRAINER.message());
 		}
-		Trainer trainer = optionalTrainer.get();
 
-		List<Schedule> scheduleList = trainer.setSchedule(input);
+		Trainer trainer = optionalTrainer.get();
+		LocalDate startDate = StringToLocalDate.getStartDate(input.getStartDate());
+		LocalDate endDate = StringToLocalDate.getEndDate(input.getEndDate());
+
+		Optional<List<Schedule>> optionalScheduleList = scheduleRepository.findAllByTrainerUserIdAndDateBetween(
+			trainer.getUserId(), startDate, endDate);
+
+		if (optionalScheduleList.isPresent()) {
+			if (!CollectionUtils.isEmpty(optionalScheduleList.get())) {
+				throw new ScheduleException(CONTAINS_REGISTERED_DATE.message());
+			}
+		}
+
+		List<Schedule> scheduleList = trainer.setSchedule(input, trainer.getUserId());
 		scheduleRepository.saveAll(scheduleList);
 	}
 
-	private static boolean isStartDateLowerThanEndDate(ScheduleInput input) {
-		try {
-			return
-				LocalDate.parse(input.getStartDate()).getYear()
-					<= LocalDate.parse(input.getEndDate()).getYear()
-					&& LocalDate.parse(input.getStartDate()).getMonthValue()
-					<= LocalDate.parse(input.getEndDate()).getMonthValue()
-					&& LocalDate.parse(input.getStartDate()).getDayOfMonth()
-					<= LocalDate.parse(input.getEndDate()).getDayOfMonth();
-		} catch (DateTimeParseException e) {
-			throw new ScheduleException(INVALID_DATE.message(), e);
-		}
+	private static boolean isStartDateIsBeforeEndDate(ScheduleInput input) throws ParseException {
+
+		return StringToLocalDate.getStartDate(input.getStartDate())
+			.isBefore(StringToLocalDate.getEndDate(input.getEndDate()));
+	}
+
+	private static boolean isStartTimeIsBeforeEndTime(ScheduleInput input) throws ParseException {
+		return getStartTime(input.getStartTime()).isBefore(getEndTime(input.getEndTime()));
 	}
 }

@@ -56,31 +56,32 @@
 <h1>회원 가입 페이지</h1>
 
 <div th:text="${errorMessage}" class="field-error"></div>
-<form method="post" th:object="${trainer}" class="container" onsubmit="return chkchk(this);"
+<form method="post" class="container" onsubmit="return chkchk(this);"
       enctype="multipart/form-data">
-  <div th:if="${#fields.hasGlobalErrors()}">
-    <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
-  </div>
+  <!--  <div th:if="${#fields.hasGlobalErrors()}">-->
+  <!--    <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>-->
+  <!--  </div>-->
 
   <div>
     <label for="userId" th:text="#{userId}" class="block-label">아이디</label>
-    <input type="text" id="userId" th:field="*{userId}" name="userId" required>
+    <input type="text" id="userId" th:value="${trainer?.userId}" name="userId" required>
   </div>
   <div>
     <label for="password" th:text="#{password}" class="block-label">>비밀번호</label>
-    <input type="password" id="password" th:field="*{password}" name="password" required>
+    <input type="password" id="password" th:value="${trainer?.password}" name="password" required>
   </div>
   <div>
     <label for="repassword" th:text="#{repassword}" class="block-label">>비밀번호 확인</label>
-    <input type="password" id="repassword" required>
+    <input type="password" id="repassword" name="repassword" th:value="${trainer?.rePassword}"
+           required>
   </div>
   <div>
     <label for="userName" th:text="#{name}" class="block-label">>이름</label>
-    <input type="text" id="userName" th:field="*{userName}" name="userName" required>
+    <input type="text" id="userName" th:value="${trainer?.userName}" name="userName" required>
   </div>
   <div>
     <label for="phone" th:text="#{phone}" class="block-label">>연락처</label>
-    <input type="text" id="phone" th:field="*{phoneNumber}" name="phoneNumber" required>
+    <input type="text" id="phone" th:value="${trainer?.phoneNumber}" name="phoneNumber" required>
   </div>
   <div>
     <span>성별: </span>
@@ -91,7 +92,7 @@
   </div>
   <div>
     <label for="period" th:text="#{exercisePeriod}">운동 경력</label>
-    <select name="exercisePeriod" id="period" th:value="*{exercisePeriod}" required>
+    <select name="exercisePeriod" id="period" th:value="${trainer?.exercisePeriod}" required>
       <option value="">기간을 선택하세요</option>
       <option value="1년 미만">3년 ~ 5년</option>
       <option value="1년~2년">5년 ~ 7년</option>
@@ -100,50 +101,62 @@
     </select>
   </div>
   <br>
-  <div th:text="#{exercise}">운동 종류</div>
+  <div>운동 종류</div>
   <div th:each="exercise : ${exerciseType}" class="form-check form-check-inline">
-    <input type="radio" th:value="${exercise.key}" name="regPurposeList"
-           th:field="${trainer.exerciseType}" class="form-check">
-    <label class="form-check-label" th:for="${#ids.prev('exerciseType')}"
-           th:text="${exercise.value}"></label>
+    <div th:if="|${trainer != null}|">
+      <input type="radio" th:value="${exercise.key}" name="exerciseType"
+             th:field="*{exerciseType}" class="form-check" th:object="${trainer}">
+      <label class="form-check-label" th:for="${#ids.prev('exerciseType')}"
+             th:text="${exercise.value}"></label>
+    </div>
+    <div th:if="|${trainer == null}|">
+      <input type="radio" th:value="${exercise.key}" name="exerciseType"
+             id="exerciseType" class="form-check">
+      <label class="form-check-label" th:text="${exercise.value}"></label>
+    </div>
   </div>
   <br>
   <div>
     <label for="awards" th:text="#{awards}">수상 기록</label>
-    <textarea th:field="*{awards}" id="awards" name="awards" cols="50" rows="10"></textarea>
+    <textarea th:value="${trainer?.awards}" id="awards" name="awards" cols="50"
+              rows="10"></textarea>
   </div>
   <br>
   <div>
     <label for="profilePicture" th:text="#{profilePicture}">프로필 사진</label>
-    <input type="file" id="profilePicture" th:field="*{profilePicture}" name="profilePicture"
+    <input type="file" id="profilePicture" th:value="${trainer?.profilePicture}"
+           name="profilePicture"
            required>
   </div>
   <br>
   <div>
     <label for="price" th:text="#{price}"></label>
-    <input type="text" id="price" th:field="*{price}" name="price">
+    <input type="text" id="price" th:value="${trainer?.price}" name="price">
   </div>
   <br>
   <div>
     <div>
       <label for="introduce" th:text="#{introduce}">트레이너 소개</label>
     </div>
-    <textarea th:field="*{introduce}" id="introduce" name="introduce" cols="50"
+    <textarea th:value="${trainer?.introduce}" id="introduce" name="introduce" cols="50"
               rows="10"></textarea>
   </div>
   <br>
   <div> 운동 장소
     <div>
       <span th:text="#{zipcode}"></span>
-      <input type="text" th:field="*{zipcode}" name="zipcode" readonly required
+      <input type="text" th:value="${trainer?.zipcode}" id="zipcode" name="zipcode" readonly
+             required
              placeholder="우편번호" class="block-input">
       <button onclick="execDaumPostcode()" type="button" class="inline-button">우편번호 찾기</button>
     </div>
     <div>
-      <span th:text="#{addr}"></span><input type="text" th:field="*{addr}" name="addr" readonly
-                                            required placeholder="주소 입력" class="block-input">
-      <span th:text="#{addrDetail}"></span><input type="text" th:field="*{addrDetail}" required
-                                                  name="addrDetail" placeholder="주소 입력"
+      <span th:text="#{addr}"></span><input type="text" th:value="${trainer?.addr}" name="addr"
+                                            id="addr" readonly required placeholder="주소 입력"
+                                            class="block-input">
+      <span th:text="#{addrDetail}"></span><input type="text" th:value="${trainer?.addrDetail}"
+                                                  id="addrDetail" required name="addrDetail"
+                                                  placeholder="주소 입력"
                                                   class="block-input">
     </div>
   </div>
