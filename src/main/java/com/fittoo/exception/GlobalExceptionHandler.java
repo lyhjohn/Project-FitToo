@@ -1,7 +1,11 @@
 package com.fittoo.exception;
 
+import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
+import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
 import static com.fittoo.member.model.MemberDto.whatIsGender;
 
+import com.fittoo.common.message.ReservationErrorMessage;
 import com.fittoo.member.model.MemberDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -73,9 +77,12 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 	public String reservationException(ReservationException e, RedirectAttributes attributes) {
 
 		log.info("ReservationException.message={}", e.getMessage());
-
 		attributes.addAttribute("errorMessage", e.getMessage());
 
-		return "redirect:/reservation/empty";
+		if (e.getMessage().equals(EMPTY_SCHEDULE.message())) {
+			return "redirect:/reservation/empty";
+		}
+
+		return "redirect:/reservation/error";
 	}
 }

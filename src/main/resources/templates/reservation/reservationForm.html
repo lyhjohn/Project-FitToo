@@ -5,29 +5,39 @@
   <title>Title</title>
 </head>
 <body>
-<div>트레이닝 일정</div>
+<h1>트레이닝 일정</h1>
 <div th:object="${schedule}">
+  <form action="/reservation/add" method="post">
+    <span th:text="#{scheduleDate}"></span>
+    <div th:text="*{date}"></div>
+    <input type="hidden" th:field="*{date}">
 
-  <span th:text="#{scheduleDate}"></span>
-  <div th:text="*{date}"></div>
+    <span th:text="#{startTime}"></span>
+    <div th:text="*{startTime}" th:field="*{startTime}"></div>
+    <input type="hidden" th:field="*{startTime}">
 
-  <span th:text="#{startTime}"></span>
-  <div th:text="*{startTime}"></div>
+    <span th:text="#{endTime}"></span>
+    <div th:text="*{endTime}" th:field="*{endTime}"></div>
+    <input type="hidden" th:field="*{endTime}">
 
-  <span th:text="#{endTime}"></span>
-  <div th:text="*{endTime}"></div>
+    <span th:text="#{exercise}"></span>
+    <div th:text="*{exercise}"></div>
+    <input type="hidden" th:field="*{exercise}">
 
-  <span th:text="#{exercise}"></span>
-  <div th:text="*{exercise}"></div>
+    <span th:text="#{price}"></span>
+    <div th:text="*{price}" th:field="*{price}"></div>
+    <input type="hidden" th:field="*{price}">
 
-  <span th:text="#{price}"></span>
-  <div th:text="*{price}"></div>
+    <span th:text="#{personnel}">></span>
+    <div th:text="*{personnel}" th:field="*{personnel}"></div>
+    <input type="hidden" th:field="*{personnel}">
 
-  <span th:text="#{personnel}">></span>
-  <div th:text="*{personnel}"></div>
-
-  <span th:text="#{comment}"></span>
-  <div th:text="*{comment}"></div>
+    <span th:text="#{comment}"></span>
+    <div th:text="*{comment}" th:field="*{comment}"></div>
+    <input type="hidden" th:field="*{comment}">
+    <input type="hidden" th:field="*{trainerId}">
+    <button type="submit">예약하기</button>
+  </form>
 </div>
 </body>
 </html>

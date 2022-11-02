@@ -6,7 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Getter
 @Setter
@@ -53,7 +52,7 @@ public class TrainerInput {
     @NotNull
     private String zipcode;
 
-    private String rePassword;
+    private String repassword;
 
     private String loginType;
 

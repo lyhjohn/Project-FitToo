@@ -178,6 +178,14 @@ public class CalendarUtil {
 				ZoneId.systemDefault());
 		}
 
+		public static LocalDate parseDate(int year, int month, int day)
+			throws ParseException {
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(year, month - 1, day);
+			return LocalDate.ofInstant(calendar.toInstant(), ZoneId.systemDefault());
+		}
+
 		public static LocalDate getStartDate(String startDate) throws ParseException {
 			return parseDate(startDate);
 		}

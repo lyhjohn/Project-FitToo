@@ -20,12 +20,4 @@ class ReservationControllerTest {
 
 	@Autowired
 	ReservationService reservationService;
-
-	@Test
-	void getDateTest() {
-	    //given
-		LocalDate date = reservationController.getDate(2020, 12, 25);
-		//when & then
-		assertThat(date).isEqualTo("2020-12-25");
-	}
 }

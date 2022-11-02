@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Time;
+import java.text.ParseException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class TrainerServiceImplTest {
 		trainer.setGender(1);
 		trainer.setUserId("trainerA");
 		trainer.setPassword("1234");
-		trainer.setRePassword("1234");
+		trainer.setRepassword("1234");
 		trainer.setAddr("address");
 		trainer.setAddrDetail("addrDetail");
 		trainer.setZipcode("123-456");
@@ -93,7 +94,7 @@ class TrainerServiceImplTest {
 	}
 
 	@Test
-	void createSchedule() {
+	void createSchedule() throws ParseException {
 	    //given
 		Time time = new Time(12, 0, 1);
 		ScheduleInput scheduleInput = new ScheduleInput();

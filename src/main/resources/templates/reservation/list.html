@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>예약 목록</title>
+</head>
+<body>
+<div th:replace="/fragment/common/home_header.html::home_header"></div>
+
+<div th:if="${reservations.size() > 0}">
+  <div th:each="reservation: ${reservations}">
+    날짜: <div th:text="${reservation?.date}"></div>
+    시작 시간: <div th:text="${reservation?.startTime}"></div>
+    종료 시간: <div th:text="${reservation?.endTime}"></div>
+    내용: <div th:text="${reservation?.comment}"></div>
+    1회 가격: <div th:text="${reservation?.price}"></div>
+    트레이너 이름: <div th:text="${reservation?.trainerName}"></div>
+    위치: <div th:text="${reservation?.address}"></div>
+    트레이너 ID: <div th:text="${reservation?.trainerUserId}"></div>
+    종목: <div th:text="${reservation?.exercise}"></div>
+    현재 인원 / 정원: <div th:text="|${reservation?.curPersonnel} / ${reservation?.personnel}|"></div>
+    <hr>
+  </div>
+</div>
+</body>
+</html>

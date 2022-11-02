@@ -4,7 +4,6 @@ import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.RegisterErrorMessage.ALREADY_EXIST_USERID;
 import static com.fittoo.common.message.RegisterErrorMessage.Pwd_And_RePwd_Not_Equal;
 
-import com.fittoo.common.message.RegisterErrorMessage;
 import com.fittoo.exception.RegisterException;
 import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
@@ -39,7 +38,7 @@ public class MemberServiceImpl implements MemberService {
 				new UserIdAlreadyExist());
 		}
 
-		if (!input.getPassword().equals(input.getRePassword())) {
+		if (!input.getPassword().equals(input.getRepassword())) {
 			input.setLoginType("member");
 			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input,
 				input.getLoginType());

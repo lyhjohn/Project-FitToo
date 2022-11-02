@@ -56,6 +56,7 @@ public class ScheduleDto {
 			.endTime(schedule.getEndTime())
 			.exercise(schedule.getExercise())
 			.trainerId(schedule.getTrainerUserId())
+			.price(schedule.getPrice())
 			.build();
 	}
 

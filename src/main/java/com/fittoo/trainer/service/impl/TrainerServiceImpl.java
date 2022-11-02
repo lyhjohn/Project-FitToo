@@ -63,7 +63,7 @@ public class TrainerServiceImpl implements TrainerService {
 				new UserIdAlreadyExist());
 		}
 
-		if (!input.getPassword().equals(input.getRePassword())) {
+		if (!input.getPassword().equals(input.getRepassword())) {
 			input.setLoginType("trainer");
 			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input,
 				input.getLoginType());
@@ -188,6 +188,9 @@ public class TrainerServiceImpl implements TrainerService {
 	}
 
 	private static boolean isStartDateIsBeforeEndDate(ScheduleInput input) throws ParseException {
+		if (input.getStartDate().equals(input.getEndDate())) {
+			return true;
+		}
 
 		return StringToLocalDate.getStartDate(input.getStartDate())
 			.isBefore(StringToLocalDate.getEndDate(input.getEndDate()));

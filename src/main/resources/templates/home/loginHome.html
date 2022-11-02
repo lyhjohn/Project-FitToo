@@ -25,6 +25,9 @@
 <div th:text="${member.userId}"></div>
 <div th:text="|${member.userId}님, 환영합니다.|"></div>
 
+<a href="/reservation/view">예약 현황 보기</a>
+
+
 <div>
   <form action="/trainer/trainerList">
     <input type="hidden" th:value="${member.loginType}" name="loginType">

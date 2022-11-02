@@ -3,7 +3,6 @@ package com.fittoo.trainer.entity;
 import static com.fittoo.common.message.ScheduleErrorMessage.INVALID_DATE;
 
 import com.fittoo.common.entity.UserBaseEntity;
-import com.fittoo.common.message.ScheduleErrorMessage;
 import com.fittoo.exception.ScheduleException;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.Reservation;
@@ -11,11 +10,9 @@ import com.fittoo.review.entity.Review;
 import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,20 +56,16 @@ public class Trainer extends UserBaseEntity {
 
 	@OneToMany(mappedBy = "trainer")
 	@Builder.Default
-	private List<Review> reviewList = new ArrayList<>();
+	private List<Reservation> reservationList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "trainer")
 	@Builder.Default
-	private List<Reservation> reservationList = new ArrayList<>();
+	private List<Review> reviewList = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "exercise_type")
 	private ExerciseType exerciseType;
 
-	public void addReservation(Reservation reservation) {
-		this.reservationList.add(reservation);
-		reservation.setTrainer(this);
-	}
 
 	public void addReview(Review review) {
 		this.reviewList.add(review);
@@ -166,5 +159,10 @@ public class Trainer extends UserBaseEntity {
 
 		this.scheduleList.add(schedule);
 		return schedule;
+	}
+
+	public void addReservation(Reservation reservation) {
+		this.reservationList.add(reservation);
+		reservation.setTrainer(this);
 	}
 }
