@@ -41,7 +41,6 @@ class MemberControllerTest {
 		memberInput.setPhoneNumber("phone");
 		memberInput.setExercisePeriod("3년");
 		memberInput.setUserName("홍길동");
-		memberInput.setRegPurposeList(Arrays.asList("123","456"));
 		memberService.memberRegister(memberInput);
 	    //when
 		MemberDto testId = memberService.findMember("testId");

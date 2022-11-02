@@ -1,7 +1,11 @@
 package com.fittoo.exception;
 
+import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
+import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
 import static com.fittoo.member.model.MemberDto.whatIsGender;
 
+import com.fittoo.common.message.ReservationErrorMessage;
 import com.fittoo.member.model.MemberDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -47,11 +51,11 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 
 		attributes.addAttribute("errorMessage", e.getMessage());
 
-		if (e.getMemberInput().getLoginType().equals("member")) {
+		if (e.getLoginType().equals("member")) {
 			attributes.addFlashAttribute("member", e.getMemberInput());
 			whatIsGender(e.getMemberInput().getGender(), attributes);
 
-		} else if (e.getMemberInput().getLoginType().equals("trainer")) {
+		} else if (e.getLoginType().equals("trainer")) {
 			attributes.addFlashAttribute("trainer", e.getTrainerInput());
 			whatIsGender(e.getMemberInput().getGender(), attributes);
 			return "redirect:/trainer/register";
@@ -67,5 +71,18 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 		attributes.addAttribute("errorMessage", e.getMessage());
 
 		return "redirect:/trainer/trainerList";
+	}
+
+	@ExceptionHandler(ReservationException.class)
+	public String reservationException(ReservationException e, RedirectAttributes attributes) {
+
+		log.info("ReservationException.message={}", e.getMessage());
+		attributes.addAttribute("errorMessage", e.getMessage());
+
+		if (e.getMessage().equals(EMPTY_SCHEDULE.message())) {
+			return "redirect:/reservation/empty";
+		}
+
+		return "redirect:/reservation/error";
 	}
 }

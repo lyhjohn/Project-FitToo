@@ -15,15 +15,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "reservationList")
+@ToString
 public class MemberDto {
 
     private Long id;
 
     private long point;
-
-    @Builder.Default // 빌더는 초기화 표현을 무시하므로 Builder.Default 혹은 final로 선언해야함
-    private List<Reservation> reservationList = new ArrayList<>();
 
     private String userId;
     private String password;
@@ -44,7 +41,6 @@ public class MemberDto {
                 .loginType(member.getLoginType())
                 .phoneNumber(member.getPhoneNumber())
                 .exercisePeriod(member.getExercisePeriod())
-                .reservationList(member.getReservationList())
                 .regDt(member.getRegDt())
                 .udtDt(member.getUdtDt())
                 .point(member.getPoint())

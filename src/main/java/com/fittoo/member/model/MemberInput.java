@@ -24,7 +24,7 @@ public class MemberInput {
 
     @NotNull
     @NotEmpty
-    private String rePassword;
+    private String repassword;
 
     @NotNull
     @NotEmpty

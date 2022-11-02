@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.Principal;
+import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -204,7 +205,6 @@ public class TrainerController {
 
 		if (StringUtils.hasText(errorMessage)) {
 			model.addAttribute("errorMessage", errorMessage);
-			return "trainer/schedule/schedule";
 		}
 
 		String userId = principal.getName();
@@ -220,7 +220,7 @@ public class TrainerController {
 
 	@PostMapping("/schedule/create")
 	public String createSchedule(Principal principal, @ModelAttribute ScheduleInput input,
-		Model model) {
+		Model model) throws ParseException {
 
 		trainerService.createSchedule(principal.getName(), input);
 

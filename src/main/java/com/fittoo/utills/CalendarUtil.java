@@ -1,8 +1,17 @@
 package com.fittoo.utills;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.ui.Model;
 
@@ -89,7 +98,7 @@ public class CalendarUtil {
 		}
 		return "";
 	}
-	
+
 	public static int[] getNewMonthAndYear(int year, int month) {
 		if (month == 13) {
 			int curYear = year + 1;
@@ -107,9 +116,10 @@ public class CalendarUtil {
 
 	/**
 	 * 캘린더에서 이전달, 다음달로 넘김에 따라 캘린더 view를 바꿔주기 위한 메서드
+	 *
 	 * @param prevMonth
 	 * @param nextMonth
-	 * @param year 1월 이전 or 12월 이후로 넘기면 년도를 바꿔줘야함
+	 * @param year      1월 이전 or 12월 이후로 넘기면 년도를 바꿔줘야함
 	 * @param model
 	 * @return
 	 */
@@ -151,5 +161,61 @@ public class CalendarUtil {
 
 		model.addAttribute("dayMap", dayMap);
 		return totalDayCountAndNowMonthYear;
+	}
+
+	public static class StringToLocalDate {
+
+		public static LocalDate parseDate(String date)
+			throws ParseException {
+
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			Date dt = df.parse(date);
+			Calendar dateCalendar = Calendar.getInstance();
+
+			dateCalendar.setTime(dt);
+
+			return LocalDate.ofInstant(dateCalendar.toInstant(),
+				ZoneId.systemDefault());
+		}
+
+		public static LocalDate parseDate(int year, int month, int day)
+			throws ParseException {
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(year, month - 1, day);
+			return LocalDate.ofInstant(calendar.toInstant(), ZoneId.systemDefault());
+		}
+
+		public static LocalDate getStartDate(String startDate) throws ParseException {
+			return parseDate(startDate);
+		}
+
+		public static LocalDate getEndDate(String endDate) throws ParseException {
+			return parseDate(endDate);
+		}
+	}
+
+	public static class StringToLocalTime {
+
+		public static LocalTime parseTime(String time)
+			throws ParseException {
+
+			DateFormat df = new SimpleDateFormat("HH:mm");
+			Date dt = df.parse(time);
+			Calendar timeCalendar = Calendar.getInstance();
+
+			timeCalendar.setTime(dt);
+
+			return LocalTime.ofInstant(timeCalendar.toInstant(),
+				ZoneId.systemDefault());
+		}
+
+		public static LocalTime getStartTime(String startTime) throws ParseException {
+			return parseTime(startTime);
+		}
+
+		public static LocalTime getEndTime(String endTime) throws ParseException {
+			return parseTime(endTime);
+		}
 	}
 }

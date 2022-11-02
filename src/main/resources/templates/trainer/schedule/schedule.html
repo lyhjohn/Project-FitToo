@@ -31,25 +31,23 @@
     <p>범위 날짜 선택</p>
     <div th:text="${errorMessage}" th:if="${errorMessage != null}" class="error"></div>
     <div>
-      시작일: <input type="date" name="startDate" class="block-input">
-      종료일: <input type="date" name="endDate" class="block-input">
+      시작일: <input type="date" name="startDate" class="block-input" required>
+      종료일: <input type="date" name="endDate" class="block-input" required>
     </div>
     <div>
-      시작 시간: <input type="time" name="startTime" class="block-input">
-      종료 시간: <input type="time" name="endTime" class="block-input">
+      시작 시간: <input type="time" name="startTime" class="block-input" required>
+      종료 시간: <input type="time" name="endTime" class="block-input" required>
+    </div>
+    <div>
+      1회 가격: <input type="text" name="price" class="block-input" required>
+    </div>
+    <div>
+      정원: <input type="text" name="personnel" class="block-input" required>
+    </div>
+    <div>
+      코멘트: <input type="text" name="comment" class="block-input">
     </div>
   </div>
-
-  <table>
-    <thead>
-    <tr>
-      <th>종목:</th>
-      <td>
-        <!--        <input type="text" th:text="">-->
-      </td>
-    </tr>
-    </thead>
-  </table>
 
   <button type="submit">저장</button>
 </form>

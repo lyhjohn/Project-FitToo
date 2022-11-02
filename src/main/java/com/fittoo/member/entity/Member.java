@@ -81,6 +81,4 @@ public class Member extends UserBaseEntity {
 		}
 		return null;
 	}
-
-
 }

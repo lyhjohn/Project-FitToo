@@ -1,6 +1,7 @@
 package com.fittoo.common.entity;
 
 import com.fittoo.member.model.LoginType;
+import javax.persistence.Column;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -16,6 +17,7 @@ import javax.persistence.MappedSuperclass;
 @SuperBuilder
 public abstract class UserBaseEntity extends DateBaseEntity {
 
+	@Column(unique = true)
 	private String userId;
 	private String password;
 	private String phoneNumber;

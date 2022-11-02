@@ -3,7 +3,6 @@ package com.fittoo.trainer.entity;
 import static com.fittoo.common.message.ScheduleErrorMessage.INVALID_DATE;
 
 import com.fittoo.common.entity.UserBaseEntity;
-import com.fittoo.common.message.ScheduleErrorMessage;
 import com.fittoo.exception.ScheduleException;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.Reservation;
@@ -57,20 +56,16 @@ public class Trainer extends UserBaseEntity {
 
 	@OneToMany(mappedBy = "trainer")
 	@Builder.Default
-	private List<Review> reviewList = new ArrayList<>();
+	private List<Reservation> reservationList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "trainer")
 	@Builder.Default
-	private List<Reservation> reservationList = new ArrayList<>();
+	private List<Review> reviewList = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "exercise_type")
 	private ExerciseType exerciseType;
 
-	public void addReservation(Reservation reservation) {
-		this.reservationList.add(reservation);
-		reservation.setTrainer(this);
-	}
 
 	public void addReview(Review review) {
 		this.reviewList.add(review);
@@ -129,7 +124,7 @@ public class Trainer extends UserBaseEntity {
 		this.profilePictureOriName = filenames[0];
 	}
 
-	public List<Schedule> setSchedule(ScheduleInput input) {
+	public List<Schedule> setSchedule(ScheduleInput input, String trainerId) {
 		List<Schedule> newScheduleList = new ArrayList<>();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		try {
@@ -143,13 +138,13 @@ public class Trainer extends UserBaseEntity {
 			endCalendar.setTime(parseEndDate);
 
 			if (startCalendar == endCalendar) {
-				newScheduleList.add(createSchedule(startCalendar, input.getComment()));
+				newScheduleList.add(createSchedule(startCalendar, input, trainerId));
 			} else {
 				while (startCalendar.compareTo(endCalendar) != 0) {
-					newScheduleList.add(createSchedule(startCalendar, input.getComment()));
+					newScheduleList.add(createSchedule(startCalendar, input, trainerId));
 					startCalendar.add(Calendar.DATE, 1);
 				}
-				newScheduleList.add(createSchedule(startCalendar, input.getComment()));
+				newScheduleList.add(createSchedule(startCalendar, input, trainerId));
 			}
 			return newScheduleList;
 		} catch (ParseException e) {
@@ -157,11 +152,17 @@ public class Trainer extends UserBaseEntity {
 		}
 	}
 
-	private Schedule createSchedule(Calendar calendar, String comment) {
-		Schedule schedule = new Schedule(calendar);
-		schedule.setComment(comment);
+	private Schedule createSchedule(Calendar calendar, ScheduleInput input, String trainerId)
+		throws ParseException {
+		Schedule schedule = new Schedule(trainerId, input.getComment(), input.getPersonnel(),
+			this.getExerciseType().getId(), this, calendar, input.getStartTime(), input.getEndTime(), input.getPrice());
+
 		this.scheduleList.add(schedule);
-		schedule.setTrainer(this);
 		return schedule;
+	}
+
+	public void addReservation(Reservation reservation) {
+		this.reservationList.add(reservation);
+		reservation.setTrainer(this);
 	}
 }
