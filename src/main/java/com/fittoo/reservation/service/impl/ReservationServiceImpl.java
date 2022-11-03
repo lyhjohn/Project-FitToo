@@ -30,6 +30,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -109,18 +112,20 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public List<TrainerDto> searchTrainer(SearchParam param) {
-
-		List<Trainer> trainerList = searchBySearchTypeAndExerciseType(param);
+		PageRequest pageRequest = PageRequest.of(0, 5, Direction.ASC, "userName");
+		List<Trainer> trainerList = searchBySearchTypeAndExerciseType(param, pageRequest);
 
 		return TrainerDto.of(trainerList);
 	}
 
-	public List<Trainer> searchBySearchTypeAndExerciseType(SearchParam param) {
+	public List<Trainer> searchBySearchTypeAndExerciseType(SearchParam param, Pageable pageable) {
 		if (param.getExerciseType().equals("all")) {
 			if (param.getSearchType().equals("address")) {
 				return queryFactory
 					.selectFrom(trainer)
 					.where(trainer.addr.contains(param.getSearchWord()))
+					.offset(pageable.getOffset())
+					.limit(pageable.getPageSize())
 					.fetch();
 			}
 
@@ -128,6 +133,8 @@ public class ReservationServiceImpl implements ReservationService {
 				return queryFactory
 					.selectFrom(trainer)
 					.where(trainer.userName.contains(param.getSearchWord()))
+					.offset(pageable.getOffset())
+					.limit(pageable.getPageSize())
 					.fetch();
 			}
 			return Collections.emptyList();
@@ -138,6 +145,8 @@ public class ReservationServiceImpl implements ReservationService {
 				.selectFrom(trainer)
 				.where(trainer.userName.contains(param.getSearchWord())
 					.and(trainer.exerciseType.id.eq(param.getExerciseType())))
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize())
 				.fetch();
 		}
 
@@ -146,6 +155,8 @@ public class ReservationServiceImpl implements ReservationService {
 				.selectFrom(trainer)
 				.where(trainer.userName.contains(param.getSearchWord())
 					.and(trainer.exerciseType.id.eq(param.getExerciseType())))
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize())
 				.fetch();
 		}
 		return Collections.emptyList();

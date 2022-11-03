@@ -7,22 +7,21 @@ import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_TRAINER;
 import static com.fittoo.trainer.model.TrainerDto.whatIsGender;
 import static java.time.LocalDate.now;
 
-import com.fittoo.common.message.FileErrorMessage;
-import com.fittoo.common.message.FindErrorMessage;
 import com.fittoo.exception.FileException;
-import com.fittoo.member.model.LoginType;
-import com.fittoo.member.service.MemberService;
+import com.fittoo.page.model.TrainerPageParam;
 import com.fittoo.trainer.model.ScheduleDto;
 import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
 import com.fittoo.trainer.service.TrainerService;
+import com.fittoo.utills.PageUtil;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.security.Principal;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class TrainerController {
 
 	private final TrainerService trainerService;
-	private final MemberService memberService;
 
 	@ModelAttribute(name = "loginType")
 	private String getLoginType() {
@@ -169,18 +167,22 @@ public class TrainerController {
 	public String trainerList(Principal principal, Model model,
 		@RequestParam(required = false) String trainerId,
 		@RequestParam(required = false) String errorMessage,
-		@ModelAttribute String loginType) {
+		TrainerPageParam page, @ModelAttribute String loginType) {
 
 		if (trainerId != null) {
 			TrainerDto trainer = trainerService.findTrainer(trainerId);
 			model.addAttribute("trainerDetail", trainer);
 		}
 
-		List<TrainerDto> trainerList = trainerService.findAll();
-
 		if (errorMessage != null) {
 			model.addAttribute("errorMessage", errorMessage);
 		}
+
+		Long totalCount = trainerService.getTotalCountTrainerList();
+
+		int curPage = PageUtil.getCurPageAndAttributePageList(page, model, totalCount);
+
+		List<TrainerDto> trainerList = trainerService.findTrainersPerPage(curPage);
 
 		model.addAttribute("trainerList", trainerList);
 		return "/trainer/trainerList";
@@ -190,6 +192,7 @@ public class TrainerController {
 	public String searchTrainerList(Principal principal, Model model,
 		@RequestParam(required = false) String trainerId,
 		@RequestParam(required = false) String errorMessage,
+		TrainerPageParam page,
 		@ModelAttribute String loginType) {
 
 		if (trainerId != null) {
@@ -201,9 +204,12 @@ public class TrainerController {
 			model.addAttribute("errorMessage", errorMessage);
 		}
 
+		if (page.getCurPage() == 0) {
+			model.addAttribute("pages", Arrays.asList(1, 2, 3, 4, 5));
+		}
+
 		return "/trainer/trainerList";
 	}
-
 
 	@GetMapping("/detail")
 	public String trainerDetail(String userId, RedirectAttributes redirectAttributes) {

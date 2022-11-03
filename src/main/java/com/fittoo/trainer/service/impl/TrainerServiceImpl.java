@@ -8,6 +8,7 @@ import static com.fittoo.common.message.RegisterErrorMessage.Pwd_And_RePwd_Not_E
 import static com.fittoo.common.message.ScheduleErrorMessage.CONTAINS_REGISTERED_DATE;
 import static com.fittoo.common.message.ScheduleErrorMessage.START_DAY_BIGGER_THAN_END_DAY;
 import static com.fittoo.common.message.ScheduleErrorMessage.START_TIME_BIGGER_THAN_END_TIME;
+import static com.fittoo.trainer.entity.QTrainer.trainer;
 import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getEndTime;
 import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getStartTime;
 
@@ -17,6 +18,7 @@ import com.fittoo.exception.ScheduleException;
 import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.trainer.entity.ExerciseType;
+import com.fittoo.trainer.entity.QTrainer;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.ScheduleDto;
@@ -30,12 +32,16 @@ import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.trainer.service.TrainerService;
 import com.fittoo.utills.CalendarUtil.StringToLocalDate;
 import com.fittoo.utills.FileStore;
+import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +55,7 @@ public class TrainerServiceImpl implements TrainerService {
 	private final TrainerRepository trainerRepository;
 	private final ScheduleRepository scheduleRepository;
 	private final ExerciseTypeRepository exerciseTypeRepository;
-
+	private final JPAQueryFactory queryFactory;
 
 	@Override
 	@Transactional
@@ -137,10 +143,25 @@ public class TrainerServiceImpl implements TrainerService {
 
 	@Override
 	@Transactional
-	public List<TrainerDto> findAll() {
-		List<Trainer> trainerList = trainerRepository.findAll();
+	public List<TrainerDto> findTrainersPerPage(int page) {
+		PageRequest pageRequest = PageRequest.of(page - 1, 5, Direction.ASC, "userName");
+
+		List<Trainer> trainerList = queryFactory
+			.selectFrom(trainer)
+			.offset(pageRequest.getOffset())
+			.limit(pageRequest.getPageSize())
+			.fetch();
+
 
 		return TrainerDto.of(trainerList);
+	}
+
+	@Override
+	public Long getTotalCountTrainerList() {
+		return queryFactory
+			.select(Wildcard.count)
+			.from(trainer)
+			.fetchOne();
 	}
 
 	@Override

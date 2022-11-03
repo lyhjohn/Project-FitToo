@@ -180,6 +180,11 @@
       display: flex;
       justify-content: center;
     }
+
+    .page {
+      float: right;
+      top: 3%;
+    }
   </style>
   <title>내 정보</title>
 </head>
@@ -211,6 +216,9 @@
 
 
 <div>
+  <div th:if="${trainerDetail != null}">
+    <input type="hidden" th:value="${trainerDetail.userId}" name="trainerId">
+  </div>
   <form action="/reservation/search" style="display: inline">
     <select name="searchType" id="searchType">
       <option value="trainerName" name="trainerName">트레이너 이름</option>
@@ -262,7 +270,22 @@
     </thead>
   </table>
 </div>
-
+<form action="/trainer/trainerList" class="page">
+  <div th:if="${trainerDetail != null}">
+  <input type="hidden" th:value="${trainerDetail.userId}" name="trainerId">
+  </div>
+  현재 페이지: <span th:text="${curPage}"></span>
+  <div th:if="${trainerDetail != null}">
+    <input type="hidden" th:value="${trainerDetail.userId}" name="userId">
+  </div>
+  <button value="prev" name="movePage">이전 페이지</button>
+  <div th:each="page: ${pages}" style="display: inline">
+    <button th:text="${page}" th:value="${page}" name="curPage"></button>
+  </div>
+  <button value="next" name="movePage">다음 페이지</button>
+  <input type="hidden" th:value="${pages.get(0)}" name="curMinPage">
+  <input type="hidden" th:value="${pages.get(4)}" name="curMaxPage">
+</form>
 
 </body>
 </html>

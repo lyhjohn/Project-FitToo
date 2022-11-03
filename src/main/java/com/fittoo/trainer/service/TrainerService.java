@@ -22,7 +22,9 @@ public interface TrainerService {
 
 	TrainerDto updateProfilePicture(MultipartFile file, String userId);
 
-	List<TrainerDto> findAll();
+	List<TrainerDto> findTrainersPerPage(int curPage);
 
 	void createSchedule(String userId, ScheduleInput input) throws ParseException;
+
+	Long getTotalCountTrainerList();
 }
