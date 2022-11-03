@@ -36,17 +36,4 @@ class MemberServiceImplTest {
 		member.setPassword("1111");
 		memberService.memberRegister(member);
 	}
-
-	@Test
-	void findMemberTest() {
-	    //give
-		Member member = queryFactory
-			.selectFrom(QMember.member)
-			.where(QMember.member.userId.eq("MemberA"))
-			.fetchOne();
-		//when
-		String userName = member.getUserName();
-		//then
-		assertThat(userName).isEqualTo("userNameA");
-	}
 }

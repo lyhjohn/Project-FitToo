@@ -1,5 +1,6 @@
 package com.fittoo.trainer.service.impl;
 
+import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.FileErrorMessage.INVALID_FILE;
 import static com.fittoo.common.message.FileErrorMessage.INVALID_PROFILE_PICTURE;
 import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_TRAINER;
@@ -8,6 +9,7 @@ import static com.fittoo.common.message.RegisterErrorMessage.Pwd_And_RePwd_Not_E
 import static com.fittoo.common.message.ScheduleErrorMessage.CONTAINS_REGISTERED_DATE;
 import static com.fittoo.common.message.ScheduleErrorMessage.START_DAY_BIGGER_THAN_END_DAY;
 import static com.fittoo.common.message.ScheduleErrorMessage.START_TIME_BIGGER_THAN_END_TIME;
+import static com.fittoo.trainer.entity.QTrainer.trainer;
 import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getEndTime;
 import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getStartTime;
 
@@ -28,14 +30,19 @@ import com.fittoo.trainer.repository.ExerciseTypeRepository;
 import com.fittoo.trainer.repository.ScheduleRepository;
 import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.trainer.service.TrainerService;
-import com.fittoo.utills.CalendarUtil.StringToLocalDate;
+import com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate;
 import com.fittoo.utills.FileStore;
+import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +56,7 @@ public class TrainerServiceImpl implements TrainerService {
 	private final TrainerRepository trainerRepository;
 	private final ScheduleRepository scheduleRepository;
 	private final ExerciseTypeRepository exerciseTypeRepository;
-
+	private final JPAQueryFactory queryFactory;
 
 	@Override
 	@Transactional
@@ -137,21 +144,40 @@ public class TrainerServiceImpl implements TrainerService {
 
 	@Override
 	@Transactional
-	public List<TrainerDto> findAll() {
-		List<Trainer> trainerList = trainerRepository.findAll();
+	public List<TrainerDto> findTrainersPerPage(int page) {
+		PageRequest pageRequest = PageRequest.of(page - 1, 5, Direction.ASC, "userName");
+
+		List<Trainer> trainerList = queryFactory
+			.selectFrom(trainer)
+			.offset(pageRequest.getOffset())
+			.limit(pageRequest.getPageSize())
+			.fetch();
+
 
 		return TrainerDto.of(trainerList);
 	}
 
 	@Override
+	public Long getTotalCountTrainerList() {
+		return queryFactory
+			.select(Wildcard.count)
+			.from(trainer)
+			.fetchOne();
+	}
+
+	@Override
 	@Transactional
-	public Optional<List<ScheduleDto>> showSchedule(String userId) {
+	public List<ScheduleDto> showSchedule(String userId) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 		if (optionalTrainer.isEmpty()) {
-			return Optional.empty();
+			throw new UserNotFoundException(NOT_FOUND_USER.message());
 		}
 		Trainer trainer = optionalTrainer.get();
-		return Optional.ofNullable(ScheduleDto.of(trainer.getScheduleList()));
+		List<ScheduleDto> scheduleList = ScheduleDto.of(trainer.getScheduleList());
+		if (CollectionUtils.isEmpty(scheduleList)) {
+			return Collections.emptyList();
+		}
+		return scheduleList;
 	}
 
 	@Override
@@ -171,8 +197,8 @@ public class TrainerServiceImpl implements TrainerService {
 		}
 
 		Trainer trainer = optionalTrainer.get();
-		LocalDate startDate = StringToLocalDate.getStartDate(input.getStartDate());
-		LocalDate endDate = StringToLocalDate.getEndDate(input.getEndDate());
+		LocalDate startDate = StringOrIntegerToLocalDate.getStartDate(input.getStartDate());
+		LocalDate endDate = StringOrIntegerToLocalDate.getEndDate(input.getEndDate());
 
 		Optional<List<Schedule>> optionalScheduleList = scheduleRepository.findAllByTrainerUserIdAndDateBetween(
 			trainer.getUserId(), startDate, endDate);
@@ -192,8 +218,8 @@ public class TrainerServiceImpl implements TrainerService {
 			return true;
 		}
 
-		return StringToLocalDate.getStartDate(input.getStartDate())
-			.isBefore(StringToLocalDate.getEndDate(input.getEndDate()));
+		return StringOrIntegerToLocalDate.getStartDate(input.getStartDate())
+			.isBefore(StringOrIntegerToLocalDate.getEndDate(input.getEndDate()));
 	}
 
 	private static boolean isStartTimeIsBeforeEndTime(ScheduleInput input) throws ParseException {

@@ -31,6 +31,7 @@ public class Reservation {
 	private Long id;
 
 	private String trainerUserId;
+	private String memberUserId;
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "schedule_id")
 	private Schedule schedule;
@@ -55,7 +56,7 @@ public class Reservation {
 	@Builder
 	public Reservation(String trainerUserId, Schedule schedule, Member member, String address,
 		String exercise, String startTime, String endTime,
-		LocalDate date, String price, String personnel, String comment) {
+		LocalDate date, String price, String personnel, String comment, String memberUserId) {
 		this.trainerUserId = trainerUserId;
 		this.schedule = schedule;
 		this.member = member;
@@ -67,9 +68,11 @@ public class Reservation {
 		this.price = price;
 		this.personnel = personnel;
 		this.comment = comment;
+		this.memberUserId = memberUserId;
 	}
 
-	public static Reservation saveReservation(ReservationParam param, Trainer trainer, Member member, Schedule schedule) {
+	public static Reservation saveReservation(ReservationParam param, Trainer trainer,
+		Member member, Schedule schedule, String memberUserId) {
 		Reservation reservation = Reservation.builder()
 			.comment(param.getComment())
 			.date(param.getDate())
@@ -80,6 +83,7 @@ public class Reservation {
 			.trainerUserId(param.getTrainerId())
 			.exercise(param.getExercise())
 			.address(trainer.getAddr() + " " + trainer.getAddrDetail())
+			.memberUserId(memberUserId)
 			.build();
 
 		reservation.saveSchedule(schedule);

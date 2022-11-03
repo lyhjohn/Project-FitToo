@@ -5,28 +5,32 @@ import static com.fittoo.common.message.FileErrorMessage.INVALID_FILE;
 import static com.fittoo.common.message.FileErrorMessage.INVALID_PROFILE_PICTURE;
 import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_TRAINER;
 import static com.fittoo.trainer.model.TrainerDto.whatIsGender;
+import static com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate.parseDate;
 import static java.time.LocalDate.now;
 
-import com.fittoo.common.message.FileErrorMessage;
-import com.fittoo.common.message.FindErrorMessage;
 import com.fittoo.exception.FileException;
-import com.fittoo.member.model.LoginType;
-import com.fittoo.member.service.MemberService;
+import com.fittoo.member.model.DateParam;
+import com.fittoo.member.model.ReservationParam;
+import com.fittoo.page.model.TrainerPageParam;
+import com.fittoo.reservation.model.ReservationDto;
+import com.fittoo.reservation.service.ReservationService;
+import com.fittoo.reservation.util.SchedulableDateMark;
 import com.fittoo.trainer.model.ScheduleDto;
 import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.model.TrainerInput;
 import com.fittoo.trainer.model.UpdateInput;
 import com.fittoo.trainer.service.TrainerService;
+import com.fittoo.utills.CalendarUtil;
+import com.fittoo.utills.PageUtil;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.security.Principal;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +58,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class TrainerController {
 
 	private final TrainerService trainerService;
-	private final MemberService memberService;
+	private final ReservationService reservationService;
 
 	@ModelAttribute(name = "loginType")
 	private String getLoginType() {
@@ -169,6 +173,32 @@ public class TrainerController {
 	public String trainerList(Principal principal, Model model,
 		@RequestParam(required = false) String trainerId,
 		@RequestParam(required = false) String errorMessage,
+		TrainerPageParam page, @ModelAttribute String loginType) {
+
+		if (trainerId != null) {
+			TrainerDto trainer = trainerService.findTrainer(trainerId);
+			model.addAttribute("trainerDetail", trainer);
+		}
+
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
+
+		Long totalCount = trainerService.getTotalCountTrainerList();
+
+		int curPage = PageUtil.getCurPageAndAttributePageList(page, model, totalCount);
+
+		List<TrainerDto> trainerList = trainerService.findTrainersPerPage(curPage);
+
+		model.addAttribute("trainerList", trainerList);
+		return "/trainer/trainerList";
+	}
+
+	@GetMapping("/search/trainerList")
+	public String searchTrainerList(Principal principal, Model model,
+		@RequestParam(required = false) String trainerId,
+		@RequestParam(required = false) String errorMessage,
+		TrainerPageParam page,
 		@ModelAttribute String loginType) {
 
 		if (trainerId != null) {
@@ -176,16 +206,16 @@ public class TrainerController {
 			model.addAttribute("trainerDetail", trainer);
 		}
 
-		List<TrainerDto> trainerList = trainerService.findAll();
-
 		if (errorMessage != null) {
 			model.addAttribute("errorMessage", errorMessage);
 		}
 
-		model.addAttribute("trainerList", trainerList);
+		if (page.getCurPage() == 0) {
+			model.addAttribute("pages", Arrays.asList(1, 2, 3, 4, 5));
+		}
+
 		return "/trainer/trainerList";
 	}
-
 
 	@GetMapping("/detail")
 	public String trainerDetail(String userId, RedirectAttributes redirectAttributes) {
@@ -199,23 +229,42 @@ public class TrainerController {
 
 	@GetMapping("/schedule")
 	public String scheduleManager(Principal principal, Model model,
+		@RequestParam(required = false) Integer prevMonth,
+		@RequestParam(required = false) Integer nextMonth,
+		@RequestParam(required = false) Integer year,
 		@RequestParam(required = false) String errorMessage) {
 
 		model.addAttribute("loginType", "트레이너");
+		model.addAttribute("trainerId", principal.getName());
 
 		if (StringUtils.hasText(errorMessage)) {
 			model.addAttribute("errorMessage", errorMessage);
 		}
 
-		String userId = principal.getName();
-		Optional<List<ScheduleDto>> optionalList = trainerService.showSchedule(userId);
-		if (optionalList.isEmpty()) {
-			return "trainer/schedule/schedule";
-		}
-		List<ScheduleDto> scheduleList = optionalList.get();
+		List<ScheduleDto> scheduleList = trainerService.showSchedule(principal.getName());
 
 		model.addAttribute("scheduleList", scheduleList);
+
+		Map<Integer, Boolean> canReserveDayMap = SchedulableDateMark.canReserveDate(
+			CalendarUtil.pageControl(prevMonth, nextMonth, year, model), principal.getName(),
+			scheduleList);
+
+		model.addAttribute("canReserveDay", canReserveDayMap);
+
 		return "trainer/schedule/schedule";
+	}
+
+	@PostMapping(value = {"/calendar/prev", "/calendar/next"})
+	public String calendarPage(RedirectAttributes redirectAttributes, DateParam dateParam,
+		ReservationParam param) {
+		if (dateParam.getPrevMonth() != null) {
+			redirectAttributes.addAttribute("prevMonth", dateParam.getPrevMonth());
+		} else {
+			redirectAttributes.addAttribute("nextMonth", dateParam.getNextMonth());
+		}
+		redirectAttributes.addAttribute("year", dateParam.getYear());
+		redirectAttributes.addAttribute("trainerId", param.getTrainerId());
+		return "redirect:/trainer/schedule";
 	}
 
 	@PostMapping("/schedule/create")
@@ -225,5 +274,16 @@ public class TrainerController {
 		trainerService.createSchedule(principal.getName(), input);
 
 		return "redirect:/trainer/schedule";
+	}
+
+	@PostMapping("/view/reservation_member")
+	public String getReservationMember(ReservationParam param, Principal principal, Model model)
+		throws ParseException {
+
+		List<ReservationDto> reservationList = reservationService.viewReservationsByMember(param);
+
+		model.addAttribute("reservations", reservationList);
+
+		return "/trainer/schedule/reservation_member";
 	}
 }

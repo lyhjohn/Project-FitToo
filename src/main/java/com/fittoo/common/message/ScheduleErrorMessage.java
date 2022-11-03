@@ -11,7 +11,9 @@ public enum ScheduleErrorMessage {
 
 	CONTAINS_REGISTERED_DATE("이미 등록된 날짜가 포함되어 있습니다."),
 
-	INVALID_SCHEDULE_INFO("트레이너의 스케줄 정보가 유효하지 않습니다.");
+	INVALID_SCHEDULE_INFO("트레이너의 스케줄 정보가 유효하지 않습니다."),
+
+	EMPTY_SCHEDULE("해당 날짜에는 등록된 일정이 없습니다.");
 
 	private final String message;
 	ScheduleErrorMessage(String message) {

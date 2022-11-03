@@ -16,13 +16,15 @@ public interface TrainerService {
 
 	TrainerDto findTrainer(String userId);
 
-	Optional<List<ScheduleDto>> showSchedule(String userId);
+	List<ScheduleDto> showSchedule(String userId);
 
 	TrainerDto update(UpdateInput input);
 
 	TrainerDto updateProfilePicture(MultipartFile file, String userId);
 
-	List<TrainerDto> findAll();
+	List<TrainerDto> findTrainersPerPage(int curPage);
 
 	void createSchedule(String userId, ScheduleInput input) throws ParseException;
+
+	Long getTotalCountTrainerList();
 }

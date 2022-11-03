@@ -124,7 +124,7 @@
     <span th:each="day: ${canReserveDay}">
     <tr th:if="${day.key} % 7 eq 1 and ${day.key} != 1"></tr>
     <td th:if="${!day.value}">
-      <button th:text="${day.key}" class="cantReserve" th:value="|${day.key}|" name="day"></button>
+      <button th:text="${day.key}" class="cantReserve" value="-1" name="day"></button>
     </td>
     <td th:if="${day.value}">
       <button th:text="${day.key}" class="canReserve" th:value="|${day.key}|" name="day"></button>

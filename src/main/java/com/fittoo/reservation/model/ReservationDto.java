@@ -1,24 +1,10 @@
 package com.fittoo.reservation.model;
 
-import static javax.persistence.FetchType.LAZY;
-
-import com.fittoo.member.entity.Member;
-import com.fittoo.member.model.MemberDto;
 import com.fittoo.reservation.Reservation;
-import com.fittoo.trainer.entity.Schedule;
-import com.fittoo.trainer.entity.Trainer;
-import com.fittoo.trainer.model.ScheduleDto;
-import com.fittoo.trainer.model.TrainerDto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -27,6 +13,8 @@ public class ReservationDto {
 
 	private String trainerUserId;
 	private String trainerName;
+
+	private String memberUserId;
 	private String address;
 	private String exercise;
 	private String startTime;
@@ -40,7 +28,7 @@ public class ReservationDto {
 	@Builder
 	public ReservationDto(String trainerUserId, String trainerName, String address, String exercise,
 		String startTime, String endTime, LocalDate date, String price, String personnel,
-		String comment, int curPersonnel) {
+		String comment, int curPersonnel, String memberUserId) {
 		this.trainerUserId = trainerUserId;
 		this.trainerName = trainerName;
 		this.address = address;
@@ -52,9 +40,10 @@ public class ReservationDto {
 		this.personnel = personnel;
 		this.comment = comment;
 		this.curPersonnel = curPersonnel;
+		this.memberUserId = memberUserId;
 	}
 
-	public static ReservationDto of(Reservation reservation) {
+	public static ReservationDto fromList(Reservation reservation) {
 		return ReservationDto.builder()
 			.trainerUserId(reservation.getTrainerUserId())
 			.trainerName(reservation.getTrainer().getUserName())
@@ -67,13 +56,14 @@ public class ReservationDto {
 			.personnel(reservation.getPersonnel())
 			.comment(reservation.getComment())
 			.curPersonnel(reservation.getSchedule().getCurPersonnel())
+			.memberUserId(reservation.getMemberUserId())
 			.build();
 	}
 
-	public static List<ReservationDto> of(List<Reservation> reservations) {
+	public static List<ReservationDto> fromList(List<Reservation> reservations) {
 		List<ReservationDto> list = new ArrayList<>();
 		for (Reservation reservation : reservations) {
-			list.add(ReservationDto.of(reservation));
+			list.add(ReservationDto.fromList(reservation));
 		}
 		return list;
 	}
