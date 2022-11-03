@@ -211,6 +211,31 @@
 
 
 <div>
+  <form action="/reservation/search" style="display: inline">
+    <select name="searchType" id="searchType">
+      <option value="trainerName" name="trainerName">트레이너 이름</option>
+      <option value="address" name="address">위치</option>
+    </select>
+    <select name="exerciseType" id="exerciseType">
+      <option value="all" name="exercise">전체</option>
+      <option value="yoga" name="exercise">요가</option>
+      <option value="PT" name="exercise">헬스 PT</option>
+      <option value="pilates" name="exercise">필라테스</option>
+      <option value="golf" name="exercise">골프</option>
+      <option value="boxing" name="exercise">복싱</option>
+      <option value="rehabilitation" name="exercise">재활</option>
+      <option value="crossfit" name="exercise">크로스핏</option>
+      <option value="pole_dance" name="exercise">폴댄스</option>
+
+    </select>
+    <input type="hidden" th:value="${loginType}" name="loginType">
+    <input type="text" placeholder="검색어를 입력해 주세요." name="searchWord" onfocus="this.placeholder=''"
+           onblur="this.placeholder='검색어를 입력해 주세요.'">
+    <button type="submit">검색</button>
+  </form>
+  <form action="/trainer/trainerList" style="display: inline">
+    <button type="submit">새로고침</button>
+  </form>
   <table class="rwd-table">
     <thead th:each="trainer : ${trainerList}">
     <tr>

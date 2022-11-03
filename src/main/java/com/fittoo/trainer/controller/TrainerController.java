@@ -186,6 +186,24 @@ public class TrainerController {
 		return "/trainer/trainerList";
 	}
 
+	@GetMapping("/search/trainerList")
+	public String searchTrainerList(Principal principal, Model model,
+		@RequestParam(required = false) String trainerId,
+		@RequestParam(required = false) String errorMessage,
+		@ModelAttribute String loginType) {
+
+		if (trainerId != null) {
+			TrainerDto trainer = trainerService.findTrainer(trainerId);
+			model.addAttribute("trainerDetail", trainer);
+		}
+
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
+
+		return "/trainer/trainerList";
+	}
+
 
 	@GetMapping("/detail")
 	public String trainerDetail(String userId, RedirectAttributes redirectAttributes) {

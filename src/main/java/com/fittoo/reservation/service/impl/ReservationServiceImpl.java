@@ -3,31 +3,27 @@ package com.fittoo.reservation.service.impl;
 import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
-import static com.fittoo.member.entity.QMember.member;
 import static com.fittoo.reservation.QReservation.reservation;
+import static com.fittoo.trainer.entity.QTrainer.trainer;
 
-import com.fittoo.common.message.CommonErrorMessage;
-import com.fittoo.common.message.LoginErrorMessage;
 import com.fittoo.common.message.ReservationErrorMessage;
 import com.fittoo.common.message.ScheduleErrorMessage;
 import com.fittoo.exception.ReservationException;
-import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.member.entity.Member;
-import com.fittoo.member.entity.QMember;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.repository.MemberRepository;
-import com.fittoo.reservation.QReservation;
 import com.fittoo.reservation.Reservation;
 import com.fittoo.reservation.model.ReservationDto;
+import com.fittoo.reservation.model.SearchParam;
 import com.fittoo.reservation.repository.ReservationRepository;
 import com.fittoo.reservation.service.ReservationService;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.ScheduleDto;
+import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.repository.ScheduleRepository;
 import com.fittoo.trainer.repository.TrainerRepository;
-import com.querydsl.core.QueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -37,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.thymeleaf.util.ListUtils;
 
 @Service
 @Transactional(readOnly = true)
@@ -110,5 +105,49 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		return ReservationDto.of(reservationList);
+	}
+
+	@Override
+	public List<TrainerDto> searchTrainer(SearchParam param) {
+
+		List<Trainer> trainerList = searchBySearchTypeAndExerciseType(param);
+
+		return TrainerDto.of(trainerList);
+	}
+
+	public List<Trainer> searchBySearchTypeAndExerciseType(SearchParam param) {
+		if (param.getExerciseType().equals("all")) {
+			if (param.getSearchType().equals("address")) {
+				return queryFactory
+					.selectFrom(trainer)
+					.where(trainer.addr.contains(param.getSearchWord()))
+					.fetch();
+			}
+
+			if (param.getSearchType().equals("trainerName")) {
+				return queryFactory
+					.selectFrom(trainer)
+					.where(trainer.userName.contains(param.getSearchWord()))
+					.fetch();
+			}
+			return Collections.emptyList();
+		}
+
+		if (param.getSearchType().equals("address")) {
+			return queryFactory
+				.selectFrom(trainer)
+				.where(trainer.userName.contains(param.getSearchWord())
+					.and(trainer.exerciseType.id.eq(param.getExerciseType())))
+				.fetch();
+		}
+
+		if (param.getSearchType().equals("trainerName")) {
+			return queryFactory
+				.selectFrom(trainer)
+				.where(trainer.userName.contains(param.getSearchWord())
+					.and(trainer.exerciseType.id.eq(param.getExerciseType())))
+				.fetch();
+		}
+		return Collections.emptyList();
 	}
 }
