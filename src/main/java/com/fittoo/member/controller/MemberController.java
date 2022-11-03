@@ -5,14 +5,11 @@ import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.service.MemberService;
 import com.fittoo.reservation.util.SchedulableDateMark;
-import com.fittoo.trainer.model.ScheduleDto;
 import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.service.TrainerService;
 import com.fittoo.utills.CalendarUtil;
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -65,27 +62,24 @@ public class MemberController {
 		return "redirect:/";
 	}
 
-
 	@GetMapping("/calendar")
 	public String calendar(ReservationParam param, Principal principal, Model model,
 		@RequestParam(required = false) Integer prevMonth,
 		@RequestParam(required = false) Integer nextMonth,
-		@RequestParam(required = false) Integer year,
-		@RequestParam(required = false) String trainerId) {
+		@RequestParam(required = false) Integer year, String trainerId) {
 
 		if (param != null) {
 			TrainerDto trainer = trainerService.findTrainer(param.getTrainerId());
 			model.addAttribute("trainerId", param.getTrainerId());
 		}
 		if (trainerId != null) {
-			Optional<List<ScheduleDto>> optionalList = trainerService.showSchedule(trainerId);
 
 			/**
-			 * 트레이너가 예약 불가능한 날짜로 등록한 날은 캘린더에 빨간 글씨로 표시할 수 있게 Map을 만들어 view로 전달
+			 * 트레이너가 예약 가능한 날짜로 등록한 날은 캘린더에 파란 글씨로 표시할 수 있게 Map을 만들어 view로 전달
 			 */
 			Map<Integer, Boolean> canReserveDayMap = SchedulableDateMark.canReserveDate(
 				CalendarUtil.pageControl(prevMonth, nextMonth, year, model), trainerId,
-				optionalList);
+				trainerService.showSchedule(trainerId));
 
 			model.addAttribute("canReserveDay", canReserveDayMap);
 			model.addAttribute("trainerId", trainerId);

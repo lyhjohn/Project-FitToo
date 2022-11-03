@@ -16,7 +16,7 @@ public interface TrainerService {
 
 	TrainerDto findTrainer(String userId);
 
-	Optional<List<ScheduleDto>> showSchedule(String userId);
+	List<ScheduleDto> showSchedule(String userId);
 
 	TrainerDto update(UpdateInput input);
 

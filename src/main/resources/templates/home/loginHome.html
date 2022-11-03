@@ -25,7 +25,9 @@
 <div th:text="${member.userId}"></div>
 <div th:text="|${member.userId}님, 환영합니다.|"></div>
 
-<a href="/reservation/view">예약 현황 보기</a>
+<div th:if="|${member.loginType.memberType().toString() eq '일반 회원'}|">
+  <a href="/reservation/view">예약 현황 보기</a>
+</div>
 
 
 <div>

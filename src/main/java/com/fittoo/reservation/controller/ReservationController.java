@@ -1,7 +1,10 @@
 package com.fittoo.reservation.controller;
 
-import static com.fittoo.utills.CalendarUtil.StringToLocalDate.parseDate;
+import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
+import static com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate.parseDate;
 
+import com.fittoo.common.message.ReservationErrorMessage;
+import com.fittoo.exception.ReservationException;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.reservation.model.ReservationDto;
 import com.fittoo.reservation.model.SearchParam;
@@ -31,6 +34,11 @@ public class ReservationController {
 	@PostMapping
 	public String reservation(ReservationParam param, Principal principal, Model model)
 		throws ParseException {
+
+		if (param.getDay() == -1) {
+			throw new ReservationException(EMPTY_SCHEDULE.message());
+		}
+
 
 		ScheduleDto schedule = reservationService.getSchedule(
 			parseDate(param.getYear(), param.getCurrentMonth(), param.getDay()),

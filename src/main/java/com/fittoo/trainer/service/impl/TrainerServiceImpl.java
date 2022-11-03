@@ -1,5 +1,6 @@
 package com.fittoo.trainer.service.impl;
 
+import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.FileErrorMessage.INVALID_FILE;
 import static com.fittoo.common.message.FileErrorMessage.INVALID_PROFILE_PICTURE;
 import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_TRAINER;
@@ -18,7 +19,6 @@ import com.fittoo.exception.ScheduleException;
 import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.trainer.entity.ExerciseType;
-import com.fittoo.trainer.entity.QTrainer;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.ScheduleDto;
@@ -30,13 +30,14 @@ import com.fittoo.trainer.repository.ExerciseTypeRepository;
 import com.fittoo.trainer.repository.ScheduleRepository;
 import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.trainer.service.TrainerService;
-import com.fittoo.utills.CalendarUtil.StringToLocalDate;
+import com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate;
 import com.fittoo.utills.FileStore;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -166,13 +167,17 @@ public class TrainerServiceImpl implements TrainerService {
 
 	@Override
 	@Transactional
-	public Optional<List<ScheduleDto>> showSchedule(String userId) {
+	public List<ScheduleDto> showSchedule(String userId) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 		if (optionalTrainer.isEmpty()) {
-			return Optional.empty();
+			throw new UserNotFoundException(NOT_FOUND_USER.message());
 		}
 		Trainer trainer = optionalTrainer.get();
-		return Optional.ofNullable(ScheduleDto.of(trainer.getScheduleList()));
+		List<ScheduleDto> scheduleList = ScheduleDto.of(trainer.getScheduleList());
+		if (CollectionUtils.isEmpty(scheduleList)) {
+			return Collections.emptyList();
+		}
+		return scheduleList;
 	}
 
 	@Override
@@ -192,8 +197,8 @@ public class TrainerServiceImpl implements TrainerService {
 		}
 
 		Trainer trainer = optionalTrainer.get();
-		LocalDate startDate = StringToLocalDate.getStartDate(input.getStartDate());
-		LocalDate endDate = StringToLocalDate.getEndDate(input.getEndDate());
+		LocalDate startDate = StringOrIntegerToLocalDate.getStartDate(input.getStartDate());
+		LocalDate endDate = StringOrIntegerToLocalDate.getEndDate(input.getEndDate());
 
 		Optional<List<Schedule>> optionalScheduleList = scheduleRepository.findAllByTrainerUserIdAndDateBetween(
 			trainer.getUserId(), startDate, endDate);
@@ -213,8 +218,8 @@ public class TrainerServiceImpl implements TrainerService {
 			return true;
 		}
 
-		return StringToLocalDate.getStartDate(input.getStartDate())
-			.isBefore(StringToLocalDate.getEndDate(input.getEndDate()));
+		return StringOrIntegerToLocalDate.getStartDate(input.getStartDate())
+			.isBefore(StringOrIntegerToLocalDate.getEndDate(input.getEndDate()));
 	}
 
 	private static boolean isStartTimeIsBeforeEndTime(ScheduleInput input) throws ParseException {

@@ -17,17 +17,12 @@ import org.thymeleaf.util.ListUtils;
 public class SchedulableDateMark {
 
 	public static Map<Integer, Boolean> canReserveDate(int[] totalDayCountAndNowMonthYear,
-		String trainerId, Optional<List<ScheduleDto>> optionalList) {
+		String trainerId, List<ScheduleDto> scheduleList) {
 		int totalDayCount = totalDayCountAndNowMonthYear[0];
 		Map<Integer, Boolean> canReserveMap = new HashMap<>();
 		String month = String.valueOf(totalDayCountAndNowMonthYear[1]);
 		String year = String.valueOf(totalDayCountAndNowMonthYear[2]);
 
-		if (optionalList.isEmpty()) {
-			return null;
-		}
-
-		List<ScheduleDto> scheduleList = optionalList.get();
 		Calendar calendar = Calendar.getInstance();
 		ArrayList<LocalDate> list = new ArrayList<>();
 		scheduleList.forEach(x -> list.add(x.getDate()));

@@ -84,19 +84,5 @@ class TrainerControllerTest {
 		trainerService.trainerRegister(trainer);
 	}
 
-	@Test
-	void exerciseTypeTest() {
-	    //given
-		Optional<ExerciseType> optionalExerciseType = exerciseTypeRepository.findById("yoga");
-		ExerciseType exerciseType = optionalExerciseType.get();
-		//when
-		List<Trainer> trainerList = exerciseType.getTrainerList();
-		//then
-		System.out.println("trainerList = " + trainerList.get(0).getUserId());
-		System.out.println("trainerList = " + trainerList.get(0).getPrice());
-		System.out.println("trainerList = " + trainerList.size());
-
-
-	}
 
 }

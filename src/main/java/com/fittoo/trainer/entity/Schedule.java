@@ -2,11 +2,8 @@ package com.fittoo.trainer.entity;
 
 import static com.fittoo.common.message.ReservationErrorMessage.FULL_RESERVATION;
 
-import com.fittoo.common.message.ReservationErrorMessage;
 import com.fittoo.exception.ReservationException;
 import com.fittoo.reservation.Reservation;
-import com.fittoo.utills.CalendarUtil;
-import com.fittoo.utills.CalendarUtil.StringToLocalDate;
 import com.fittoo.utills.CalendarUtil.StringToLocalTime;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -22,9 +19,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

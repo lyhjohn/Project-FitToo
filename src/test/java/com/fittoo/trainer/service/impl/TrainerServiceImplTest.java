@@ -93,27 +93,27 @@ class TrainerServiceImplTest {
 		assertThat(trainer.getZipcode()).isEqualTo("123-456");
 	}
 
-	@Test
-	void createSchedule() throws ParseException {
-	    //given
-		Time time = new Time(12, 0, 1);
-		ScheduleInput scheduleInput = new ScheduleInput();
-		scheduleInput.setComment("hello")
-			.setPersonnel(5)
-			.setStartDate("2022-11-01")
-			.setEndDate("2022-11-02")
-			.setStartTime(time.toString())
-			.setEndTime(time.toString());
-	    //when
-		trainerService.createSchedule("trainerA", scheduleInput);
-		TrainerDto trainer = trainerService.findTrainer("trainerA");
-		//then
-		assertThat(trainer.getScheduleList().size()).isEqualTo(2);
-		List<ScheduleDto> scheduleList = trainer.getScheduleList();
-		for (ScheduleDto scheduleDto : scheduleList) {
-			System.out.println("scheduleDto = " + scheduleDto);
-		}
-	}
+//	@Test
+//	void createSchedule() throws ParseException {
+//	    //given
+//		Time time = new Time(12, 0, 1);
+//		ScheduleInput scheduleInput = new ScheduleInput();
+//		scheduleInput.setComment("hello")
+//			.setPersonnel(5)
+//			.setStartDate("2022-11-01")
+//			.setEndDate("2022-11-02")
+//			.setStartTime(time.toString())
+//			.setEndTime(time.toString());
+//	    //when
+//		trainerService.createSchedule("trainerA", scheduleInput);
+//		TrainerDto trainer = trainerService.findTrainer("trainerA");
+//		//then
+//		assertThat(trainer.getScheduleList().size()).isEqualTo(2);
+//		List<ScheduleDto> scheduleList = trainer.getScheduleList();
+//		for (ScheduleDto scheduleDto : scheduleList) {
+//			System.out.println("scheduleDto = " + scheduleDto);
+//		}
+//	}
 
 
 }

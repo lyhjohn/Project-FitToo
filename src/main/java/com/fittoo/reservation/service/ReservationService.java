@@ -5,6 +5,7 @@ import com.fittoo.reservation.model.ReservationDto;
 import com.fittoo.reservation.model.SearchParam;
 import com.fittoo.trainer.model.ScheduleDto;
 import com.fittoo.trainer.model.TrainerDto;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface ReservationService {
 	List<ReservationDto> getReservationList(String memberId);
 
 	List<TrainerDto> searchTrainer(SearchParam param);
+
+	List<ReservationDto> viewReservationsByMember(ReservationParam param) throws ParseException;
 }

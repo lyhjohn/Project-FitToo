@@ -6,12 +6,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.ui.Model;
 
@@ -163,7 +160,7 @@ public class CalendarUtil {
 		return totalDayCountAndNowMonthYear;
 	}
 
-	public static class StringToLocalDate {
+	public static class StringOrIntegerToLocalDate {
 
 		public static LocalDate parseDate(String date)
 			throws ParseException {
