@@ -5,6 +5,7 @@ import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESER
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
 import static com.fittoo.common.message.ScheduleErrorMessage.EMPTY_SCHEDULE;
 import static com.fittoo.constant.SearchType.ADDRESS;
+import static com.fittoo.constant.SearchType.ALL_TYPE;
 import static com.fittoo.constant.SearchType.TRAINER_NAME;
 import static com.fittoo.reservation.QReservation.reservation;
 import static com.fittoo.trainer.entity.QTrainer.trainer;
@@ -143,11 +144,11 @@ public class ReservationServiceImpl implements ReservationService {
 		String searchType = param.getSearchType();
 		String searchWord = param.getSearchWord();
 
-		if (exerciseType.equals("all") && searchType.equals(ADDRESS.search())) {
+		if (exerciseType.equals(ALL_TYPE.search()) && searchType.equals(ADDRESS.search())) {
 			return trainer.addr != null ? trainer.addr.contains(searchWord) : null;
 		}
 
-		if (exerciseType.equals("all") && searchType.equals(TRAINER_NAME.search())) {
+		if (exerciseType.equals(ALL_TYPE.search()) && searchType.equals(TRAINER_NAME.search())) {
 			return trainer.userName != null ? trainer.userName.contains(searchWord) : null;
 		}
 

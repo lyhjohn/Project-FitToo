@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum SearchType {
 	ADDRESS("address"),
-	TRAINER_NAME("trainerName");
+	TRAINER_NAME("trainerName"),
+
+	ALL_TYPE("all");
 
 	private final String search;
 
