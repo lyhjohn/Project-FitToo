@@ -81,12 +81,4 @@ public class ReservationController {
 		}
 		return "/error/error";
 	}
-
-	@GetMapping("search")
-	public String search(SearchParam param, RedirectAttributes attributes, String loginType) {
-		List<TrainerDto> list = reservationService.searchTrainer(param);
-		attributes.addFlashAttribute("trainerList", list);
-		attributes.addAttribute("loginType", loginType);
-		return "redirect:/trainer/search/trainerList";
-	}
 }

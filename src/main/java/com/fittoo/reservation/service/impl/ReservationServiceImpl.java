@@ -4,11 +4,11 @@ import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
 import static com.fittoo.common.message.ScheduleErrorMessage.EMPTY_SCHEDULE;
+import static com.fittoo.constant.SearchType.ADDRESS;
+import static com.fittoo.constant.SearchType.TRAINER_NAME;
 import static com.fittoo.reservation.QReservation.reservation;
 import static com.fittoo.trainer.entity.QTrainer.trainer;
 
-import com.fittoo.common.message.ReservationErrorMessage;
-import com.fittoo.common.message.ScheduleErrorMessage;
 import com.fittoo.exception.ReservationException;
 import com.fittoo.exception.ScheduleException;
 import com.fittoo.exception.UserNotFoundException;
@@ -27,12 +27,12 @@ import com.fittoo.trainer.model.TrainerDto;
 import com.fittoo.trainer.repository.ScheduleRepository;
 import com.fittoo.trainer.repository.TrainerRepository;
 import com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +40,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.thymeleaf.util.ListUtils;
 
 @Service
@@ -123,47 +124,43 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	public List<Trainer> searchBySearchTypeAndExerciseType(SearchParam param, Pageable pageable) {
-		if (param.getExerciseType().equals("all")) {
-			if (param.getSearchType().equals("address")) {
-				return queryFactory
-					.selectFrom(trainer)
-					.where(trainer.addr.contains(param.getSearchWord()))
-					.offset(pageable.getOffset())
-					.limit(pageable.getPageSize())
-					.fetch();
-			}
 
-			if (param.getSearchType().equals("trainerName")) {
-				return queryFactory
-					.selectFrom(trainer)
-					.where(trainer.userName.contains(param.getSearchWord()))
-					.offset(pageable.getOffset())
-					.limit(pageable.getPageSize())
-					.fetch();
-			}
-			return Collections.emptyList();
+		return queryFactory
+			.selectFrom(trainer)
+			.where(searchValueEq(param))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+	}
+
+	private BooleanExpression searchValueEq(SearchParam param) {
+
+		if (param.getSearchWord() == null) {
+			return null;
 		}
 
-		if (param.getSearchType().equals("address")) {
-			return queryFactory
-				.selectFrom(trainer)
-				.where(trainer.userName.contains(param.getSearchWord())
-					.and(trainer.exerciseType.id.eq(param.getExerciseType())))
-				.offset(pageable.getOffset())
-				.limit(pageable.getPageSize())
-				.fetch();
+		String exerciseType = param.getExerciseType();
+		String searchType = param.getSearchType();
+		String searchWord = param.getSearchWord();
+
+		if (exerciseType.equals("all") && searchType.equals(ADDRESS.search())) {
+			return trainer.addr != null ? trainer.addr.contains(searchWord) : null;
 		}
 
-		if (param.getSearchType().equals("trainerName")) {
-			return queryFactory
-				.selectFrom(trainer)
-				.where(trainer.userName.contains(param.getSearchWord())
-					.and(trainer.exerciseType.id.eq(param.getExerciseType())))
-				.offset(pageable.getOffset())
-				.limit(pageable.getPageSize())
-				.fetch();
+		if (exerciseType.equals("all") && searchType.equals(TRAINER_NAME.search())) {
+			return trainer.userName != null ? trainer.userName.contains(searchWord) : null;
 		}
-		return Collections.emptyList();
+
+		if (searchType.equals(ADDRESS.search())) {
+			return trainer.addr != null ? trainer.exerciseType.id.eq(exerciseType)
+				.and(trainer.addr.contains(searchWord)) : null;
+		}
+
+		if (searchType.equals(TRAINER_NAME.search())) {
+			return trainer.userName != null ? trainer.exerciseType.id.eq(exerciseType)
+				.and(trainer.addr.contains(searchWord)) : null;
+		}
+		return null;
 	}
 
 	@Override
