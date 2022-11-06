@@ -2,6 +2,7 @@ package com.fittoo.reservation.service.impl;
 
 import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.INVALID_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
 import static com.fittoo.common.message.ScheduleErrorMessage.EMPTY_SCHEDULE;
 import static com.fittoo.constant.SearchType.ADDRESS;
@@ -10,6 +11,7 @@ import static com.fittoo.constant.SearchType.TRAINER_NAME;
 import static com.fittoo.reservation.QReservation.reservation;
 import static com.fittoo.trainer.entity.QTrainer.trainer;
 
+import com.fittoo.common.message.ReservationErrorMessage;
 import com.fittoo.exception.ReservationException;
 import com.fittoo.exception.ScheduleException;
 import com.fittoo.exception.UserNotFoundException;
@@ -17,6 +19,7 @@ import com.fittoo.member.entity.Member;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.repository.MemberRepository;
 import com.fittoo.reservation.Reservation;
+import com.fittoo.reservation.constant.ReservationStatus;
 import com.fittoo.reservation.model.ReservationDto;
 import com.fittoo.reservation.model.SearchParam;
 import com.fittoo.reservation.repository.ReservationRepository;
@@ -34,6 +37,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -120,7 +124,7 @@ public class ReservationServiceImpl implements ReservationService {
 	public List<TrainerDto> searchTrainer(SearchParam param) {
 		PageRequest pageRequest = PageRequest.of(0, 5, Direction.ASC, "userName");
 		List<Trainer> trainerList = searchBySearchTypeAndExerciseType(param, pageRequest);
-
+		System.out.println("hello");
 		return TrainerDto.of(trainerList);
 	}
 
@@ -183,5 +187,19 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		return ReservationDto.fromList(reservationList);
+	}
+
+	@Override
+	@Transactional
+	public void confirm(String memberId) {
+		Optional<Reservation> optionalReservation = reservationRepository.findByMemberUserId(
+			memberId);
+
+		if (optionalReservation.isEmpty()) {
+			throw new ReservationException(INVALID_RESERVATION.message());
+		}
+
+		Reservation reservation = optionalReservation.get();
+		reservation.setReservationStatus(ReservationStatus.COMPLETE);
 	}
 }

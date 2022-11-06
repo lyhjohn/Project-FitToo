@@ -44,10 +44,8 @@ public class Schedule {
 
 	@OneToMany(mappedBy = "schedule")
 	private List<Reservation> reservationList = new ArrayList<>();
-
 	private String trainerUserId;
 	private LocalDate date;
-
 	private LocalTime startTime;
 	private LocalTime endTime;
 	private String exercise;

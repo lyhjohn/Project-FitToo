@@ -13,4 +13,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 		LocalDate date, String startTime, String endTime);
 
 	List<Reservation> findAllByDate(LocalDate date);
+
+	Optional<Reservation> findByMemberUserId(String memberUserId);
+
+	void deleteByMemberUserId(String memberUserId);
 }

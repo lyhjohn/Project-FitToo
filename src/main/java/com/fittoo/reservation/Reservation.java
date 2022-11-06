@@ -4,10 +4,13 @@ import static javax.persistence.FetchType.LAZY;
 
 import com.fittoo.member.entity.Member;
 import com.fittoo.member.model.ReservationParam;
+import com.fittoo.reservation.constant.ReservationStatus;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
 import java.time.LocalDate;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -18,12 +21,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString(exclude = {"schedule", "member", "trainer"})
 public class Reservation {
 
 	@Id
@@ -32,6 +37,9 @@ public class Reservation {
 
 	private String trainerUserId;
 	private String memberUserId;
+
+	@Enumerated(EnumType.STRING)
+	private ReservationStatus reservationStatus;
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "schedule_id")
 	private Schedule schedule;
@@ -56,8 +64,10 @@ public class Reservation {
 	@Builder
 	public Reservation(String trainerUserId, Schedule schedule, Member member, String address,
 		String exercise, String startTime, String endTime,
-		LocalDate date, String price, String personnel, String comment, String memberUserId) {
+		LocalDate date, String price, String personnel, String comment, String memberUserId,
+		ReservationStatus reservationStatus) {
 		this.trainerUserId = trainerUserId;
+		this.reservationStatus = reservationStatus;
 		this.schedule = schedule;
 		this.member = member;
 		this.address = address;
@@ -76,6 +86,7 @@ public class Reservation {
 		Reservation reservation = Reservation.builder()
 			.comment(param.getComment())
 			.date(param.getDate())
+			.reservationStatus(ReservationStatus.HOLD)
 			.personnel(param.getPersonnel())
 			.startTime(param.getStartTime())
 			.endTime(param.getEndTime())

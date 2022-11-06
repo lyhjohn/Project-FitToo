@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>예약 회원 현황</title>
+</head>
+<body>
+<h1>예약 회원 현황</h1>
+<div th:text="${member.toString()}"></div>
+<form action="/reservation/confirm" method="post">
+  <button th:value="${member.userId}" name="memberId">예약 확인</button>
+  <button th:value="${member.userId}" name="memberId">예약 취소</button>
+</form>
+</body>
+</html>

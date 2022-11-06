@@ -130,6 +130,19 @@
   </span>
 </form>
 
+<hr>
+
+<div th:if="${reservations != null}">
+  <div th:each="reservation: ${reservations}">
+    <div>
+      아이디: <a
+        th:href="|@{/trainer/view/reservation_member/{memberId}(memberId=${reservation.memberUserId})}|"
+        th:text="${reservation.memberUserId}"></a>
+      예약 상태: <span th:text="${reservation.reservationStatus}"></span>
+    </div>
+  </div>
+</div>
+
 <div align="top">
   <div class="calendar-year" th:text="|${year}년|"></div>
   <div class="calendar-page">

@@ -10,7 +10,9 @@ import static java.time.LocalDate.now;
 
 import com.fittoo.exception.FileException;
 import com.fittoo.member.model.DateParam;
+import com.fittoo.member.model.MemberDto;
 import com.fittoo.member.model.ReservationParam;
+import com.fittoo.member.service.MemberService;
 import com.fittoo.page.model.TrainerPageParam;
 import com.fittoo.reservation.model.ReservationDto;
 import com.fittoo.reservation.model.SearchParam;
@@ -59,6 +61,7 @@ public class TrainerController {
 
 	private final TrainerService trainerService;
 	private final ReservationService reservationService;
+	private final MemberService memberService;
 
 	@ModelAttribute(name = "loginType")
 	private String getLoginType() {
@@ -198,7 +201,7 @@ public class TrainerController {
 	}
 
 	private boolean isSearch(SearchParam param) {
-		return param.getSearchWord() == null;
+		return param.getSearchWord() != null;
 	}
 
 	@GetMapping("/detail")
@@ -261,13 +264,21 @@ public class TrainerController {
 	}
 
 	@PostMapping("/view/reservation_member")
-	public String getReservationMember(ReservationParam param, Principal principal, Model model)
+	public String getReservationMember(ReservationParam param, RedirectAttributes attributes)
 		throws ParseException {
 
 		List<ReservationDto> reservationList = reservationService.viewReservationsByMember(param);
 
-		model.addAttribute("reservations", reservationList);
+		attributes.addFlashAttribute("reservations", reservationList);
 
-		return "/trainer/schedule/reservation_member";
+		return "redirect:/trainer/schedule";
+	}
+
+	@GetMapping("/view/reservation_member/{memberId}")
+	public String reservationMemberDetail(@PathVariable String memberId, Model model) {
+
+		MemberDto member = memberService.findMember(memberId);
+		model.addAttribute("member", member);
+		return "trainer/schedule/reservation_member_detail";
 	}
 }
