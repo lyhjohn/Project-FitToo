@@ -14,7 +14,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	List<Reservation> findAllByDate(LocalDate date);
 
-	Optional<Reservation> findByMemberUserId(String memberUserId);
+	Optional<Reservation> findByMemberUserIdAndId(String memberUserId, Long id);
 
 	void deleteByMemberUserId(String memberUserId);
 }

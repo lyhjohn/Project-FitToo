@@ -12,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 public class ReservationDto {
 
+	private Long id;
 	private String trainerUserId;
 	private String trainerName;
 	private ReservationStatus reservationStatus;
@@ -30,8 +31,9 @@ public class ReservationDto {
 	@Builder
 	public ReservationDto(String trainerUserId, String trainerName, String address, String exercise,
 		String startTime, String endTime, LocalDate date, String price, String personnel,
-		String comment, int curPersonnel, String memberUserId, ReservationStatus reservationStatus) {
+		String comment, int curPersonnel, String memberUserId, ReservationStatus reservationStatus, Long id) {
 		this.trainerUserId = trainerUserId;
+		this.id = id;
 		this.reservationStatus = reservationStatus;
 		this.trainerName = trainerName;
 		this.address = address;
@@ -48,6 +50,7 @@ public class ReservationDto {
 
 	public static ReservationDto of(Reservation reservation) {
 		return ReservationDto.builder()
+			.id(reservation.getId())
 			.trainerUserId(reservation.getTrainerUserId())
 			.reservationStatus(reservation.getReservationStatus())
 			.trainerName(reservation.getTrainer().getUserName())

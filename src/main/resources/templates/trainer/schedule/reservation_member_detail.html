@@ -7,8 +7,16 @@
 <body>
 <h1>예약 회원 현황</h1>
 <div th:text="${member.toString()}"></div>
+<div th:text="|예약번호: ${reservationId}|"></div>
+<div th:if="${errorMessage != null}">
+  <div th:text="${errorMessage}"></div>
+</div>
 <form action="/reservation/confirm" method="post">
+  <input type="hidden" th:value="${reservationId}" name="reservationId">
   <button th:value="${member.userId}" name="memberId">예약 확인</button>
+</form>
+<form action="/reservation/cancel" method="post">
+  <input type="hidden" th:value="${reservationId}" name="reservationId">
   <button th:value="${member.userId}" name="memberId">예약 취소</button>
 </form>
 </body>

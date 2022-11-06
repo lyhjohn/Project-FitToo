@@ -1,6 +1,8 @@
 package com.fittoo.reservation.service.impl;
 
 import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
+import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCEL_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETE_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
@@ -191,15 +193,38 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	@Transactional
-	public void confirm(String memberId) {
-		Optional<Reservation> optionalReservation = reservationRepository.findByMemberUserId(
-			memberId);
+	public void confirm(String memberId, Long reservationId) {
+		Optional<Reservation> optionalReservation = reservationRepository.findByMemberUserIdAndId(
+			memberId, reservationId);
+
+		if (optionalReservation.isEmpty()) {
+			throw new ReservationException(INVALID_RESERVATION.message());
+		}
+		Reservation reservation = optionalReservation.get();
+		if (reservation.getReservationStatus().equals(ReservationStatus.COMPLETE)) {
+			throw new ReservationException(
+				ALREADY_COMPLETE_RESERVATION.message(),
+				reservation.getMemberUserId(), reservation.getId());
+		}
+		reservation.setReservationStatus(ReservationStatus.COMPLETE);
+	}
+
+	@Override
+	@Transactional
+	public void cancel(String memberId, Long reservationId) {
+		Optional<Reservation> optionalReservation = reservationRepository.findByMemberUserIdAndId(
+			memberId, reservationId);
 
 		if (optionalReservation.isEmpty()) {
 			throw new ReservationException(INVALID_RESERVATION.message());
 		}
 
 		Reservation reservation = optionalReservation.get();
-		reservation.setReservationStatus(ReservationStatus.COMPLETE);
+		if (reservation.getReservationStatus().equals(ReservationStatus.CANCEL)) {
+			throw new ReservationException(
+				ALREADY_CANCEL_RESERVATION.message(),
+				reservation.getMemberUserId(), reservation.getId());
+		}
+		reservation.setReservationStatus(ReservationStatus.CANCEL);
 	}
 }

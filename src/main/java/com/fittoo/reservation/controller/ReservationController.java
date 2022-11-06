@@ -78,8 +78,14 @@ public class ReservationController {
 	}
 
 	@PostMapping("/confirm")
-	public String reservationConfirm(String memberId) {
-		reservationService.confirm(memberId);
-		return null;
+	public String reservationConfirm(String memberId, Long reservationId) {
+		reservationService.confirm(memberId, reservationId);
+		return "redirect:/trainer/schedule";
+	}
+
+	@PostMapping("/cancel")
+	public String reservationCancel(String memberId, Long reservationId) {
+		reservationService.cancel(memberId, reservationId);
+		return "redirect:/trainer/schedule";
 	}
 }

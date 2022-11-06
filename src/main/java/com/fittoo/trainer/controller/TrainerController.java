@@ -274,11 +274,17 @@ public class TrainerController {
 		return "redirect:/trainer/schedule";
 	}
 
-	@GetMapping("/view/reservation_member/{memberId}")
-	public String reservationMemberDetail(@PathVariable String memberId, Model model) {
+	@GetMapping("/view/reservation_member/{memberId}/{reservationId}")
+	public String reservationMemberDetail(@PathVariable String memberId, @PathVariable Long reservationId,
+		@RequestParam(required = false) String errorMessage, Model model) {
+
+		if (StringUtils.hasText(errorMessage)) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
 
 		MemberDto member = memberService.findMember(memberId);
 		model.addAttribute("member", member);
+		model.addAttribute("reservationId", reservationId);
 		return "trainer/schedule/reservation_member_detail";
 	}
 }

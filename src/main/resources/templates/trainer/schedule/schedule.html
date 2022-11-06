@@ -136,7 +136,7 @@
   <div th:each="reservation: ${reservations}">
     <div>
       아이디: <a
-        th:href="|@{/trainer/view/reservation_member/{memberId}(memberId=${reservation.memberUserId})}|"
+        th:href="|@{/trainer/view/reservation_member/{memberId}/{reservationId}(memberId=${reservation.memberUserId}, reservationId=${reservation.id})}|"
         th:text="${reservation.memberUserId}"></a>
       예약 상태: <span th:text="${reservation.reservationStatus}"></span>
     </div>
