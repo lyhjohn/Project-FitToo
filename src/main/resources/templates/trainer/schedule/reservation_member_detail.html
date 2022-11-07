@@ -2,6 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
+  <style>
+    .error {
+      font-weight: bold;
+      color: red;
+    }
+  </style>
   <title>예약 회원 현황</title>
 </head>
 <body>
@@ -9,7 +15,7 @@
 <div th:text="${member.toString()}"></div>
 <div th:text="|예약번호: ${reservationId}|"></div>
 <div th:if="${errorMessage != null}">
-  <div th:text="${errorMessage}"></div>
+  <div th:text="${errorMessage}" class="error"></div>
 </div>
 <form action="/reservation/confirm" method="post">
   <input type="hidden" th:value="${reservationId}" name="reservationId">
@@ -17,7 +23,7 @@
 </form>
 <form action="/reservation/trainer/cancel" method="post">
   <input type="hidden" th:value="${reservationId}" name="reservationId">
-  <button th:value="${member.userId}" name="memberUserId">예약 취소</button>
+  <button th:value="${member.userId}" name="memberId">예약 취소</button>
 </form>
 </body>
 </html>

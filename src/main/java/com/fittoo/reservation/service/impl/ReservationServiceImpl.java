@@ -227,11 +227,9 @@ public class ReservationServiceImpl implements ReservationService {
 	public void cancel(String memberId, Long reservationId, LoginType cancelByWho) {
 		Optional<Reservation> optionalReservation = reservationRepository.findByMemberUserIdAndId(
 			memberId, reservationId);
-
 		if (optionalReservation.isEmpty()) {
 			throw new ReservationException(INVALID_RESERVATION.message());
 		}
-
 		Reservation reservation = optionalReservation.get();
 
 		if (reservation.getReservationStatus().equals(CANCEL)) {

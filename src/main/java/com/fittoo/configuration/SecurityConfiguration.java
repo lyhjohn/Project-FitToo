@@ -82,7 +82,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 		http.authorizeRequests()
 			.antMatchers("/trainer/schedule/**",
-				"/trainer/view/reservation_member/**")
+				"/trainer/view/reservation_member/**",
+				"/reservation/confirm",
+				"/reservation/trainer/**")
 			.hasAuthority("ROLE_TRAINER")
 			.antMatchers("/member/**",
 				"/reservation/**")
