@@ -31,7 +31,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 
-//	@Bean
+	//	@Bean
 //	UserAuthenticationSuccessHandler getSuccessHandler() {
 //		return new UserAuthenticationSuccessHandler(memberService, trainerService);
 //	}
@@ -80,9 +80,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        http.exceptionHandling() // 오류페이지 핸들링
 //                .accessDeniedPage("/error/denied");
 
-//        http.authorizeRequests()
-//                .antMatchers("/trainer/**")
-//                .hasAuthority("ROLE_TRAINER");
+		http.authorizeRequests()
+			.antMatchers("/trainer/schedule/**",
+				"/trainer/view/reservation_member/**",
+				"/reservation/confirm",
+				"/reservation/trainer/**")
+			.hasAuthority("ROLE_TRAINER")
+			.antMatchers("/member/**",
+				"/reservation/**")
+			.hasAuthority("ROLE_NORMAL");
 
 		super.configure(http);
 	}

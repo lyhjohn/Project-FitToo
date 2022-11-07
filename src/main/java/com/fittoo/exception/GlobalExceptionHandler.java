@@ -1,7 +1,11 @@
 package com.fittoo.exception;
 
-import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCEL_RESERVATION;
-import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETE_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCELED_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETED_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
+import static com.fittoo.common.message.ReservationErrorMessage.PROHIBIT_RESERVATION_CANCEL_THREE_DAYS_AGO;
+import static com.fittoo.member.model.LoginType.NORMAL;
+import static com.fittoo.member.model.LoginType.TRAINER;
 import static com.fittoo.member.model.MemberDto.whatIsGender;
 
 import com.fittoo.common.message.ReservationErrorMessage;
@@ -83,18 +87,27 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 		log.info("ReservationException.message={}", e.getMessage());
 		attributes.addAttribute("errorMessage", e.getMessage());
 
-		if (e.getMessage().equals(ReservationErrorMessage.EMPTY_SCHEDULE.message())) {
+		if (e.getMessage().equals(EMPTY_SCHEDULE.message())) {
 			return "redirect:/reservation/empty";
 		}
 
-		if (e.getMessage().equals(ALREADY_COMPLETE_RESERVATION.message())
-			|| e.getMessage().equals(ALREADY_CANCEL_RESERVATION.message())) {
+		if (e.getMessage().equals(PROHIBIT_RESERVATION_CANCEL_THREE_DAYS_AGO.message())) {
+			return "redirect:/reservation/view";
+		}
+
+		if (e.getMessage().equals(ALREADY_COMPLETED_RESERVATION.message()) || e.getMessage()
+			.equals(ALREADY_CANCELED_RESERVATION.message())) {
 			attributes.addAttribute("errorMessage", e.getMessage());
 			attributes.addAttribute("memberId", e.getMemberId());
 			attributes.addAttribute("reservationId", e.getReservationId());
 			return "redirect:/trainer/view/reservation_member/{memberId}/{reservationId}";
 		}
 
+		if (e.getLoginType().equals(NORMAL) && e.getMessage()
+			.equals(ALREADY_CANCELED_RESERVATION.message())) {
+			attributes.addAttribute("errorMessage", e.getMessage());
+			return "redirect:/reservation/view";
+		}
 		return "redirect:/reservation/error";
 	}
 }

@@ -1,5 +1,6 @@
 package com.fittoo.reservation.service;
 
+import com.fittoo.member.model.LoginType;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.reservation.model.ReservationDto;
 import com.fittoo.reservation.model.SearchParam;
@@ -22,5 +23,7 @@ public interface ReservationService {
 
 	void confirm(String memberId, Long reservationId);
 
-	void cancel(String memberId, Long reservationId);
+	void cancel(String memberId, Long reservationId, LoginType cancelByWho);
+
+	void reReservation(Long reservationId);
 }

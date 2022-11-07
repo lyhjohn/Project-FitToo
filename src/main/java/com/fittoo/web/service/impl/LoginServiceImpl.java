@@ -60,7 +60,7 @@ public class LoginServiceImpl implements LoginService {
         }
         // 회원 ROLE 추가
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_NORMAL"));
 
         return new User(member.getUserId(), member.getPassword(), grantedAuthorities);
     }

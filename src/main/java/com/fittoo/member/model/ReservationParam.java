@@ -1,11 +1,10 @@
 package com.fittoo.member.model;
 
+import com.fittoo.reservation.constant.ReservationStatus;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.repository.query.Param;
 
 @Getter
 @Setter
@@ -22,4 +21,11 @@ public class ReservationParam {
     private String price;
     private String personnel;
     private String comment;
+    private int curPersonnel;
+    private Long reservationId;
+    private String trainerUserId;
+    private String trainerName;
+    private ReservationStatus reservationStatus;
+    private String memberUserId;
+    private String address;
 }

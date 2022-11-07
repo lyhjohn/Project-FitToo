@@ -1,7 +1,9 @@
 package com.fittoo.reservation;
 
+import static com.fittoo.common.message.ReservationErrorMessage.FULL_RESERVATION;
 import static javax.persistence.FetchType.LAZY;
 
+import com.fittoo.exception.ReservationException;
 import com.fittoo.member.entity.Member;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.reservation.constant.ReservationStatus;
@@ -104,16 +106,25 @@ public class Reservation {
 		return reservation;
 	}
 
-	public void saveTrainer(Trainer trainer) {
+	public void cancelReservation() {
+			this.schedule.cancelReservation();
+			this.reservationStatus = ReservationStatus.CANCEL;
+	}
+
+	private void saveTrainer(Trainer trainer) {
 		trainer.addReservation(this);
 	}
 
-	public void saveMember(Member member) {
+	private void saveMember(Member member) {
 		member.addReservation(this);
 	}
 
-	public void saveSchedule(Schedule schedule) {
+	private void saveSchedule(Schedule schedule) {
 		schedule.addReservation(this);
 	}
 
+	public void reReservation() {
+		this.schedule.reReservation();
+		this.reservationStatus = ReservationStatus.HOLD;
+	}
 }

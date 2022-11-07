@@ -1,6 +1,9 @@
 package com.fittoo.reservation.controller;
 
 import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
+import static com.fittoo.common.message.ReservationErrorMessage.PROHIBIT_RESERVATION_CANCEL_THREE_DAYS_AGO;
+import static com.fittoo.member.model.LoginType.NORMAL;
+import static com.fittoo.member.model.LoginType.TRAINER;
 import static com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate.parseDate;
 
 import com.fittoo.exception.ReservationException;
@@ -10,7 +13,9 @@ import com.fittoo.reservation.service.ReservationService;
 import com.fittoo.trainer.model.ScheduleDto;
 import java.security.Principal;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,7 +66,12 @@ public class ReservationController {
 	}
 
 	@GetMapping("/view")
-	public String viewReservation(Principal principal, Model model) {
+	public String viewReservation(Principal principal, Model model,
+		@RequestParam(required = false) String errorMessage) {
+		if (StringUtils.hasText(errorMessage)) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
+
 		principal.getName();
 		List<ReservationDto> reservationList = reservationService.getReservationList(
 			principal.getName());
@@ -78,14 +88,31 @@ public class ReservationController {
 	}
 
 	@PostMapping("/confirm")
-	public String reservationConfirm(String memberId, Long reservationId) {
-		reservationService.confirm(memberId, reservationId);
+	public String reservationConfirm(ReservationParam param) {
+		reservationService.confirm(param.getMemberUserId(), param.getReservationId());
 		return "redirect:/trainer/schedule";
 	}
 
-	@PostMapping("/cancel")
-	public String reservationCancel(String memberId, Long reservationId) {
-		reservationService.cancel(memberId, reservationId);
+	@PostMapping(value = {"/trainer/cancel", "/member/cancel"})
+	public String reserveCancel(String memberId, String date, Long reservationId,
+		HttpServletRequest request)
+		throws ParseException {
+
+		if (request.getRequestURI().contains("member")) {
+			if (LocalDate.now().isAfter(parseDate(date).minusDays(3))) {
+				throw new ReservationException(
+					PROHIBIT_RESERVATION_CANCEL_THREE_DAYS_AGO.message());
+			}
+			reservationService.cancel(memberId, reservationId, NORMAL);
+			return "redirect:/reservation/view";
+		}
+		reservationService.cancel(memberId, reservationId, TRAINER);
 		return "redirect:/trainer/schedule";
+	}
+
+	@PostMapping("/reReservation")
+	public String reReservation(Long reservationId) {
+		reservationService.reReservation(reservationId);
+		return "redirect:/reservation/view";
 	}
 }

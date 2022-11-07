@@ -74,4 +74,17 @@ public class Schedule {
 		this.reservationList.add(reservation);
 		reservation.setSchedule(this);
 	}
+
+	public void cancelReservation() {
+		if (curPersonnel > 0) {
+			curPersonnel--;
+		}
+	}
+
+	public void reReservation() {
+		if (curPersonnel >= personnel) {
+			throw new ReservationException(FULL_RESERVATION.message());
+		}
+		curPersonnel++;
+	}
 }
