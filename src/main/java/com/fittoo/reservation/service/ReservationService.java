@@ -19,4 +19,8 @@ public interface ReservationService {
 	List<TrainerDto> searchTrainer(SearchParam param);
 
 	List<ReservationDto> viewReservationsByMember(ReservationParam param) throws ParseException;
+
+	void confirm(String memberId, Long reservationId);
+
+	void cancel(String memberId, Long reservationId);
 }

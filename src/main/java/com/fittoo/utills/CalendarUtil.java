@@ -175,8 +175,7 @@ public class CalendarUtil {
 				ZoneId.systemDefault());
 		}
 
-		public static LocalDate parseDate(int year, int month, int day)
-			throws ParseException {
+		public static LocalDate parseDate(int year, int month, int day) {
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(year, month - 1, day);

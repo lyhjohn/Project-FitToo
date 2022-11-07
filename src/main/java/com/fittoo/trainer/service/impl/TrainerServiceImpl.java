@@ -144,7 +144,7 @@ public class TrainerServiceImpl implements TrainerService {
 
 	@Override
 	@Transactional
-	public List<TrainerDto> findTrainersPerPage(int page) {
+	public List<TrainerDto> findTrainersByClickPage(int page) {
 		PageRequest pageRequest = PageRequest.of(page - 1, 5, Direction.ASC, "userName");
 
 		List<Trainer> trainerList = queryFactory

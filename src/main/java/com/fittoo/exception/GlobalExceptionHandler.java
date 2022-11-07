@@ -1,5 +1,7 @@
 package com.fittoo.exception;
 
+import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCEL_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETE_RESERVATION;
 import static com.fittoo.member.model.MemberDto.whatIsGender;
 
 import com.fittoo.common.message.ReservationErrorMessage;
@@ -83,6 +85,14 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 
 		if (e.getMessage().equals(ReservationErrorMessage.EMPTY_SCHEDULE.message())) {
 			return "redirect:/reservation/empty";
+		}
+
+		if (e.getMessage().equals(ALREADY_COMPLETE_RESERVATION.message())
+			|| e.getMessage().equals(ALREADY_CANCEL_RESERVATION.message())) {
+			attributes.addAttribute("errorMessage", e.getMessage());
+			attributes.addAttribute("memberId", e.getMemberId());
+			attributes.addAttribute("reservationId", e.getReservationId());
+			return "redirect:/trainer/view/reservation_member/{memberId}/{reservationId}";
 		}
 
 		return "redirect:/reservation/error";

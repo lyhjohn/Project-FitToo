@@ -1,6 +1,7 @@
 package com.fittoo.reservation.model;
 
 import com.fittoo.reservation.Reservation;
+import com.fittoo.reservation.constant.ReservationStatus;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +12,10 @@ import lombok.*;
 @NoArgsConstructor
 public class ReservationDto {
 
+	private Long id;
 	private String trainerUserId;
 	private String trainerName;
+	private ReservationStatus reservationStatus;
 
 	private String memberUserId;
 	private String address;
@@ -28,8 +31,10 @@ public class ReservationDto {
 	@Builder
 	public ReservationDto(String trainerUserId, String trainerName, String address, String exercise,
 		String startTime, String endTime, LocalDate date, String price, String personnel,
-		String comment, int curPersonnel, String memberUserId) {
+		String comment, int curPersonnel, String memberUserId, ReservationStatus reservationStatus, Long id) {
 		this.trainerUserId = trainerUserId;
+		this.id = id;
+		this.reservationStatus = reservationStatus;
 		this.trainerName = trainerName;
 		this.address = address;
 		this.exercise = exercise;
@@ -43,9 +48,11 @@ public class ReservationDto {
 		this.memberUserId = memberUserId;
 	}
 
-	public static ReservationDto fromList(Reservation reservation) {
+	public static ReservationDto of(Reservation reservation) {
 		return ReservationDto.builder()
+			.id(reservation.getId())
 			.trainerUserId(reservation.getTrainerUserId())
+			.reservationStatus(reservation.getReservationStatus())
 			.trainerName(reservation.getTrainer().getUserName())
 			.address(reservation.getAddress())
 			.exercise(reservation.getExercise())
@@ -63,7 +70,7 @@ public class ReservationDto {
 	public static List<ReservationDto> fromList(List<Reservation> reservations) {
 		List<ReservationDto> list = new ArrayList<>();
 		for (Reservation reservation : reservations) {
-			list.add(ReservationDto.fromList(reservation));
+			list.add(ReservationDto.of(reservation));
 		}
 		return list;
 	}

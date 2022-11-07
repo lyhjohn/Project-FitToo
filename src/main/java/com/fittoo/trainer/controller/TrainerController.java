@@ -10,9 +10,12 @@ import static java.time.LocalDate.now;
 
 import com.fittoo.exception.FileException;
 import com.fittoo.member.model.DateParam;
+import com.fittoo.member.model.MemberDto;
 import com.fittoo.member.model.ReservationParam;
+import com.fittoo.member.service.MemberService;
 import com.fittoo.page.model.TrainerPageParam;
 import com.fittoo.reservation.model.ReservationDto;
+import com.fittoo.reservation.model.SearchParam;
 import com.fittoo.reservation.service.ReservationService;
 import com.fittoo.reservation.util.SchedulableDateMark;
 import com.fittoo.trainer.model.ScheduleDto;
@@ -27,7 +30,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +61,7 @@ public class TrainerController {
 
 	private final TrainerService trainerService;
 	private final ReservationService reservationService;
+	private final MemberService memberService;
 
 	@ModelAttribute(name = "loginType")
 	private String getLoginType() {
@@ -173,7 +176,7 @@ public class TrainerController {
 	public String trainerList(Principal principal, Model model,
 		@RequestParam(required = false) String trainerId,
 		@RequestParam(required = false) String errorMessage,
-		TrainerPageParam page, @ModelAttribute String loginType) {
+		SearchParam searchParam, TrainerPageParam page, @ModelAttribute String loginType) {
 
 		if (trainerId != null) {
 			TrainerDto trainer = trainerService.findTrainer(trainerId);
@@ -185,36 +188,20 @@ public class TrainerController {
 		}
 
 		Long totalCount = trainerService.getTotalCountTrainerList();
-
 		int curPage = PageUtil.getCurPageAndAttributePageList(page, model, totalCount);
 
-		List<TrainerDto> trainerList = trainerService.findTrainersPerPage(curPage);
-
+		List<TrainerDto> trainerList;
+		if (isSearch(searchParam)) {
+			trainerList = reservationService.searchTrainer(searchParam);
+		} else {
+			trainerList = trainerService.findTrainersByClickPage(curPage);
+		}
 		model.addAttribute("trainerList", trainerList);
 		return "/trainer/trainerList";
 	}
 
-	@GetMapping("/search/trainerList")
-	public String searchTrainerList(Principal principal, Model model,
-		@RequestParam(required = false) String trainerId,
-		@RequestParam(required = false) String errorMessage,
-		TrainerPageParam page,
-		@ModelAttribute String loginType) {
-
-		if (trainerId != null) {
-			TrainerDto trainer = trainerService.findTrainer(trainerId);
-			model.addAttribute("trainerDetail", trainer);
-		}
-
-		if (errorMessage != null) {
-			model.addAttribute("errorMessage", errorMessage);
-		}
-
-		if (page.getCurPage() == 0) {
-			model.addAttribute("pages", Arrays.asList(1, 2, 3, 4, 5));
-		}
-
-		return "/trainer/trainerList";
+	private boolean isSearch(SearchParam param) {
+		return param.getSearchWord() != null;
 	}
 
 	@GetMapping("/detail")
@@ -277,13 +264,27 @@ public class TrainerController {
 	}
 
 	@PostMapping("/view/reservation_member")
-	public String getReservationMember(ReservationParam param, Principal principal, Model model)
+	public String getReservationMember(ReservationParam param, RedirectAttributes attributes)
 		throws ParseException {
 
 		List<ReservationDto> reservationList = reservationService.viewReservationsByMember(param);
 
-		model.addAttribute("reservations", reservationList);
+		attributes.addFlashAttribute("reservations", reservationList);
 
-		return "/trainer/schedule/reservation_member";
+		return "redirect:/trainer/schedule";
+	}
+
+	@GetMapping("/view/reservation_member/{memberId}/{reservationId}")
+	public String reservationMemberDetail(@PathVariable String memberId, @PathVariable Long reservationId,
+		@RequestParam(required = false) String errorMessage, Model model) {
+
+		if (StringUtils.hasText(errorMessage)) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
+
+		MemberDto member = memberService.findMember(memberId);
+		model.addAttribute("member", member);
+		model.addAttribute("reservationId", reservationId);
+		return "trainer/schedule/reservation_member_detail";
 	}
 }

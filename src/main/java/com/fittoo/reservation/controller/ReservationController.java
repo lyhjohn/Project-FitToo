@@ -3,14 +3,11 @@ package com.fittoo.reservation.controller;
 import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
 import static com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate.parseDate;
 
-import com.fittoo.common.message.ReservationErrorMessage;
 import com.fittoo.exception.ReservationException;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.reservation.model.ReservationDto;
-import com.fittoo.reservation.model.SearchParam;
 import com.fittoo.reservation.service.ReservationService;
 import com.fittoo.trainer.model.ScheduleDto;
-import com.fittoo.trainer.model.TrainerDto;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.List;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,7 +34,6 @@ public class ReservationController {
 		if (param.getDay() == -1) {
 			throw new ReservationException(EMPTY_SCHEDULE.message());
 		}
-
 
 		ScheduleDto schedule = reservationService.getSchedule(
 			parseDate(param.getYear(), param.getCurrentMonth(), param.getDay()),
@@ -82,11 +77,15 @@ public class ReservationController {
 		return "/error/error";
 	}
 
-	@GetMapping("search")
-	public String search(SearchParam param, RedirectAttributes attributes, String loginType) {
-		List<TrainerDto> list = reservationService.searchTrainer(param);
-		attributes.addFlashAttribute("trainerList", list);
-		attributes.addAttribute("loginType", loginType);
-		return "redirect:/trainer/search/trainerList";
+	@PostMapping("/confirm")
+	public String reservationConfirm(String memberId, Long reservationId) {
+		reservationService.confirm(memberId, reservationId);
+		return "redirect:/trainer/schedule";
+	}
+
+	@PostMapping("/cancel")
+	public String reservationCancel(String memberId, Long reservationId) {
+		reservationService.cancel(memberId, reservationId);
+		return "redirect:/trainer/schedule";
 	}
 }

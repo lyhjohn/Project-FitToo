@@ -155,14 +155,14 @@
       color: #0c63e4;
       position: absolute;
       left: 2%;
-      top: 5%;
+      top: 10%;
     }
 
     .rwd-table {
       display: block;
       position: absolute;
       right: 10%;
-      top: 10%;
+      top: 20%;
     }
 
     #user-name {
@@ -183,7 +183,7 @@
 
     .page {
       float: right;
-      top: 3%;
+      top: 0%;
     }
   </style>
   <title>내 정보</title>
@@ -219,7 +219,7 @@
   <div th:if="${trainerDetail != null}">
     <input type="hidden" th:value="${trainerDetail.userId}" name="trainerId">
   </div>
-  <form action="/reservation/search" style="display: inline">
+  <form action="/trainer/trainerList" style="display: inline">
     <select name="searchType" id="searchType">
       <option value="trainerName" name="trainerName">트레이너 이름</option>
       <option value="address" name="address">위치</option>
