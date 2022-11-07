@@ -2,23 +2,87 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
+  <style>
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+
+    .canceled_reservation {
+      color: red;
+    }
+  </style>
   <title>예약 목록</title>
 </head>
 <body>
 <div th:replace="/fragment/common/home_header.html::home_header"></div>
 
 <div th:if="${reservations.size() > 0}">
+  <div th:if="${errorMessage != null}">
+    <div th:text="${errorMessage}" class="error"></div>
+  </div>
   <div th:each="reservation: ${reservations}">
-    날짜: <div th:text="${reservation?.date}"></div>
-    시작 시간: <div th:text="${reservation?.startTime}"></div>
-    종료 시간: <div th:text="${reservation?.endTime}"></div>
-    내용: <div th:text="${reservation?.comment}"></div>
-    1회 가격: <div th:text="${reservation?.price}"></div>
-    트레이너 이름: <div th:text="${reservation?.trainerName}"></div>
-    위치: <div th:text="${reservation?.address}"></div>
-    트레이너 ID: <div th:text="${reservation?.trainerUserId}"></div>
-    종목: <div th:text="${reservation?.exercise}"></div>
-    현재 인원 / 정원: <div th:text="|${reservation?.curPersonnel} / ${reservation?.personnel}|"></div>
+    <form th:if="|${reservation.reservationStatus.status != '취소'}|"
+          action="/reservation/member/cancel" method="post">
+      <div>
+        날짜:
+        <div th:text="${reservation?.date}"></div>
+        시작 시간:
+        <div th:text="${reservation?.startTime}"></div>
+        종료 시간:
+        <div th:text="${reservation?.endTime}"></div>
+        내용:
+        <div th:text="${reservation?.comment}"></div>
+        1회 가격:
+        <div th:text="${reservation?.price}"></div>
+        트레이너 이름:
+        <div th:text="${reservation?.trainerName}"></div>
+        위치:
+        <div th:text="${reservation?.address}"></div>
+        트레이너 ID:
+        <div th:text="${reservation?.trainerUserId}"></div>
+        종목:
+        <div th:text="${reservation?.exercise}"></div>
+        현재 인원 / 정원:
+        <div th:text="|${reservation?.curPersonnel} / ${reservation?.personnel}|"></div>
+        현재 예약 상태:
+        <div th:text="${reservation.reservationStatus.status}"></div>
+      </div>
+      <input type="hidden" th:value="${reservation.memberUserId}" name="memberId">
+      <input type="hidden" th:value="${reservation.date}" name="date">
+      <button type="submit" th:value="${reservation.id}" name="reservationId">취소하기</button>
+    </form>
+
+    <form th:if="|${reservation.reservationStatus.status eq '취소'}|"
+          action="/reservation/reReservation" method="post">
+      <div class="canceled_reservation">
+        날짜:
+        <div th:text="${reservation?.date}"></div>
+        시작 시간:
+        <div th:text="${reservation?.startTime}"></div>
+        종료 시간:
+        <div th:text="${reservation?.endTime}"></div>
+        내용:
+        <div th:text="${reservation?.comment}"></div>
+        1회 가격:
+        <div th:text="${reservation?.price}"></div>
+        트레이너 이름:
+        <div th:text="${reservation?.trainerName}"></div>
+        위치:
+        <div th:text="${reservation?.address}"></div>
+        트레이너 ID:
+        <div th:text="${reservation?.trainerUserId}"></div>
+        종목:
+        <div th:text="${reservation?.exercise}"></div>
+        현재 인원 / 정원:
+        <div th:text="|${reservation?.curPersonnel} / ${reservation?.personnel}|"></div>
+        현재 예약 상태:
+        <div th:text="${reservation.reservationStatus.status}"></div>
+      </div>
+      <input type="hidden" th:value="${reservation.memberUserId}" name="memberId">
+      <input type="hidden" th:value="${reservation.date}" name="date">
+      <button type="submit" th:value="${reservation.id}" name="reservationId">다시 예약하기</button>
+    </form>
     <hr>
   </div>
 </div>

@@ -13,11 +13,11 @@
 </div>
 <form action="/reservation/confirm" method="post">
   <input type="hidden" th:value="${reservationId}" name="reservationId">
-  <button th:value="${member.userId}" name="memberId">예약 확인</button>
+  <button th:value="${member.userId}" name="memberUserId">예약 확인</button>
 </form>
-<form action="/reservation/cancel" method="post">
+<form action="/reservation/trainer/cancel" method="post">
   <input type="hidden" th:value="${reservationId}" name="reservationId">
-  <button th:value="${member.userId}" name="memberId">예약 취소</button>
+  <button th:value="${member.userId}" name="memberUserId">예약 취소</button>
 </form>
 </body>
 </html>
