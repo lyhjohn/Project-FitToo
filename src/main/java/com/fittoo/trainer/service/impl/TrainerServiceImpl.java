@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -57,6 +58,7 @@ public class TrainerServiceImpl implements TrainerService {
 	private final ScheduleRepository scheduleRepository;
 	private final ExerciseTypeRepository exerciseTypeRepository;
 	private final JPAQueryFactory queryFactory;
+	private final static String TRAINER = "trainer";
 
 	@Override
 	@Transactional
@@ -65,20 +67,18 @@ public class TrainerServiceImpl implements TrainerService {
 			input.getUserId());
 
 		if (optionalTrainer.isPresent()) {
-			input.setLoginType("trainer");
-			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, input.getLoginType(),
-				new UserIdAlreadyExist());
+			input.setLoginType(TRAINER);
+			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, TRAINER, new UserIdAlreadyExist());
 		}
 
 		if (!input.getPassword().equals(input.getRepassword())) {
-			input.setLoginType("trainer");
-			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input,
-				input.getLoginType());
+			input.setLoginType(TRAINER);
+			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input, TRAINER);
 		}
 
 		String[] fileNames;
 		try {
-			fileNames = new FileStore().storeFile(input.getProfilePicture(), "trainer");
+			fileNames = new FileStore().storeFile(input.getProfilePicture(), TRAINER);
 		} catch (IOException e) {
 			throw new RegisterException(INVALID_FILE.message(), new FileException());
 		}
@@ -90,18 +90,23 @@ public class TrainerServiceImpl implements TrainerService {
 		Optional<ExerciseType> optionalExerciseType = exerciseTypeRepository.findById(
 			input.getExerciseType());
 
-		trainerRepository.save(trainer);
-
-		if (optionalExerciseType.isEmpty()) {
-			ExerciseType exerciseType = exerciseTypeRepository.save(
-				new ExerciseType(input.getExerciseType()));
-			exerciseType.addTrainer(trainer);
-			exerciseTypeRepository.save(exerciseType);
-		} else {
-			ExerciseType exerciseType = optionalExerciseType.get();
-			exerciseType.addTrainer(trainer);
-			exerciseTypeRepository.save(exerciseType);
+		try {
+			trainerRepository.save(trainer);
+		} catch (
+			DataIntegrityViolationException e) {
+			input.setLoginType(TRAINER);
+			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, TRAINER, e);
 		}
+
+		ExerciseType exerciseType;
+		if (optionalExerciseType.isEmpty()) {
+			exerciseType = exerciseTypeRepository.save(
+				new ExerciseType(input.getExerciseType()));
+		} else {
+			exerciseType = optionalExerciseType.get();
+		}
+		exerciseType.addTrainer(trainer);
+		exerciseTypeRepository.save(exerciseType);
 	}
 
 	@Override
@@ -152,7 +157,6 @@ public class TrainerServiceImpl implements TrainerService {
 			.offset(pageRequest.getOffset())
 			.limit(pageRequest.getPageSize())
 			.fetch();
-
 
 		return TrainerDto.of(trainerList);
 	}

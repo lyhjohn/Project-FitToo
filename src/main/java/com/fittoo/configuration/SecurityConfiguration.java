@@ -86,8 +86,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				"/reservation/confirm",
 				"/reservation/trainer/**")
 			.hasAuthority("ROLE_TRAINER")
-			.antMatchers("/member/**",
-				"/reservation/**")
+			.antMatchers("/member/**")
 			.hasAuthority("ROLE_NORMAL");
 
 		super.configure(http);

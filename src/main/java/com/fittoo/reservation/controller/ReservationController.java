@@ -62,7 +62,7 @@ public class ReservationController {
 	public String addReservation(ReservationParam param, Principal principal, Model model) {
 		reservationService.addReservation(param, principal.getName());
 
-		return "redirect:/";
+		return "/reservation/complete";
 	}
 
 	@GetMapping("/view")
