@@ -67,7 +67,7 @@
 ### ERD
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/104713339/196984215-3f4ac60e-de56-4971-93ff-780a21a0b683.png">
+<img src="https://user-images.githubusercontent.com/104713339/200344627-e361feeb-2790-4e69-b184-23a23afd7521.png">
 </div>
   
  
