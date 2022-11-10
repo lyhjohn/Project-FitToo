@@ -101,15 +101,16 @@ public class ReservationServiceImpl implements ReservationService {
 
 	public void checkSameReservation(ReservationParam param, String memberId) {
 
-		List<Reservation> list = queryFactory.selectFrom(reservation)
+		Long count = queryFactory.select(reservation.count())
+			.from(reservation)
 			.where(reservation.trainerUserId.eq(param.getTrainerId())
 				.and(reservation.date.eq(param.getDate()))
 				.and(reservation.startTime.eq(param.getStartTime()))
 				.and(reservation.endTime.eq(param.getEndTime()))
 				.and(reservation.member.userId.eq(memberId)))
-			.fetch();
+			.fetchOne();
 
-		if (!CollectionUtils.isEmpty(list)) {
+		if (count > 0) {
 			throw new ReservationException(EXIST_SAME_RESERVATION.message());
 		}
 	}

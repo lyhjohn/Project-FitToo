@@ -5,10 +5,9 @@ import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETE
 import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
 import static com.fittoo.common.message.ReservationErrorMessage.PROHIBIT_RESERVATION_CANCEL_THREE_DAYS_AGO;
 import static com.fittoo.member.model.LoginType.NORMAL;
-import static com.fittoo.member.model.LoginType.TRAINER;
 import static com.fittoo.member.model.MemberDto.whatIsGender;
 
-import com.fittoo.common.message.ReservationErrorMessage;
+import com.fittoo.common.message.RegisterErrorMessage;
 import com.fittoo.common.message.ScheduleErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -65,7 +64,7 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 
 		} else if (e.getLoginType().equals("trainer")) {
 			attributes.addFlashAttribute("trainer", e.getTrainerInput());
-			whatIsGender(e.getMemberInput().getGender(), attributes);
+			whatIsGender(e.getTrainerInput().getGender(), attributes);
 			return "redirect:/trainer/register";
 		}
 		return "redirect:/member/register";
@@ -103,10 +102,12 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 			return "redirect:/trainer/view/reservation_member/{memberId}/{reservationId}";
 		}
 
-		if (e.getLoginType().equals(NORMAL) && e.getMessage()
-			.equals(ALREADY_CANCELED_RESERVATION.message())) {
-			attributes.addAttribute("errorMessage", e.getMessage());
-			return "redirect:/reservation/view";
+		if (e.getLoginType() != null) {
+			if (e.getLoginType().equals(NORMAL) && e.getMessage()
+				.equals(ALREADY_CANCELED_RESERVATION.message())) {
+				attributes.addAttribute("errorMessage", e.getMessage());
+				return "redirect:/reservation/view";
+			}
 		}
 		return "redirect:/reservation/error";
 	}

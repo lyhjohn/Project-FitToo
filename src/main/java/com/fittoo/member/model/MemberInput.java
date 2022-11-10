@@ -1,5 +1,6 @@
 package com.fittoo.member.model;
 
+import javax.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
