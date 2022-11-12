@@ -15,4 +15,6 @@ public interface MemberService {
 	void withdraw(String userId);
 
 	boolean existWithdrawUser(String userId);
+
+	void completeWithdraw(String id);
 }

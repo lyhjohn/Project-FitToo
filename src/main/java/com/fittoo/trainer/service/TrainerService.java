@@ -26,4 +26,6 @@ public interface TrainerService {
 	void createSchedule(String userId, ScheduleInput input) throws ParseException;
 
 	Long getTotalCountTrainerList();
+
+	void completeWithdraw(String id);
 }

@@ -132,4 +132,10 @@ public class MemberServiceImpl implements MemberService {
 
 		return true;
 	}
+
+	@Override
+	@Transactional
+	public void completeWithdraw(String userId) {
+		memberRepository.deleteByUserId(userId);
+	}
 }
