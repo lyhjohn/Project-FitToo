@@ -1,5 +1,6 @@
 package com.fittoo.reservation.repository;
 
+import com.fittoo.member.entity.Member;
 import com.fittoo.reservation.Reservation;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +16,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	List<Reservation> findAllByDate(LocalDate date);
 
 	Optional<Reservation> findByMemberUserIdAndId(String memberUserId, Long id);
+
+	Optional<List<Reservation>> findByMember(Member member);
 
 	void deleteByMemberUserId(String memberUserId);
 }

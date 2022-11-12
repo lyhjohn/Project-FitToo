@@ -50,6 +50,7 @@ public class Schedule {
 	private LocalTime endTime;
 	private String exercise;
 	private long price;
+	private boolean fullReservation = false;
 
 	public Schedule(String trainerUserId, String comment, int personnel, String exercise,
 		Trainer trainer, Calendar date, String startTime,
@@ -66,11 +67,11 @@ public class Schedule {
 	}
 
 	public void addReservation(Reservation reservation) {
-		if (curPersonnel >= personnel) {
-			throw new ReservationException(FULL_RESERVATION.message());
-		}
-
 		curPersonnel++;
+		reserveValid();
+		if (curPersonnel == personnel) {
+			fullReservation = true;
+		}
 		this.reservationList.add(reservation);
 		reservation.setSchedule(this);
 	}
@@ -79,12 +80,24 @@ public class Schedule {
 		if (curPersonnel > 0) {
 			curPersonnel--;
 		}
+		fullReservation = false;
 	}
 
 	public void reReservation() {
-		if (curPersonnel >= personnel) {
+		reserveValid();
+		curPersonnel++;
+		if (curPersonnel == personnel) {
+			fullReservation = true;
+		}
+	}
+
+	private void reserveValid() {
+		if (curPersonnel > personnel) {
 			throw new ReservationException(FULL_RESERVATION.message());
 		}
-		curPersonnel++;
+
+		if (isFullReservation()) {
+			throw new ReservationException(FULL_RESERVATION.message());
+		}
 	}
 }

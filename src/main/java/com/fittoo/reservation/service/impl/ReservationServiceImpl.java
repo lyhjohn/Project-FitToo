@@ -4,6 +4,7 @@ import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCELED_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETED_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.FULL_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
 import static com.fittoo.common.message.ScheduleErrorMessage.EMPTY_SCHEDULE;
@@ -88,6 +89,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 		Reservation reservation = Reservation.saveReservation(param, trainer, member, schedule,
 			memberId);
+
 		reservationRepository.save(reservation);
 	}
 

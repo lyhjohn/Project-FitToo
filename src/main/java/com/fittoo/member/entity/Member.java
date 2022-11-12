@@ -3,17 +3,15 @@ package com.fittoo.member.entity;
 import com.fittoo.common.entity.UserBaseEntity;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.LoginType;
-import com.fittoo.member.model.MemberUpdateInput;
 import com.fittoo.reservation.Reservation;
 import com.fittoo.review.entity.Review;
-import java.time.LocalDateTime;
+import com.fittoo.trainer.model.UpdateInput;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.util.CollectionUtils;
 
 @Entity
 @Getter
@@ -61,13 +59,12 @@ public class Member extends UserBaseEntity {
 			.build();
 	}
 
-	public void update(MemberUpdateInput input) {
+	public void update(UpdateInput input) {
 		setUserId(input.getUserId());
 		setPhoneNumber(input.getPhoneNumber());
 		setGender(setGender(input.getGender()));
 		setUserName(input.getUserName());
 		setExercisePeriod(input.getExercisePeriod());
-		setZipcode(input.getZipcode());
 	}
 
 	public static String setGender(int num) {

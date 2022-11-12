@@ -1,7 +1,9 @@
 package com.fittoo.web.controller;
 
 import static com.fittoo.common.message.LoginErrorMessage.INVALID_ID_OR_PWD;
+import static com.fittoo.common.message.LoginErrorMessage.WITHDRAW_USER;
 
+import com.fittoo.common.message.LoginErrorMessage;
 import com.fittoo.exception.LoginFailException;
 import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.member.model.MemberDto;
@@ -39,6 +41,7 @@ public class HomeController {
 	public String home(LoginInput input, Model model, Principal principal,
 		HttpServletRequest request) {
 		Optional<Principal> optionalPrincipal = Optional.ofNullable(principal);
+
 		if (optionalPrincipal.isPresent()) {
 			model.addAttribute("member", typeCheck(principal.getName()));
 			return "/home/loginHome";
@@ -46,6 +49,10 @@ public class HomeController {
 
 		if (input.getUserId() == null) {
 			return "/home/home";
+		}
+
+		if (isWithdrawUser(input, model)) {
+			return "redirect:/logout";
 		}
 
 		if (checkFailLoginType(input, model)) {
@@ -79,6 +86,19 @@ public class HomeController {
 			return false;
 		}
 		return true;
+	}
+
+	public boolean isWithdrawUser(LoginInput input, Model model) {
+		if (input.getLoginType().equals("member")) {
+			boolean existWithdrawUser = memberService.existWithdrawUser(input.getUserId());
+			if (existWithdrawUser) {
+				model.addAttribute("errorMessage", WITHDRAW_USER.message());
+				model.addAttribute("userId", input.getUserId());
+				return true;
+			}
+			return false;
+		}
+		return false;
 	}
 }
 

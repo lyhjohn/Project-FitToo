@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Getter
@@ -60,21 +61,21 @@ public class MemberDto {
         return udtDt != null ? this.udtDt.format(formatter) : "";
     }
 
-    public static void whatIsGender(Object gender, RedirectAttributes attributes) {
+    public static void whatIsGender(Object gender, Model model) {
         if (gender != null) {
             if (gender instanceof String) {
                 if (gender.equals("남자")) {
-                    attributes.addFlashAttribute("isMan", true);
+                    model.addAttribute("isMan", true);
                 } else {
-                    attributes.addFlashAttribute("isGirl", true);
+                    model.addAttribute("isGirl", true);
                 }
             }
 
             if (gender instanceof Integer) {
                 if ((int) gender == 1) {
-                    attributes.addFlashAttribute("isMan", true);
+                    model.addAttribute("isMan", true);
                 } else {
-                    attributes.addFlashAttribute("isGirl", true);
+                    model.addAttribute("isGirl", true);
                 }
             }
         }

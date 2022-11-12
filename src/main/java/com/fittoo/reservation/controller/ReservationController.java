@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ReservationController {
 
 	private final ReservationService reservationService;
+	private final ThreadLocal<ReservationService> threadLocal = new ThreadLocal<>();
 
 	@PostMapping
 	public String reservation(ReservationParam param, Principal principal, Model model)
@@ -60,7 +61,12 @@ public class ReservationController {
 
 	@PostMapping("/add")
 	public String addReservation(ReservationParam param, Principal principal, Model model) {
+		
+		// 싱글톤 동시성 문제 예방
+		threadLocal.set(reservationService);
+		ReservationService reservationService = threadLocal.get();
 		reservationService.addReservation(param, principal.getName());
+		threadLocal.remove();
 
 		return "/reservation/complete";
 	}
