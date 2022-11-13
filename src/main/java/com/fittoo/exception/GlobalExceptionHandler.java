@@ -2,7 +2,10 @@ package com.fittoo.exception;
 
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCELED_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETED_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.CANT_COMPLETE_BEFORE_RESERVATION_DATE;
 import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
+import static com.fittoo.common.message.ReservationErrorMessage.INVALID_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.ONLY_COMPLETE_STATUS_CAN_BE_COMPLETED;
 import static com.fittoo.common.message.ReservationErrorMessage.PROHIBIT_RESERVATION_CANCEL_THREE_DAYS_AGO;
 import static com.fittoo.member.model.LoginType.NORMAL;
 import static com.fittoo.member.model.MemberDto.whatIsGender;
@@ -93,6 +96,10 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 		log.info("ReservationException.message={}", e.getMessage());
 		attributes.addAttribute("errorMessage", e.getMessage());
 
+		if (e.getMessage().equals(INVALID_RESERVATION.message())) {
+			return "redirect:/error/error";
+		}
+
 		if (e.getMessage().equals(EMPTY_SCHEDULE.message())) {
 			return "redirect:/reservation/empty";
 		}
@@ -101,8 +108,10 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 			return "redirect:/reservation/view";
 		}
 
-		if (e.getMessage().equals(ALREADY_COMPLETED_RESERVATION.message()) || e.getMessage()
-			.equals(ALREADY_CANCELED_RESERVATION.message())) {
+		if (e.getMessage().equals(ALREADY_COMPLETED_RESERVATION.message()) ||
+			e.getMessage().equals(ALREADY_CANCELED_RESERVATION.message()) ||
+			e.getMessage().equals(CANT_COMPLETE_BEFORE_RESERVATION_DATE.message()) ||
+			e.getMessage().equals(ONLY_COMPLETE_STATUS_CAN_BE_COMPLETED.message())) {
 			attributes.addAttribute("errorMessage", e.getMessage());
 			attributes.addAttribute("memberId", e.getMemberId());
 			attributes.addAttribute("reservationId", e.getReservationId());

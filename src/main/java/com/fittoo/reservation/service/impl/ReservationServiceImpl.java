@@ -3,26 +3,28 @@ package com.fittoo.reservation.service.impl;
 import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCELED_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETED_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.CANT_COMPLETE_BEFORE_RESERVATION_DATE;
+import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
 import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
-import static com.fittoo.common.message.ScheduleErrorMessage.EMPTY_SCHEDULE;
+import static com.fittoo.common.message.ReservationErrorMessage.ONLY_COMPLETE_STATUS_CAN_BE_COMPLETED;
 import static com.fittoo.constant.SearchType.ADDRESS;
 import static com.fittoo.constant.SearchType.ALL_TYPE;
 import static com.fittoo.constant.SearchType.TRAINER_NAME;
 import static com.fittoo.reservation.constant.ReservationStatus.CANCEL;
 import static com.fittoo.reservation.constant.ReservationStatus.COMPLETE;
+import static com.fittoo.reservation.constant.ReservationStatus.END;
 import static com.fittoo.reservation.entity.QReservation.reservation;
 import static com.fittoo.trainer.entity.QTrainer.trainer;
 
+import com.fittoo.common.message.ReservationErrorMessage;
 import com.fittoo.exception.ReservationException;
-import com.fittoo.exception.ScheduleException;
 import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.member.entity.Member;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.repository.MemberRepository;
-import com.fittoo.reservation.entity.QReservation;
 import com.fittoo.reservation.entity.Reservation;
 import com.fittoo.reservation.model.ReservationDto;
 import com.fittoo.reservation.model.SearchParam;
@@ -69,7 +71,8 @@ public class ReservationServiceImpl implements ReservationService {
 	@Transactional
 	public ScheduleDto getSchedule(LocalDate date, String trainerId) {
 
-		Schedule schedule = scheduleRepository.findByDateAndTrainerUserId(date, trainerId);
+		Schedule schedule = scheduleRepository.findByDateAndTrainerUserId(date, trainerId)
+			.orElseThrow(() -> new ReservationException(EMPTY_SCHEDULE.message()));
 
 		return ScheduleDto.of(schedule);
 	}
@@ -87,7 +90,8 @@ public class ReservationServiceImpl implements ReservationService {
 			new ReservationException(INVALID_TRAINER_INFO.message()));
 
 		Schedule schedule = scheduleRepository.findByDateAndTrainerUserId(param.getDate(),
-			param.getTrainerId());
+			param.getTrainerId()).orElseThrow(() -> new ReservationException(
+			INVALID_RESERVATION.message()));
 
 		Reservation reservation = Reservation.saveReservation(param, trainer, member, schedule,
 			memberId);
@@ -188,10 +192,6 @@ public class ReservationServiceImpl implements ReservationService {
 		int month = param.getCurrentMonth();
 		int day = param.getDay();
 
-		if (day == -1) {
-			throw new ScheduleException(EMPTY_SCHEDULE.message());
-		}
-
 		LocalDate date = StringOrIntegerToLocalDate.parseDate(year, month, day);
 
 		List<Reservation> reservationList = reservationRepository.findAllByDate(date);
@@ -243,5 +243,25 @@ public class ReservationServiceImpl implements ReservationService {
 				reservation.getMemberUserId(), reservation.getId());
 		}
 		reservation.cancelReservation();
+	}
+
+	@Override
+	@Transactional
+	public void trainingEnd(Long reservationId) {
+		Reservation reservation = reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new ReservationException(
+				INVALID_RESERVATION.message()));
+
+		if (!reservation.getReservationStatus().equals(COMPLETE)) {
+			throw new ReservationException(ONLY_COMPLETE_STATUS_CAN_BE_COMPLETED.message(),
+				reservation.getMemberUserId(), reservationId);
+		}
+
+		if (!reservation.getDate().isBefore(LocalDate.now())) {
+			throw new ReservationException(CANT_COMPLETE_BEFORE_RESERVATION_DATE.message(),
+				reservation.getMemberUserId(), reservationId);
+		}
+
+		reservation.setReservationStatus(END);
 	}
 }

@@ -117,8 +117,15 @@ public class ReservationController {
 		return "redirect:/trainer/schedule";
 	}
 
+	@PostMapping("/training_end")
+	public String trainingEnd(Long reservationId) {
+		reservationService.trainingEnd(reservationId);
+		return "redirect:/trainer/schedule";
+	}
+
 	@PostMapping("/reReservation")
 	public String reReservation(Long reservationId) {
+
 		reservationService.reReservation(reservationId);
 		return "redirect:/reservation/view";
 	}

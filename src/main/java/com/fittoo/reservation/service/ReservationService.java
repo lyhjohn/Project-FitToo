@@ -26,4 +26,6 @@ public interface ReservationService {
 	void cancel(String memberId, Long reservationId, LoginType cancelByWho);
 
 	void reReservation(Long reservationId);
+
+	void trainingEnd(Long reservationId);
 }

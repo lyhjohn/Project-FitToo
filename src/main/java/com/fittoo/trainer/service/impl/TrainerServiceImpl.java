@@ -6,19 +6,33 @@ import static com.fittoo.common.message.FileErrorMessage.INVALID_PROFILE_PICTURE
 import static com.fittoo.common.message.FindErrorMessage.NOT_FOUND_TRAINER;
 import static com.fittoo.common.message.RegisterErrorMessage.ALREADY_EXIST_USERID;
 import static com.fittoo.common.message.RegisterErrorMessage.Pwd_And_RePwd_Not_Equal;
+import static com.fittoo.common.message.ScheduleErrorMessage.CAN_RESERVE_AFTER_NOW;
 import static com.fittoo.common.message.ScheduleErrorMessage.CONTAINS_REGISTERED_DATE;
+import static com.fittoo.common.message.ScheduleErrorMessage.EMPTY_SCHEDULE;
+import static com.fittoo.common.message.ScheduleErrorMessage.ONLY_CANCEL_STATUS_CAN_DELETE;
 import static com.fittoo.common.message.ScheduleErrorMessage.START_DAY_BIGGER_THAN_END_DAY;
 import static com.fittoo.common.message.ScheduleErrorMessage.START_TIME_BIGGER_THAN_END_TIME;
+import static com.fittoo.reservation.constant.ReservationStatus.CANCEL;
+import static com.fittoo.reservation.constant.ReservationStatus.COMPLETE;
+import static com.fittoo.reservation.constant.ReservationStatus.HOLD;
+import static com.fittoo.trainer.entity.QSchedule.schedule;
 import static com.fittoo.trainer.entity.QTrainer.trainer;
+import static com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate.getStartDate;
+import static com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate.parseDate;
 import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getEndTime;
 import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getStartTime;
 
+import com.fittoo.common.message.ScheduleErrorMessage;
 import com.fittoo.exception.FileException;
 import com.fittoo.exception.RegisterException;
 import com.fittoo.exception.ScheduleException;
 import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
+import com.fittoo.reservation.constant.ReservationStatus;
+import com.fittoo.reservation.entity.Reservation;
+import com.fittoo.reservation.repository.ReservationRepository;
 import com.fittoo.trainer.entity.ExerciseType;
+import com.fittoo.trainer.entity.QSchedule;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.ScheduleDto;
@@ -37,6 +51,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +73,8 @@ public class TrainerServiceImpl implements TrainerService {
 	private final ScheduleRepository scheduleRepository;
 	private final ExerciseTypeRepository exerciseTypeRepository;
 	private final JPAQueryFactory queryFactory;
+
+	private final ReservationRepository reservationRepository;
 	private final static String TRAINER = "trainer";
 
 	@Override
@@ -68,7 +85,8 @@ public class TrainerServiceImpl implements TrainerService {
 
 		if (optionalTrainer.isPresent()) {
 			input.setLoginType(TRAINER);
-			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, TRAINER, new UserIdAlreadyExist());
+			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, TRAINER,
+				new UserIdAlreadyExist());
 		}
 
 		if (!input.getPassword().equals(input.getRepassword())) {
@@ -195,13 +213,17 @@ public class TrainerServiceImpl implements TrainerService {
 			throw new ScheduleException(START_TIME_BIGGER_THAN_END_TIME.message());
 		}
 
+		if (isBeforeNow(input)) {
+			throw new ScheduleException(CAN_RESERVE_AFTER_NOW.message());
+		}
+
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 		if (optionalTrainer.isEmpty()) {
 			throw new UserNotFoundException(NOT_FOUND_TRAINER.message());
 		}
 
 		Trainer trainer = optionalTrainer.get();
-		LocalDate startDate = StringOrIntegerToLocalDate.getStartDate(input.getStartDate());
+		LocalDate startDate = getStartDate(input.getStartDate());
 		LocalDate endDate = StringOrIntegerToLocalDate.getEndDate(input.getEndDate());
 
 		Optional<List<Schedule>> optionalScheduleList = scheduleRepository.findAllByTrainerUserIdAndDateBetween(
@@ -222,7 +244,7 @@ public class TrainerServiceImpl implements TrainerService {
 			return true;
 		}
 
-		return StringOrIntegerToLocalDate.getStartDate(input.getStartDate())
+		return getStartDate(input.getStartDate())
 			.isBefore(StringOrIntegerToLocalDate.getEndDate(input.getEndDate()));
 	}
 
@@ -230,8 +252,35 @@ public class TrainerServiceImpl implements TrainerService {
 		return getStartTime(input.getStartTime()).isBefore(getEndTime(input.getEndTime()));
 	}
 
+	private static boolean isBeforeNow(ScheduleInput input) throws ParseException {
+		return getStartDate(input.getStartDate()).isBefore(LocalDate.now()) ||
+			(getStartDate(input.getStartDate()).equals(LocalDate.now()) &&
+				getStartTime(input.getStartTime()).isBefore(LocalTime.now())
+			);
+	}
+
 	@Override
+	@Transactional
 	public void completeWithdraw(String userId) {
 		trainerRepository.deleteByUserId(userId);
+	}
+
+	@Override
+	@Transactional
+	public void deleteSchedule(String date, String trainerId) throws ParseException {
+
+		Schedule schedule = scheduleRepository.findByDateAndTrainerUserId(parseDate(date),
+				trainerId)
+			.orElseThrow(() -> new ScheduleException(EMPTY_SCHEDULE.message()));
+
+		List<Reservation> reservationList = schedule.getReservationList();
+		for (Reservation reservation : reservationList) {
+			if (!reservation.getReservationStatus().equals(CANCEL)) {
+				throw new ScheduleException(ONLY_CANCEL_STATUS_CAN_DELETE.message());
+			}
+		}
+
+		reservationRepository.deleteAll(reservationList);
+		scheduleRepository.deleteById(schedule.getId());
 	}
 }
