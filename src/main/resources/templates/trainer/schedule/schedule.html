@@ -132,13 +132,19 @@
 
 <hr>
 
-<div th:if="${reservations != null}">
-  <div th:each="reservation: ${reservations}">
-    <div>
-      아이디: <a
-        th:href="|@{/trainer/view/reservation_member/{memberId}/{reservationId}(memberId=${reservation.memberUserId}, reservationId=${reservation.id})}|"
-        th:text="${reservation.memberUserId}"></a>
-      예약 상태: <span th:text="${reservation.reservationStatus}"></span>
+<div th:if="|${reservations != null}|">
+  <div th:if="|${reservations.size() > 0}|">
+    <form action="/trainer/schedule/delete" method="post">
+      <input type="hidden" th:value="${reservations.get(0).trainerUserId}" name="trainerId">
+      <button type="submit" th:value="${reservations.get(0).getDate}" name="date">스케줄 삭제</button>
+    </form>
+    <div th:each="reservation: ${reservations}">
+      <div>
+        아이디: <a
+          th:href="|@{/trainer/view/reservation_member/{memberId}/{reservationId}(memberId=${reservation.memberUserId}, reservationId=${reservation.id})}|"
+          th:text="${reservation.memberUserId}"></a>
+        예약 상태: <span th:text="${reservation.reservationStatus}"></span>
+      </div>
     </div>
   </div>
 </div>

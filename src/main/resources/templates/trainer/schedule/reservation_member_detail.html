@@ -25,5 +25,9 @@
   <input type="hidden" th:value="${reservationId}" name="reservationId">
   <button th:value="${member.userId}" name="memberId">예약 취소</button>
 </form>
+<form action="/reservation/training_end" method="post">
+  <input type="hidden" th:value="${reservationId}" name="reservationId">
+  <button th:value="${member.userId}" name="memberId">수업 완료</button>
+</form>
 </body>
 </html>

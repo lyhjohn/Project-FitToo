@@ -28,4 +28,6 @@ public interface TrainerService {
 	Long getTotalCountTrainerList();
 
 	void completeWithdraw(String id);
+
+	void deleteSchedule(String date, String trainerId) throws ParseException;
 }

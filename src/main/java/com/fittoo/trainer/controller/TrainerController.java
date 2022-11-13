@@ -263,6 +263,11 @@ public class TrainerController {
 		return "redirect:/trainer/schedule";
 	}
 
+	@PostMapping("/schedule/delete")
+	public String deleteSchedule(String date, String trainerId) throws ParseException {
+		trainerService.deleteSchedule(date, trainerId);
+		return "redirect:/trainer/schedule";
+	}
 	@PostMapping("/view/reservation_member")
 	public String getReservationMember(ReservationParam param, RedirectAttributes attributes)
 		throws ParseException {
