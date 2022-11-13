@@ -1,17 +1,24 @@
 package com.fittoo.member.controller;
 
+import static com.fittoo.common.message.CommonErrorMessage.ABNORMAL_APPROACH;
+import static com.fittoo.trainer.model.TrainerDto.whatIsGender;
+
+import com.fittoo.exception.AuthException;
 import com.fittoo.member.model.DateParam;
+import com.fittoo.member.model.MemberDto;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.service.MemberService;
 import com.fittoo.reservation.util.SchedulableDateMark;
 import com.fittoo.trainer.model.TrainerDto;
+import com.fittoo.trainer.model.UpdateInput;
 import com.fittoo.trainer.service.TrainerService;
 import com.fittoo.utills.CalendarUtil;
 import java.security.Principal;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -60,6 +67,46 @@ public class MemberController {
 		}
 
 		return "redirect:/";
+	}
+
+	@GetMapping("/profile")
+	public String profile(Principal principal, @RequestParam(required = false) String errorMessage,
+		Model model) {
+
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
+
+		MemberDto member = memberService.findMember(principal.getName());
+		MemberDto.whatIsGender(member.getGender(), model);
+
+		model.addAttribute("member", member);
+		return "/member/profile";
+	}
+
+	@PostMapping("/profileUpdate")
+	public String profileUpdate(@Validated @ModelAttribute UpdateInput input,
+		BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			whatIsGender(input.getGender(), model);
+			model.addAttribute("member", input);
+			return "/member/profile";
+		}
+		MemberDto member = memberService.update(input);
+		whatIsGender(input.getGender(), model);
+		model.addAttribute("member", member);
+
+		return "/member/profile";
+	}
+
+	@PostMapping("/withdraw")
+	public String withdraw(Principal principal, String userId) {
+		if (!principal.getName().equals(userId)) {
+			throw new AuthException(ABNORMAL_APPROACH.message());
+		}
+		memberService.withdraw(userId);
+
+		return "redirect:/logout";
 	}
 
 	@GetMapping("/calendar")

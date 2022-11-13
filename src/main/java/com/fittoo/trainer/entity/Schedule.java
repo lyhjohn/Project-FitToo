@@ -3,7 +3,7 @@ package com.fittoo.trainer.entity;
 import static com.fittoo.common.message.ReservationErrorMessage.FULL_RESERVATION;
 
 import com.fittoo.exception.ReservationException;
-import com.fittoo.reservation.Reservation;
+import com.fittoo.reservation.entity.Reservation;
 import com.fittoo.utills.CalendarUtil.StringToLocalTime;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -50,6 +50,7 @@ public class Schedule {
 	private LocalTime endTime;
 	private String exercise;
 	private long price;
+	private boolean fullReservation = false;
 
 	public Schedule(String trainerUserId, String comment, int personnel, String exercise,
 		Trainer trainer, Calendar date, String startTime,
@@ -66,11 +67,11 @@ public class Schedule {
 	}
 
 	public void addReservation(Reservation reservation) {
-		if (curPersonnel >= personnel) {
-			throw new ReservationException(FULL_RESERVATION.message());
-		}
-
 		curPersonnel++;
+		reserveValid();
+		if (curPersonnel == personnel) {
+			fullReservation = true;
+		}
 		this.reservationList.add(reservation);
 		reservation.setSchedule(this);
 	}
@@ -79,12 +80,24 @@ public class Schedule {
 		if (curPersonnel > 0) {
 			curPersonnel--;
 		}
+		fullReservation = false;
 	}
 
 	public void reReservation() {
-		if (curPersonnel >= personnel) {
+		reserveValid();
+		curPersonnel++;
+		if (curPersonnel == personnel) {
+			fullReservation = true;
+		}
+	}
+
+	private void reserveValid() {
+		if (curPersonnel > personnel) {
 			throw new ReservationException(FULL_RESERVATION.message());
 		}
-		curPersonnel++;
+
+		if (isFullReservation()) {
+			throw new ReservationException(FULL_RESERVATION.message());
+		}
 	}
 }

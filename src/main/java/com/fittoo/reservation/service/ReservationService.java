@@ -13,7 +13,7 @@ import java.util.List;
 public interface ReservationService {
 	ScheduleDto getSchedule(LocalDate date, String trainerId);
 
-	void addReservation(ReservationParam param, String memberId);
+	void addReservation(ReservationParam param, String memberId) throws InterruptedException;
 
 	List<ReservationDto> getReservationList(String memberId);
 

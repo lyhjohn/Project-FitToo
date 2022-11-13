@@ -10,9 +10,9 @@ import static com.fittoo.common.message.ScheduleErrorMessage.EMPTY_SCHEDULE;
 import static com.fittoo.constant.SearchType.ADDRESS;
 import static com.fittoo.constant.SearchType.ALL_TYPE;
 import static com.fittoo.constant.SearchType.TRAINER_NAME;
-import static com.fittoo.reservation.QReservation.reservation;
 import static com.fittoo.reservation.constant.ReservationStatus.CANCEL;
 import static com.fittoo.reservation.constant.ReservationStatus.COMPLETE;
+import static com.fittoo.reservation.entity.QReservation.reservation;
 import static com.fittoo.trainer.entity.QTrainer.trainer;
 
 import com.fittoo.exception.ReservationException;
@@ -22,7 +22,8 @@ import com.fittoo.member.entity.Member;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.member.repository.MemberRepository;
-import com.fittoo.reservation.Reservation;
+import com.fittoo.reservation.entity.QReservation;
+import com.fittoo.reservation.entity.Reservation;
 import com.fittoo.reservation.model.ReservationDto;
 import com.fittoo.reservation.model.SearchParam;
 import com.fittoo.reservation.repository.ReservationRepository;
@@ -42,6 +43,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -53,6 +55,7 @@ import org.thymeleaf.util.ListUtils;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationServiceImpl implements ReservationService {
 
 	private final ScheduleRepository scheduleRepository;
@@ -88,6 +91,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 		Reservation reservation = Reservation.saveReservation(param, trainer, member, schedule,
 			memberId);
+
 		reservationRepository.save(reservation);
 	}
 

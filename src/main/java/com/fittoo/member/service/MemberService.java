@@ -2,7 +2,7 @@ package com.fittoo.member.service;
 
 import com.fittoo.member.model.MemberDto;
 import com.fittoo.member.model.MemberInput;
-import com.fittoo.member.model.MemberUpdateInput;
+import com.fittoo.trainer.model.UpdateInput;
 
 public interface MemberService {
 
@@ -10,5 +10,11 @@ public interface MemberService {
 
     MemberDto findMember(String userId);
 
-    void update(MemberUpdateInput input, String userId);
+    MemberDto update(UpdateInput input);
+
+	void withdraw(String userId);
+
+	boolean existWithdrawUser(String userId);
+
+	void completeWithdraw(String id);
 }

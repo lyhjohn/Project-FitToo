@@ -27,6 +27,13 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 		return "redirect:/logout";
 	}
 
+	@ExceptionHandler(AuthException.class)
+	public String authException(AuthException e, RedirectAttributes attributes) {
+		log.info("AuthException.message={}", e.getMessage());
+		attributes.addAttribute("errorMessage", e.getMessage());
+		return "redirect:/logout";
+	}
+
 	@ExceptionHandler(UserNotFoundException.class)
 	public String findInfoException(UserNotFoundException e) {
 
@@ -110,5 +117,12 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 			}
 		}
 		return "redirect:/reservation/error";
+	}
+
+	@ExceptionHandler(WithdrawException.class)
+	public String withDrawException(WithdrawException e, RedirectAttributes attributes) {
+		log.info("WithdrawException.message={}", e.getMessage());
+		attributes.addAttribute("errorMessage", e.getMessage());
+		return "redirect:/member/profile";
 	}
 }

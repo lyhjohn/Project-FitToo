@@ -1,6 +1,6 @@
 package com.fittoo.reservation.model;
 
-import com.fittoo.reservation.Reservation;
+import com.fittoo.reservation.entity.Reservation;
 import com.fittoo.reservation.constant.ReservationStatus;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class ReservationDto {
 
 	private Long id;
@@ -24,13 +25,13 @@ public class ReservationDto {
 	private String endTime;
 	private LocalDate date;
 	private String price;
-	private String personnel;
+	private int personnel;
 	private int curPersonnel;
 	private String comment;
 
 	@Builder
 	public ReservationDto(String trainerUserId, String trainerName, String address, String exercise,
-		String startTime, String endTime, LocalDate date, String price, String personnel,
+		String startTime, String endTime, LocalDate date, String price, int personnel,
 		String comment, int curPersonnel, String memberUserId, ReservationStatus reservationStatus, Long id) {
 		this.trainerUserId = trainerUserId;
 		this.id = id;

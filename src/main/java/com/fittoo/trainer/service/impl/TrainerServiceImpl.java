@@ -229,4 +229,9 @@ public class TrainerServiceImpl implements TrainerService {
 	private static boolean isStartTimeIsBeforeEndTime(ScheduleInput input) throws ParseException {
 		return getStartTime(input.getStartTime()).isBefore(getEndTime(input.getEndTime()));
 	}
+
+	@Override
+	public void completeWithdraw(String userId) {
+		trainerRepository.deleteByUserId(userId);
+	}
 }

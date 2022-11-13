@@ -38,9 +38,5 @@ public class MemberInput {
     @NotNull
     private String exercisePeriod;
 
-    private String address;
-    private String addrDetail;
-    private String zipCode;
-
     private String loginType;
 }

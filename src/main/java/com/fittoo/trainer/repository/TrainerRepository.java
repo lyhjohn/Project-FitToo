@@ -14,4 +14,6 @@ public interface TrainerRepository extends JpaRepository<Trainer, Long> {
 	List<Trainer> findByUserNameContains(String trainerName);
 
 	List<Trainer> findByAddrContains(String address);
+
+	void deleteByUserId(String userId);
 }

@@ -1,9 +1,7 @@
-package com.fittoo.reservation;
+package com.fittoo.reservation.entity;
 
-import static com.fittoo.common.message.ReservationErrorMessage.FULL_RESERVATION;
 import static javax.persistence.FetchType.LAZY;
 
-import com.fittoo.exception.ReservationException;
 import com.fittoo.member.entity.Member;
 import com.fittoo.member.model.ReservationParam;
 import com.fittoo.reservation.constant.ReservationStatus;
@@ -53,20 +51,19 @@ public class Reservation {
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "trainer_id")
 	private Trainer trainer;
-
 	private String address;
 	private String exercise;
 	private String startTime;
 	private String endTime;
 	private LocalDate date;
 	private String price;
-	private String personnel;
+	private int personnel;
 	private String comment;
 
 	@Builder
 	public Reservation(String trainerUserId, Schedule schedule, Member member, String address,
 		String exercise, String startTime, String endTime,
-		LocalDate date, String price, String personnel, String comment, String memberUserId,
+		LocalDate date, String price, int personnel, String comment, String memberUserId,
 		ReservationStatus reservationStatus) {
 		this.trainerUserId = trainerUserId;
 		this.reservationStatus = reservationStatus;
