@@ -3,7 +3,7 @@ package com.fittoo.member.entity;
 import com.fittoo.common.entity.UserBaseEntity;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.member.model.LoginType;
-import com.fittoo.reservation.Reservation;
+import com.fittoo.reservation.entity.Reservation;
 import com.fittoo.review.entity.Review;
 import com.fittoo.trainer.model.UpdateInput;
 import lombok.*;
@@ -53,9 +53,6 @@ public class Member extends UserBaseEntity {
 			.phoneNumber(memberInput.getPhoneNumber())
 			.exercisePeriod(memberInput.getExercisePeriod())
 			.userName(memberInput.getUserName())
-			.addr(memberInput.getAddress())
-			.addrDetail(memberInput.getAddrDetail())
-			.zipcode(memberInput.getZipCode())
 			.build();
 	}
 

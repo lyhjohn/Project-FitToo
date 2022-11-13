@@ -1,15 +1,11 @@
 package com.fittoo.member.model;
 
 import com.fittoo.member.entity.Member;
-import com.fittoo.reservation.Reservation;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Getter
 @Setter

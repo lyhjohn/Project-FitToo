@@ -5,7 +5,7 @@ import static com.fittoo.common.message.ScheduleErrorMessage.INVALID_DATE;
 import com.fittoo.common.entity.UserBaseEntity;
 import com.fittoo.exception.ScheduleException;
 import com.fittoo.member.model.LoginType;
-import com.fittoo.reservation.Reservation;
+import com.fittoo.reservation.entity.Reservation;
 import com.fittoo.review.entity.Review;
 import com.fittoo.trainer.model.ScheduleInput;
 import com.fittoo.trainer.model.TrainerInput;

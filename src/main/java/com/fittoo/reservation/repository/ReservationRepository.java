@@ -1,12 +1,11 @@
 package com.fittoo.reservation.repository;
 
 import com.fittoo.member.entity.Member;
-import com.fittoo.reservation.Reservation;
+import com.fittoo.reservation.entity.Reservation;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 

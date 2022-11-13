@@ -3,7 +3,7 @@ package com.fittoo.trainer.entity;
 import static com.fittoo.common.message.ReservationErrorMessage.FULL_RESERVATION;
 
 import com.fittoo.exception.ReservationException;
-import com.fittoo.reservation.Reservation;
+import com.fittoo.reservation.entity.Reservation;
 import com.fittoo.utills.CalendarUtil.StringToLocalTime;
 import java.text.ParseException;
 import java.time.LocalDate;

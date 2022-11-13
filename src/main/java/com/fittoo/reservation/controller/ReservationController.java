@@ -60,7 +60,8 @@ public class ReservationController {
 	}
 
 	@PostMapping("/add")
-	public String addReservation(ReservationParam param, Principal principal, Model model) {
+	public String addReservation(ReservationParam param, Principal principal, Model model)
+		throws InterruptedException {
 		
 		// 싱글톤 동시성 문제 예방
 		threadLocal.set(reservationService);

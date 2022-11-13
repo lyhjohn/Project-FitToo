@@ -29,7 +29,7 @@ public class withdrawUserSchedulerService {
 	private final MemberService memberService;
 	private final TrainerService trainerService;
 
-	@Scheduled(cron = "0 0 0 0/7 * *")
+	@Scheduled(cron = "0 0 12 7 * *")
 	@Transactional
 	public void updateWithdrawStatus() {
 		List<WithdrawUser> list = queryFactory.selectFrom(withdrawUser)
@@ -43,7 +43,7 @@ public class withdrawUserSchedulerService {
 		});
 	}
 
-	@Scheduled(cron = "0 0 0 0 0/6 *")
+	@Scheduled(cron = "0 0 12 1 6 *")
 	@Transactional
 	public void completeWithdraw() {
 		List<WithdrawUser> list = queryFactory.selectFrom(withdrawUser)
