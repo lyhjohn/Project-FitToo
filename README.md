@@ -1,5 +1,3 @@
-![test coverage](.github/badges/jacoco.svg)
-
 <div align=center>
 <img src="https://user-images.githubusercontent.com/104713339/196100273-a9305f32-2cba-438e-bd7b-5419a3f2a22d.png" width=100% height=400>
 
