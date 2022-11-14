@@ -3,6 +3,7 @@ package com.fittoo.reservation.service.impl;
 import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCELED_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETED_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_END_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.CANT_COMPLETE_BEFORE_RESERVATION_DATE;
 import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
 import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
@@ -18,6 +19,7 @@ import static com.fittoo.reservation.constant.ReservationStatus.END;
 import static com.fittoo.reservation.entity.QReservation.reservation;
 import static com.fittoo.trainer.entity.QTrainer.trainer;
 
+import com.fittoo.common.message.RegisterErrorMessage;
 import com.fittoo.common.message.ReservationErrorMessage;
 import com.fittoo.exception.ReservationException;
 import com.fittoo.exception.UserNotFoundException;
@@ -252,6 +254,11 @@ public class ReservationServiceImpl implements ReservationService {
 			.orElseThrow(() -> new ReservationException(
 				INVALID_RESERVATION.message()));
 
+		if (reservation.getReservationStatus().equals(END)) {
+			throw new ReservationException(ALREADY_END_RESERVATION.message(),
+				reservation.getMemberUserId(), reservationId);
+		}
+
 		if (!reservation.getReservationStatus().equals(COMPLETE)) {
 			throw new ReservationException(ONLY_COMPLETE_STATUS_CAN_BE_COMPLETED.message(),
 				reservation.getMemberUserId(), reservationId);
@@ -263,5 +270,10 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		reservation.setReservationStatus(END);
+	}
+
+	@Override
+	public boolean hasReservation(Long reservationId, String userId) {
+		return reservationRepository.existsByMemberUserIdAndId(userId, reservationId);
 	}
 }

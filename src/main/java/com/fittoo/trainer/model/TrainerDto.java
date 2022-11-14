@@ -3,7 +3,6 @@ package com.fittoo.trainer.model;
 import com.fittoo.common.model.UserBaseDto;
 import com.fittoo.member.model.LoginType;
 import com.fittoo.reservation.model.ReservationDto;
-import com.fittoo.trainer.entity.ExerciseType;
 import com.fittoo.trainer.entity.Trainer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,6 +39,8 @@ public class TrainerDto extends UserBaseDto {
 	private String addrDetail;
 
 	private String zipcode;
+	private int score;
+	private int evaluatedNum;
 
 
 	@Builder.Default
@@ -68,6 +69,8 @@ public class TrainerDto extends UserBaseDto {
 			.regDt(trainer.getRegDt())
 			.udtDt(trainer.getUdtDt())
 			.scheduleList(ScheduleDto.of(trainer.getScheduleList()))
+			.score(trainer.getAvgScore())
+			.evaluatedNum(trainer.getEvaluatedNum())
 			.build();
 	}
 

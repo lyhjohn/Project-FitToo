@@ -87,7 +87,7 @@
     </form>
 
     <form th:if="|${reservation.reservationStatus.status eq '수업 완료'}|"
-          action="/review/addReview" method="post">
+          action="/review/add" method="post">
       <div class="ended_reservation">
         날짜:
         <div th:text="${reservation?.date}"></div>
@@ -112,6 +112,7 @@
         현재 예약 상태:
         <div th:text="${reservation.reservationStatus.status}"></div>
       </div>
+      <input type="hidden" th:value="${reservation.trainerUserId}" name="trainerId">
       <button type="submit" th:value="${reservation.id}" name="reservationId">리뷰 남기기</button>
     </form>
     <hr>

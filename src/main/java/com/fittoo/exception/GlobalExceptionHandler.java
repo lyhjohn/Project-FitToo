@@ -2,11 +2,14 @@ package com.fittoo.exception;
 
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCELED_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETED_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_END_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.CANT_COMPLETE_BEFORE_RESERVATION_DATE;
 import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.ONLY_COMPLETE_STATUS_CAN_BE_COMPLETED;
 import static com.fittoo.common.message.ReservationErrorMessage.PROHIBIT_RESERVATION_CANCEL_THREE_DAYS_AGO;
+import static com.fittoo.common.message.ReviewErrorMessage.ALREADY_EXIST_REVIEW;
+import static com.fittoo.common.message.ReviewErrorMessage.NOT_FOUND_REVIEW;
 import static com.fittoo.member.model.LoginType.NORMAL;
 import static com.fittoo.member.model.MemberDto.whatIsGender;
 
@@ -97,7 +100,7 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 		attributes.addAttribute("errorMessage", e.getMessage());
 
 		if (e.getMessage().equals(INVALID_RESERVATION.message())) {
-			return "redirect:/error/error";
+			return "redirect:/error/commonErrorPage";
 		}
 
 		if (e.getMessage().equals(EMPTY_SCHEDULE.message())) {
@@ -110,6 +113,7 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 
 		if (e.getMessage().equals(ALREADY_COMPLETED_RESERVATION.message()) ||
 			e.getMessage().equals(ALREADY_CANCELED_RESERVATION.message()) ||
+			e.getMessage().equals(ALREADY_END_RESERVATION.message()) ||
 			e.getMessage().equals(CANT_COMPLETE_BEFORE_RESERVATION_DATE.message()) ||
 			e.getMessage().equals(ONLY_COMPLETE_STATUS_CAN_BE_COMPLETED.message())) {
 			attributes.addAttribute("errorMessage", e.getMessage());
@@ -133,5 +137,15 @@ public class GlobalExceptionHandler extends SimpleUrlAuthenticationFailureHandle
 		log.info("WithdrawException.message={}", e.getMessage());
 		attributes.addAttribute("errorMessage", e.getMessage());
 		return "redirect:/member/profile";
+	}
+
+	@ExceptionHandler(ReviewException.class)
+	public String reviewException(ReviewException e, RedirectAttributes attributes) {
+		log.info("ReviewException.message={}", e.getMessage());
+		attributes.addAttribute("errorMessage", e.getMessage());
+		if (e.getMessage().equals(NOT_FOUND_REVIEW.message())) {
+			return "redirect:/error/commonErrorPage";
+		}
+		return "redirect:/reservation/view";
 	}
 }

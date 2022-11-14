@@ -268,6 +268,7 @@ public class TrainerController {
 		trainerService.deleteSchedule(date, trainerId);
 		return "redirect:/trainer/schedule";
 	}
+
 	@PostMapping("/view/reservation_member")
 	public String getReservationMember(ReservationParam param, RedirectAttributes attributes)
 		throws ParseException {
@@ -280,7 +281,8 @@ public class TrainerController {
 	}
 
 	@GetMapping("/view/reservation_member/{memberId}/{reservationId}")
-	public String reservationMemberDetail(@PathVariable String memberId, @PathVariable Long reservationId,
+	public String reservationMemberDetail(@PathVariable String memberId,
+		@PathVariable Long reservationId,
 		@RequestParam(required = false) String errorMessage, Model model) {
 
 		if (StringUtils.hasText(errorMessage)) {
@@ -291,5 +293,15 @@ public class TrainerController {
 		model.addAttribute("member", member);
 		model.addAttribute("reservationId", reservationId);
 		return "trainer/schedule/reservation_member_detail";
+	}
+
+	/**
+	 * 리뷰 목록에서 트레이너 아이디 클릭 시 트레이너 기본정보보기, 예약하기 가능
+	 */
+	@GetMapping("/simpleInfo")
+	public String simpleInfo(@RequestParam String trainerId, Model model) {
+		TrainerDto trainer = trainerService.findTrainer(trainerId);
+		model.addAttribute("trainer", trainer);
+		return "trainer/simpleInfo";
 	}
 }
