@@ -1,16 +1,18 @@
 package com.fittoo.exception;
 
+import com.fittoo.common.message.ReviewErrorMessage;
 import lombok.Getter;
 
 @Getter
 public class ReviewException extends RuntimeException{
 
+	private ReviewErrorMessage errorMessage;
 	public ReviewException() {
 		super();
 	}
 
-	public ReviewException(String message) {
-		super(message);
+	public ReviewException(ReviewErrorMessage errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 	public ReviewException(String message, Throwable cause) {

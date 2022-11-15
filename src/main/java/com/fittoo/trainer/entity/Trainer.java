@@ -71,11 +71,11 @@ public class Trainer extends UserBaseEntity {
 
 
 	public void addReview(Review review) {
-		updateScore(review);
+		addScore(review);
 		this.reviewList.add(review);
 	}
 
-	private void updateScore(Review review) {
+	private void addScore(Review review) {
 		this.evaluatedNum++;
 		this.totalScore += review.getScore();
 		this.avgScore = this.totalScore / this.evaluatedNum;
@@ -167,7 +167,7 @@ public class Trainer extends UserBaseEntity {
 			}
 			return newScheduleList;
 		} catch (ParseException e) {
-			throw new ScheduleException(INVALID_DATE.message(), e);
+			throw new ScheduleException(INVALID_DATE, e);
 		}
 	}
 

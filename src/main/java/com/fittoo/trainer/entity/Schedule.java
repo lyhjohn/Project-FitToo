@@ -93,11 +93,11 @@ public class Schedule {
 
 	private void reserveValid() {
 		if (curPersonnel > personnel) {
-			throw new ReservationException(FULL_RESERVATION.message());
+			throw new ReservationException(FULL_RESERVATION);
 		}
 
 		if (isFullReservation()) {
-			throw new ReservationException(FULL_RESERVATION.message());
+			throw new ReservationException(FULL_RESERVATION);
 		}
 	}
 }

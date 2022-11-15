@@ -13,26 +13,20 @@ import static com.fittoo.common.message.ScheduleErrorMessage.ONLY_CANCEL_STATUS_
 import static com.fittoo.common.message.ScheduleErrorMessage.START_DAY_BIGGER_THAN_END_DAY;
 import static com.fittoo.common.message.ScheduleErrorMessage.START_TIME_BIGGER_THAN_END_TIME;
 import static com.fittoo.reservation.constant.ReservationStatus.CANCEL;
-import static com.fittoo.reservation.constant.ReservationStatus.COMPLETE;
-import static com.fittoo.reservation.constant.ReservationStatus.HOLD;
-import static com.fittoo.trainer.entity.QSchedule.schedule;
 import static com.fittoo.trainer.entity.QTrainer.trainer;
 import static com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate.getStartDate;
 import static com.fittoo.utills.CalendarUtil.StringOrIntegerToLocalDate.parseDate;
 import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getEndTime;
 import static com.fittoo.utills.CalendarUtil.StringToLocalTime.getStartTime;
 
-import com.fittoo.common.message.ScheduleErrorMessage;
 import com.fittoo.exception.FileException;
 import com.fittoo.exception.RegisterException;
 import com.fittoo.exception.ScheduleException;
 import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
-import com.fittoo.reservation.constant.ReservationStatus;
 import com.fittoo.reservation.entity.Reservation;
 import com.fittoo.reservation.repository.ReservationRepository;
 import com.fittoo.trainer.entity.ExerciseType;
-import com.fittoo.trainer.entity.QSchedule;
 import com.fittoo.trainer.entity.Schedule;
 import com.fittoo.trainer.entity.Trainer;
 import com.fittoo.trainer.model.ScheduleDto;
@@ -85,7 +79,7 @@ public class TrainerServiceImpl implements TrainerService {
 
 		if (optionalTrainer.isPresent()) {
 			input.setLoginType(TRAINER);
-			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, TRAINER,
+			throw new RegisterException(ALREADY_EXIST_USERID, input, TRAINER,
 				new UserIdAlreadyExist());
 		}
 
@@ -98,7 +92,7 @@ public class TrainerServiceImpl implements TrainerService {
 		try {
 			fileNames = new FileStore().storeFile(input.getProfilePicture(), TRAINER);
 		} catch (IOException e) {
-			throw new RegisterException(INVALID_FILE.message(), new FileException());
+			throw new FileException(INVALID_FILE);
 		}
 
 		String encPassword = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());
@@ -113,7 +107,7 @@ public class TrainerServiceImpl implements TrainerService {
 		} catch (
 			DataIntegrityViolationException e) {
 			input.setLoginType(TRAINER);
-			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, TRAINER, e);
+			throw new RegisterException(ALREADY_EXIST_USERID, input, TRAINER, e);
 		}
 
 		ExerciseType exerciseType;
@@ -133,7 +127,7 @@ public class TrainerServiceImpl implements TrainerService {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 
 		return optionalTrainer.map(TrainerDto::of).orElseThrow(()
-			-> new UserNotFoundException(NOT_FOUND_TRAINER.message()));
+			-> new UserNotFoundException(NOT_FOUND_TRAINER));
 	}
 
 	@Override
@@ -142,7 +136,7 @@ public class TrainerServiceImpl implements TrainerService {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(input.getUserId());
 
 		return optionalTrainer.map(x -> TrainerDto.of(x.update(input)))
-			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_TRAINER.message()));
+			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_TRAINER));
 	}
 
 	@Override
@@ -158,7 +152,7 @@ public class TrainerServiceImpl implements TrainerService {
 		try {
 			fileNames = new FileStore().storeFile(file, "trainer");
 		} catch (IOException e) {
-			throw new FileException(INVALID_PROFILE_PICTURE.message());
+			throw new FileException(INVALID_PROFILE_PICTURE);
 		}
 		trainer.updateProfilePicture(fileNames);
 
@@ -192,7 +186,7 @@ public class TrainerServiceImpl implements TrainerService {
 	public List<ScheduleDto> showSchedule(String userId) {
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 		if (optionalTrainer.isEmpty()) {
-			throw new UserNotFoundException(NOT_FOUND_USER.message());
+			throw new UserNotFoundException(NOT_FOUND_USER);
 		}
 		Trainer trainer = optionalTrainer.get();
 		List<ScheduleDto> scheduleList = ScheduleDto.of(trainer.getScheduleList());
@@ -206,20 +200,20 @@ public class TrainerServiceImpl implements TrainerService {
 	@Transactional
 	public void createSchedule(String userId, ScheduleInput input) throws ParseException {
 		if (!isStartDateIsBeforeEndDate(input)) {
-			throw new ScheduleException(START_DAY_BIGGER_THAN_END_DAY.message());
+			throw new ScheduleException(START_DAY_BIGGER_THAN_END_DAY);
 		}
 
 		if (!isStartTimeIsBeforeEndTime(input)) {
-			throw new ScheduleException(START_TIME_BIGGER_THAN_END_TIME.message());
+			throw new ScheduleException(START_TIME_BIGGER_THAN_END_TIME);
 		}
 
 		if (isBeforeNow(input)) {
-			throw new ScheduleException(CAN_RESERVE_AFTER_NOW.message());
+			throw new ScheduleException(CAN_RESERVE_AFTER_NOW);
 		}
 
 		Optional<Trainer> optionalTrainer = trainerRepository.findByUserId(userId);
 		if (optionalTrainer.isEmpty()) {
-			throw new UserNotFoundException(NOT_FOUND_TRAINER.message());
+			throw new UserNotFoundException(NOT_FOUND_TRAINER);
 		}
 
 		Trainer trainer = optionalTrainer.get();
@@ -231,7 +225,7 @@ public class TrainerServiceImpl implements TrainerService {
 
 		if (optionalScheduleList.isPresent()) {
 			if (!CollectionUtils.isEmpty(optionalScheduleList.get())) {
-				throw new ScheduleException(CONTAINS_REGISTERED_DATE.message());
+				throw new ScheduleException(CONTAINS_REGISTERED_DATE);
 			}
 		}
 
@@ -271,12 +265,12 @@ public class TrainerServiceImpl implements TrainerService {
 
 		Schedule schedule = scheduleRepository.findByDateAndTrainerUserId(parseDate(date),
 				trainerId)
-			.orElseThrow(() -> new ScheduleException(EMPTY_SCHEDULE.message()));
+			.orElseThrow(() -> new ScheduleException(EMPTY_SCHEDULE));
 
 		List<Reservation> reservationList = schedule.getReservationList();
 		for (Reservation reservation : reservationList) {
 			if (!reservation.getReservationStatus().equals(CANCEL)) {
-				throw new ScheduleException(ONLY_CANCEL_STATUS_CAN_DELETE.message());
+				throw new ScheduleException(ONLY_CANCEL_STATUS_CAN_DELETE);
 			}
 		}
 

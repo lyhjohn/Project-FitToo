@@ -39,7 +39,7 @@ public class ReviewController {
 		Principal principal, Model model) {
 		boolean result = reservationService.hasReservation(reservationId, principal.getName());
 		if (!result) {
-			throw new ReservationException(INVALID_RESERVATION.message());
+			throw new ReservationException(INVALID_RESERVATION);
 		}
 
 		model.addAttribute("trainerId", trainerId);

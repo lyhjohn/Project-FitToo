@@ -38,7 +38,7 @@ public class ReservationController {
 		throws ParseException {
 
 		if (param.getDay() == -1) {
-			throw new ReservationException(EMPTY_SCHEDULE.message());
+			throw new ReservationException(EMPTY_SCHEDULE);
 		}
 
 		ScheduleDto schedule = reservationService.getSchedule(
@@ -108,7 +108,7 @@ public class ReservationController {
 		if (request.getRequestURI().contains("member")) {
 			if (LocalDate.now().isAfter(parseDate(date).minusDays(3))) {
 				throw new ReservationException(
-					PROHIBIT_RESERVATION_CANCEL_THREE_DAYS_AGO.message());
+					PROHIBIT_RESERVATION_CANCEL_THREE_DAYS_AGO);
 			}
 			reservationService.cancel(memberId, reservationId, NORMAL);
 			return "redirect:/reservation/view";

@@ -39,15 +39,15 @@ public class ReviewService {
 	public void addReview(ReviewParam param, String memberId) {
 		boolean result = reviewRepository.existsByReservationId(param.getReservationId());
 		if (result) {
-			throw new ReviewException(ALREADY_EXIST_REVIEW.message());
+			throw new ReviewException(ALREADY_EXIST_REVIEW);
 		}
 
-		Review review = new Review(param.getComment(), param.getScore(), param.getReservationId());
 		Member member = memberRepository.findByUserId(memberId)
-			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER.message()));
+			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER));
 
 		Trainer trainer = trainerRepository.findByUserId(param.getTrainerId())
-			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER.message()));
+			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER));
+		Review review = new Review(param.getComment(), param.getScore(), param.getReservationId());
 
 		review.addMember(member);
 		review.addTrainer(trainer);
@@ -62,7 +62,7 @@ public class ReviewService {
 			.fetchOne();
 
 		if (review == null) {
-			throw new ReviewException(NOT_FOUND_REVIEW.message());
+			throw new ReviewException(NOT_FOUND_REVIEW);
 		}
 		trainerRepository.findByUserId(param.getTrainerId()).ifPresent(x -> x.deleteScore(review));
 		reviewRepository.delete(review);
@@ -70,7 +70,7 @@ public class ReviewService {
 
 	public List<ReviewDto> reviewListWrittenByUser(String userId) {
 		Member member = memberRepository.findByUserId(userId)
-			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER.message()));
+			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER));
 		List<Review> reviewList = member.getReviewList();
 		if (CollectionUtils.isEmpty(reviewList)) {
 			return Collections.emptyList();
@@ -80,7 +80,7 @@ public class ReviewService {
 
 	public Map<List<ReviewDto>, Integer> reviewListWrittenToTrainer(String trainerId) {
 		Trainer trainer = trainerRepository.findByUserId(trainerId)
-			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER.message()));
+			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER));
 		List<Review> reviewList = trainer.getReviewList();
 		if (CollectionUtils.isEmpty(reviewList)) {
 			return Collections.emptyMap();

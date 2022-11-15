@@ -56,7 +56,7 @@ public class LoginServiceImpl implements LoginService {
     public UserDetails loginValidMember(Member member) {
 
         if (!member.getLoginType().equals(LoginType.NORMAL)) {
-            throw new LoginFailException(INVALID_ID_OR_PWD.message());
+            throw new LoginFailException(INVALID_ID_OR_PWD);
         }
         // 회원 ROLE 추가
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
@@ -69,7 +69,7 @@ public class LoginServiceImpl implements LoginService {
     public UserDetails loginValidTrainer(Trainer trainer) {
 
         if (!trainer.getLoginType().equals(LoginType.TRAINER)) {
-            throw new LoginFailException(INVALID_ID_OR_PWD.message());
+            throw new LoginFailException(INVALID_ID_OR_PWD);
         }
         // 회원 ROLE 추가
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

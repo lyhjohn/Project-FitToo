@@ -1,17 +1,20 @@
 package com.fittoo.exception;
 
+import com.fittoo.common.message.FileErrorMessage;
 import com.fittoo.trainer.model.TrainerInput;
+import lombok.Getter;
 
+@Getter
 public class FileException extends RuntimeException {
 
-
+	private FileErrorMessage errorMessage;
 
 	public FileException() {
 		super();
 	}
 
-	public FileException(String message) {
-		super(message);
+	public FileException(FileErrorMessage errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 	public FileException(String message, Throwable cause) {

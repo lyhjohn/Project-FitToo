@@ -71,7 +71,7 @@ public class HomeController {
 		if (input.getLoginType().equals("member")) {
 			MemberDto member = memberService.findMember(input.getUserId());
 			if (member == null) {
-				throw new LoginFailException(INVALID_ID_OR_PWD.message());
+				throw new LoginFailException(INVALID_ID_OR_PWD);
 			}
 			model.addAttribute("member", member);
 			return false;
@@ -80,7 +80,7 @@ public class HomeController {
 		if (input.getLoginType().equals("trainer")) {
 			TrainerDto trainer = trainerService.findTrainer(input.getUserId());
 			if (trainer == null) {
-				throw new LoginFailException(INVALID_ID_OR_PWD.message());
+				throw new LoginFailException(INVALID_ID_OR_PWD);
 			}
 			model.addAttribute("member", trainer);
 			return false;
@@ -92,7 +92,7 @@ public class HomeController {
 		if (input.getLoginType().equals("member")) {
 			boolean existWithdrawUser = memberService.existWithdrawUser(input.getUserId());
 			if (existWithdrawUser) {
-				model.addAttribute("errorMessage", WITHDRAW_USER.message());
+				model.addAttribute("errorMessage", WITHDRAW_USER);
 				model.addAttribute("userId", input.getUserId());
 				return true;
 			}
