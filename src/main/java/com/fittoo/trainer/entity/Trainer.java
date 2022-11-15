@@ -49,6 +49,9 @@ public class Trainer extends UserBaseEntity {
 	private String introduce;
 	private String profilePictureNewName;
 	private String profilePictureOriName;
+	private int totalScore;
+	private int avgScore;
+	private int evaluatedNum;
 
 	@OneToMany(mappedBy = "trainer")
 	@Builder.Default
@@ -68,8 +71,24 @@ public class Trainer extends UserBaseEntity {
 
 
 	public void addReview(Review review) {
+		addScore(review);
 		this.reviewList.add(review);
-		review.setTrainer(this);
+	}
+
+	private void addScore(Review review) {
+		this.evaluatedNum++;
+		this.totalScore += review.getScore();
+		this.avgScore = this.totalScore / this.evaluatedNum;
+	}
+
+	public void deleteScore(Review review) {
+		this.evaluatedNum--;
+		this.totalScore -= review.getScore();
+		if (evaluatedNum != 0) {
+			this.avgScore = totalScore / this.evaluatedNum;
+		} else {
+			this.avgScore = 0;
+		}
 	}
 
 	public static Trainer of(TrainerInput trainerInput, String[] fileNames) {
@@ -148,14 +167,15 @@ public class Trainer extends UserBaseEntity {
 			}
 			return newScheduleList;
 		} catch (ParseException e) {
-			throw new ScheduleException(INVALID_DATE.message(), e);
+			throw new ScheduleException(INVALID_DATE, e);
 		}
 	}
 
 	private Schedule createSchedule(Calendar calendar, ScheduleInput input, String trainerId)
 		throws ParseException {
 		Schedule schedule = new Schedule(trainerId, input.getComment(), input.getPersonnel(),
-			this.getExerciseType().getId(), this, calendar, input.getStartTime(), input.getEndTime(), input.getPrice());
+			this.getExerciseType().getId(), this, calendar, input.getStartTime(),
+			input.getEndTime(), input.getPrice());
 
 		this.scheduleList.add(schedule);
 		return schedule;

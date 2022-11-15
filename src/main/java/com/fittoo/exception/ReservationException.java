@@ -10,12 +10,13 @@ public class ReservationException extends RuntimeException{
 	private String memberId;
 	private Long reservationId;
 	private LoginType loginType;
+	private ReservationErrorMessage errorMessage;
 	public ReservationException() {
 		super();
 	}
 
-	public ReservationException(String message) {
-		super(message);
+	public ReservationException(ReservationErrorMessage errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 	public ReservationException(String message, Throwable cause) {
@@ -26,13 +27,13 @@ public class ReservationException extends RuntimeException{
 		super(cause);
 	}
 
-	protected ReservationException(String message, Throwable cause, boolean enableSuppression,
+	protected ReservationException(String errorMessage, Throwable cause, boolean enableSuppression,
 		boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(errorMessage, cause, enableSuppression, writableStackTrace);
 	}
 
-	public ReservationException(String message, LoginType loginType, String memberId, Long reservationId) {
-		super(message);
+	public ReservationException(ReservationErrorMessage errorMessage, LoginType loginType, String memberId, Long reservationId) {
+		this.errorMessage = errorMessage;
 		this.memberId = memberId;
 		this.reservationId = reservationId;
 		this.loginType = loginType;
@@ -40,6 +41,12 @@ public class ReservationException extends RuntimeException{
 
 	public ReservationException(String message, String memberId, Long reservationId) {
 		super(message);
+		this.memberId = memberId;
+		this.reservationId = reservationId;
+	}
+
+	public ReservationException(ReservationErrorMessage errorMessage, String memberId, Long reservationId) {
+		this.errorMessage = errorMessage;
 		this.memberId = memberId;
 		this.reservationId = reservationId;
 	}

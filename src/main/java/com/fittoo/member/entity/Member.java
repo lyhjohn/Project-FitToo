@@ -40,7 +40,6 @@ public class Member extends UserBaseEntity {
 
 	public void addReview(Review review) {
 		this.reviewList.add(review);
-		review.setMember(this);
 	}
 
 

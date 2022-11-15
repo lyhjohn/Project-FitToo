@@ -1,5 +1,6 @@
 package com.fittoo.exception;
 
+import com.fittoo.common.message.RegisterErrorMessage;
 import com.fittoo.member.model.MemberInput;
 import com.fittoo.trainer.model.TrainerInput;
 import lombok.Getter;
@@ -10,6 +11,7 @@ public class RegisterException extends RuntimeException{
 	private MemberInput memberInput;
 	private TrainerInput trainerInput;
 	private String loginType;
+	private RegisterErrorMessage errorMessage;
 
 
 	public RegisterException() {
@@ -33,14 +35,16 @@ public class RegisterException extends RuntimeException{
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public RegisterException(String message, MemberInput input, String loginType, Throwable cause) {
-		super(message, cause);
+	public RegisterException(RegisterErrorMessage errorMessage, MemberInput input, String loginType, Throwable cause) {
+		super(cause);
+		this.errorMessage = errorMessage;
 		this.memberInput = input;
 		this.loginType = loginType;
 	}
 
-	public RegisterException(String message, TrainerInput input, String loginType, Throwable cause) {
-		super(message, cause);
+	public RegisterException(RegisterErrorMessage errorMessage, TrainerInput input, String loginType, Throwable cause) {
+		super(cause);
+		this.errorMessage = errorMessage;
 		this.trainerInput = input;
 		this.loginType = loginType;
 	}
@@ -51,8 +55,8 @@ public class RegisterException extends RuntimeException{
 		this.loginType = loginType;
 	}
 
-	public RegisterException(String message, MemberInput input, String loginType) {
-		super(message);
+	public RegisterException(RegisterErrorMessage errorMessage, MemberInput input, String loginType) {
+		this.errorMessage = errorMessage;
 		this.memberInput = input;
 		this.loginType = loginType;
 	}

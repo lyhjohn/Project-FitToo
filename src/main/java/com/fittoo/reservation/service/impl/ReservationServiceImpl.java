@@ -3,12 +3,13 @@ package com.fittoo.reservation.service.impl;
 import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_CANCELED_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_COMPLETED_RESERVATION;
-import static com.fittoo.common.message.ReservationErrorMessage.CANT_COMPLETE_BEFORE_RESERVATION_DATE;
+import static com.fittoo.common.message.ReservationErrorMessage.ALREADY_END_RESERVATION;
+import static com.fittoo.common.message.ReservationErrorMessage.CAN_NOT_COMPLETE_BEFORE_RESERVATION_DATE;
 import static com.fittoo.common.message.ReservationErrorMessage.EMPTY_SCHEDULE;
 import static com.fittoo.common.message.ReservationErrorMessage.EXIST_SAME_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_RESERVATION;
 import static com.fittoo.common.message.ReservationErrorMessage.INVALID_TRAINER_INFO;
-import static com.fittoo.common.message.ReservationErrorMessage.ONLY_COMPLETE_STATUS_CAN_BE_COMPLETED;
+import static com.fittoo.common.message.ReservationErrorMessage.ONLY_COMPLETE_STATUS_CAN_BE_END;
 import static com.fittoo.constant.SearchType.ADDRESS;
 import static com.fittoo.constant.SearchType.ALL_TYPE;
 import static com.fittoo.constant.SearchType.TRAINER_NAME;
@@ -18,7 +19,6 @@ import static com.fittoo.reservation.constant.ReservationStatus.END;
 import static com.fittoo.reservation.entity.QReservation.reservation;
 import static com.fittoo.trainer.entity.QTrainer.trainer;
 
-import com.fittoo.common.message.ReservationErrorMessage;
 import com.fittoo.exception.ReservationException;
 import com.fittoo.exception.UserNotFoundException;
 import com.fittoo.member.entity.Member;
@@ -72,7 +72,7 @@ public class ReservationServiceImpl implements ReservationService {
 	public ScheduleDto getSchedule(LocalDate date, String trainerId) {
 
 		Schedule schedule = scheduleRepository.findByDateAndTrainerUserId(date, trainerId)
-			.orElseThrow(() -> new ReservationException(EMPTY_SCHEDULE.message()));
+			.orElseThrow(() -> new ReservationException(EMPTY_SCHEDULE));
 
 		return ScheduleDto.of(schedule);
 	}
@@ -84,14 +84,14 @@ public class ReservationServiceImpl implements ReservationService {
 		checkSameReservation(param, memberId);
 
 		Member member = memberRepository.findByUserId(memberId)
-			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER.message()));
+			.orElseThrow(() -> new UserNotFoundException(NOT_FOUND_USER));
 
 		Trainer trainer = trainerRepository.findByUserId(param.getTrainerId()).orElseThrow(() ->
-			new ReservationException(INVALID_TRAINER_INFO.message()));
+			new ReservationException(INVALID_TRAINER_INFO));
 
 		Schedule schedule = scheduleRepository.findByDateAndTrainerUserId(param.getDate(),
 			param.getTrainerId()).orElseThrow(() -> new ReservationException(
-			INVALID_RESERVATION.message()));
+			INVALID_RESERVATION));
 
 		Reservation reservation = Reservation.saveReservation(param, trainer, member, schedule,
 			memberId);
@@ -104,7 +104,7 @@ public class ReservationServiceImpl implements ReservationService {
 	public void reReservation(Long reservationId) {
 		reservationRepository.findById(reservationId)
 			.orElseThrow(() -> new ReservationException(
-				EXIST_SAME_RESERVATION.message())).reReservation();
+				EXIST_SAME_RESERVATION)).reReservation();
 	}
 
 	public void checkSameReservation(ReservationParam param, String memberId) {
@@ -119,7 +119,7 @@ public class ReservationServiceImpl implements ReservationService {
 			.fetchOne();
 
 		if (count > 0) {
-			throw new ReservationException(EXIST_SAME_RESERVATION.message());
+			throw new ReservationException(EXIST_SAME_RESERVATION);
 		}
 	}
 
@@ -209,18 +209,18 @@ public class ReservationServiceImpl implements ReservationService {
 			memberId, reservationId);
 
 		if (optionalReservation.isEmpty()) {
-			throw new ReservationException(INVALID_RESERVATION.message());
+			throw new ReservationException(INVALID_RESERVATION);
 		}
 		Reservation reservation = optionalReservation.get();
 		if (reservation.getReservationStatus().equals(COMPLETE)) {
 			throw new ReservationException(
-				ALREADY_COMPLETED_RESERVATION.message(),
+				ALREADY_COMPLETED_RESERVATION,
 				reservation.getMemberUserId(), reservation.getId());
 		}
 
 		if (reservation.getReservationStatus().equals(CANCEL)) {
 			throw new ReservationException(
-				ALREADY_CANCELED_RESERVATION.message(),
+				ALREADY_CANCELED_RESERVATION,
 				reservation.getMemberUserId(), reservation.getId());
 		}
 
@@ -233,12 +233,12 @@ public class ReservationServiceImpl implements ReservationService {
 		Optional<Reservation> optionalReservation = reservationRepository.findByMemberUserIdAndId(
 			memberId, reservationId);
 		if (optionalReservation.isEmpty()) {
-			throw new ReservationException(INVALID_RESERVATION.message());
+			throw new ReservationException(INVALID_RESERVATION);
 		}
 		Reservation reservation = optionalReservation.get();
 
 		if (reservation.getReservationStatus().equals(CANCEL)) {
-			throw new ReservationException(ALREADY_CANCELED_RESERVATION.message(),
+			throw new ReservationException(ALREADY_CANCELED_RESERVATION,
 				cancelByWho,
 				reservation.getMemberUserId(), reservation.getId());
 		}
@@ -250,18 +250,28 @@ public class ReservationServiceImpl implements ReservationService {
 	public void trainingEnd(Long reservationId) {
 		Reservation reservation = reservationRepository.findById(reservationId)
 			.orElseThrow(() -> new ReservationException(
-				INVALID_RESERVATION.message()));
+				INVALID_RESERVATION));
+
+		if (reservation.getReservationStatus().equals(END)) {
+			throw new ReservationException(ALREADY_END_RESERVATION,
+				reservation.getMemberUserId(), reservationId);
+		}
 
 		if (!reservation.getReservationStatus().equals(COMPLETE)) {
-			throw new ReservationException(ONLY_COMPLETE_STATUS_CAN_BE_COMPLETED.message(),
+			throw new ReservationException(ONLY_COMPLETE_STATUS_CAN_BE_END,
 				reservation.getMemberUserId(), reservationId);
 		}
 
 		if (!reservation.getDate().isBefore(LocalDate.now())) {
-			throw new ReservationException(CANT_COMPLETE_BEFORE_RESERVATION_DATE.message(),
+			throw new ReservationException(CAN_NOT_COMPLETE_BEFORE_RESERVATION_DATE,
 				reservation.getMemberUserId(), reservationId);
 		}
 
 		reservation.setReservationStatus(END);
+	}
+
+	@Override
+	public boolean hasReservation(Long reservationId, String userId) {
+		return reservationRepository.existsByMemberUserIdAndId(userId, reservationId);
 	}
 }

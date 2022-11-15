@@ -102,7 +102,7 @@ public class MemberController {
 	@PostMapping("/withdraw")
 	public String withdraw(Principal principal, String userId) {
 		if (!principal.getName().equals(userId)) {
-			throw new AuthException(ABNORMAL_APPROACH.message());
+			throw new AuthException(ABNORMAL_APPROACH);
 		}
 		memberService.withdraw(userId);
 

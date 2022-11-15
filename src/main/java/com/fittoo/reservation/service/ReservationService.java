@@ -28,4 +28,6 @@ public interface ReservationService {
 	void reReservation(Long reservationId);
 
 	void trainingEnd(Long reservationId);
+
+	boolean hasReservation(Long reservationId, String userId);
 }

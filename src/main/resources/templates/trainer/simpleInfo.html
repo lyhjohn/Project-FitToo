@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .container {
+      position: absolute;
+      background-color: skyblue;
+      top: 30%;
+    }
+  </style>
+  <title>트레이너 정보</title>
+</head>
+<body>
+<div class="container">
+  <div th:if="${trainer == null}">
+    트레이너를 선택하세요.
+  </div>
+  <div th:if="${trainer != null}">
+    <div style="display:inline-block;vertical-align:top;">
+      <img th:src="|/trainer/images/${trainer?.getProfilePictureNewName()}|" width="300"
+           height="300"/>
+    </div>
+    <div th:text="${trainer.introduce}" style="display:inline-block;"></div>
+    <div th:object="${trainer}">
+      <div>이름: <span th:field="*{userName}" th:text="*{userName}"></span></div>
+      <div>지역: <span th:field="*{getAddr}" th:text="*{getAddr}"></span></div>
+      <div>금액: <span th:field="*{price}" th:text="*{price}"></span></div>
+    </div>
+    <form action="/member/calendar" method="get">
+      <button type="submit" th:value="${trainer.userId}" name="trainerId">예약</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

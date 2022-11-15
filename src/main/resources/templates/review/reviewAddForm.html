@@ -5,8 +5,25 @@
   <title>Title</title>
 </head>
 <body>
+
 <div th:if="${reservationId != null}">
-  <div th:text="${reservationId}"></div>
+  <form action="/review/submit" method="post">
+
+    <input type="hidden" th:value="${trainerId}" name="trainerId">
+    리뷰 번호: <input type="text" th:value="${reservationId}" name="reservationId" readonly>
+    리뷰: <textarea name="comment" cols="50"
+                  rows="10"></textarea>
+
+    <div>평점 주기</div>
+    <div>
+      1점<input type="radio" value="1" name="score" required>
+      2점<input type="radio" value="2" name="score" required>
+      3점<input type="radio" value="3" name="score" required>
+      4점<input type="radio" value="4" name="score" required>
+      5점<input type="radio" value="5" name="score" required>
+    </div>
+    <button type="submit">리뷰 등록하기</button>
+  </form>
 </div>
 </body>
 </html>

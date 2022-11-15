@@ -1,5 +1,7 @@
 package com.fittoo.member.service.impl;
 
+
+import static com.fittoo.common.message.CommonErrorMessage.NOT_FOUND_USER;
 import static com.fittoo.common.message.RegisterErrorMessage.ALREADY_EXIST_USERID;
 import static com.fittoo.common.message.RegisterErrorMessage.Pwd_And_RePwd_Not_Equal;
 import static com.fittoo.common.message.WithdrawErrorMessage.EXIST_RESERVATION;
@@ -7,8 +9,6 @@ import static com.fittoo.reservation.constant.ReservationStatus.COMPLETE;
 import static com.fittoo.reservation.constant.ReservationStatus.HOLD;
 import static com.fittoo.withdraw_user.constant.WithdrawStatus.HOLD_WITHDRAW;
 
-import com.fittoo.common.message.CommonErrorMessage;
-import com.fittoo.common.message.FindErrorMessage;
 import com.fittoo.exception.RegisterException;
 import com.fittoo.exception.UserIdAlreadyExist;
 import com.fittoo.exception.UserNotFoundException;
@@ -23,7 +23,6 @@ import com.fittoo.reservation.repository.ReservationRepository;
 import com.fittoo.trainer.model.UpdateInput;
 import com.fittoo.withdraw_user.entity.WithdrawUser;
 import com.fittoo.withdraw_user.repository.WithdrawUserRepository;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +40,6 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
 	private final ReservationRepository reservationRepository;
 	private final WithdrawUserRepository withdrawUserRepository;
-	private final JPAQueryFactory queryFactory;
 	private final static String MEMBER = "member";
 
 	@Override
@@ -50,13 +48,13 @@ public class MemberServiceImpl implements MemberService {
 		Optional<Member> optionalMember = memberRepository.findByUserId(input.getUserId());
 		if (optionalMember.isPresent()) {
 			input.setLoginType(MEMBER);
-			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, MEMBER,
+			throw new RegisterException(ALREADY_EXIST_USERID, input, MEMBER,
 				new UserIdAlreadyExist());
 		}
 
 		if (!input.getPassword().equals(input.getRepassword())) {
 			input.setLoginType(MEMBER);
-			throw new RegisterException(Pwd_And_RePwd_Not_Equal.message(), input, MEMBER);
+			throw new RegisterException(Pwd_And_RePwd_Not_Equal, input, MEMBER);
 		}
 
 		String encPassword = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());
@@ -68,7 +66,7 @@ public class MemberServiceImpl implements MemberService {
 			memberRepository.saveAndFlush(member);
 		} catch (DataIntegrityViolationException e) {
 			input.setLoginType(MEMBER);
-			throw new RegisterException(ALREADY_EXIST_USERID.message(), input, MEMBER, e);
+			throw new RegisterException(ALREADY_EXIST_USERID, input, MEMBER, e);
 		}
 	}
 
@@ -85,7 +83,7 @@ public class MemberServiceImpl implements MemberService {
 	public MemberDto update(UpdateInput input) {
 		Member member = memberRepository.findByUserId(input.getUserId())
 			.orElseThrow(
-				() -> new UserNotFoundException(FindErrorMessage.NOT_FOUND_USER.message()));
+				() -> new UserNotFoundException(NOT_FOUND_USER));
 
 		member.update(input);
 
@@ -97,7 +95,7 @@ public class MemberServiceImpl implements MemberService {
 	public void withdraw(String userId) {
 		Member member = memberRepository.findByUserId(userId)
 			.orElseThrow(
-				() -> new UserNotFoundException(CommonErrorMessage.NOT_FOUND_USER.message()));
+				() -> new UserNotFoundException(NOT_FOUND_USER));
 
 		checkExistReservation(member);
 		withdrawUserRepository.save(new WithdrawUser(userId, member.getLoginType()));
@@ -109,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
 		optionalReservation.ifPresent(reservations -> reservations.forEach(x -> {
 			if (x.getReservationStatus().equals(COMPLETE) || x.getReservationStatus()
 				.equals(HOLD)) {
-				throw new WithdrawException(EXIST_RESERVATION.message());
+				throw new WithdrawException(EXIST_RESERVATION);
 			}
 		}));
 	}
