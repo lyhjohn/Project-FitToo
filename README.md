@@ -60,7 +60,7 @@
 ### ERD
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/104713339/201684167-4936fd63-56bb-48bd-96af-40b5ecabb467.png">
+<img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7f4398fa-2193-46c9-8dac-ddc9f57d2870/Untitled.png">
 </div>
  
 
